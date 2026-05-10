@@ -1,11 +1,5 @@
 <?php
 
-<<<<<<< HEAD
-use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('welcome');
-=======
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
@@ -107,5 +101,4 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::get('/reports/{regulatoryReport}', [ComplianceReportController::class, 'show'])->name('reports.show');
     Route::get('/reports/{regulatoryReport}/download', [ComplianceReportController::class, 'download'])->name('reports.download');
     Route::patch('/reports/{regulatoryReport}/submit', [ComplianceReportController::class, 'submit'])->name('reports.submit');
->>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
 });

@@ -32,30 +32,19 @@ return [
 
         'local' => [
             'driver' => 'local',
-<<<<<<< HEAD
-            'root' => storage_path('app'),
-            'throw' => false,
-=======
             'root' => storage_path('app/private'),
             'serve' => true,
             'throw' => false,
             'report' => false,
->>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
         ],
 
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-<<<<<<< HEAD
-            'url' => env('APP_URL').'/storage',
-            'visibility' => 'public',
-            'throw' => false,
-=======
             'url' => rtrim((string) env('APP_URL'), '/').'/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
->>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
         ],
 
         's3' => [
@@ -68,10 +57,7 @@ return [
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
-<<<<<<< HEAD
-=======
             'report' => false,
->>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
         ],
 
     ],

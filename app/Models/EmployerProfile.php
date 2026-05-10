@@ -4,8 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+<<<<<<< HEAD
+=======
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
 
 class EmployerProfile extends Model
 {
@@ -23,6 +26,10 @@ class EmployerProfile extends Model
         'verification_date',
     ];
 
+<<<<<<< HEAD
+    // Relationship: profile belongs to user
+    public function user()
+=======
     protected function casts(): array
     {
         return [
@@ -32,12 +39,22 @@ class EmployerProfile extends Model
     }
 
     public function user(): BelongsTo
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
     {
         return $this->belongsTo(User::class);
     }
 
+<<<<<<< HEAD
+    // Employer has many jobs
+    public function jobs()
+    {
+        return $this->hasMany(Job::class, 'employer_id');
+    }
+}
+=======
     public function jobs(): HasMany
     {
         return $this->hasMany(Job::class, 'employer_id', 'user_id');
     }
 }
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce

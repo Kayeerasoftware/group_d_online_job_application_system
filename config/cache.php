@@ -27,8 +27,12 @@ return [
     | same cache driver to group types of items stored in your caches.
     |
     | Supported drivers: "array", "database", "file", "memcached",
+<<<<<<< HEAD
+    |                    "redis", "dynamodb", "octane", "null"
+=======
     |                    "redis", "dynamodb", "octane",
     |                    "failover", "null"
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
     |
     */
 
@@ -39,11 +43,14 @@ return [
             'serialize' => false,
         ],
 
+<<<<<<< HEAD
+=======
         'session' => [
             'driver' => 'session',
             'key' => env('SESSION_CACHE_KEY', '_cache'),
         ],
 
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
         'database' => [
             'driver' => 'database',
             'connection' => env('DB_CACHE_CONNECTION'),
@@ -96,6 +103,8 @@ return [
             'driver' => 'octane',
         ],
 
+<<<<<<< HEAD
+=======
         'failover' => [
             'driver' => 'failover',
             'stores' => [
@@ -104,6 +113,7 @@ return [
             ],
         ],
 
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
     ],
 
     /*
@@ -117,6 +127,10 @@ return [
     |
     */
 
+<<<<<<< HEAD
+    'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache_'),
+=======
     'prefix' => env('CACHE_PREFIX', Str::slug((string) env('APP_NAME', 'laravel'), '_').'_cache_'),
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
 
 ];

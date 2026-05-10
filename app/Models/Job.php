@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+<<<<<<< HEAD
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+=======
 use App\Enums\JobStatus;
 use App\Enums\JobType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,11 +14,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Builder;
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
 
 class Job extends Model
 {
     use HasFactory;
 
+<<<<<<< HEAD
+    protected $table = 'job_postings';
+
+=======
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
     protected $fillable = [
         'employer_id',
         'title',
@@ -24,6 +34,20 @@ class Job extends Model
         'salary_min',
         'salary_max',
         'job_type',
+<<<<<<< HEAD
+        'status',
+        'deadline',
+    ];
+
+    /*
+    |-----------------------------
+    | Relationships
+    |-----------------------------
+    */
+
+    // Job belongs to an employer (user)
+    public function employer()
+=======
         'deadline',
         'status',
         'views_count',
@@ -42,10 +66,19 @@ class Job extends Model
     }
 
     public function employer(): BelongsTo
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
     {
         return $this->belongsTo(User::class, 'employer_id');
     }
 
+<<<<<<< HEAD
+    // Job has many applications
+    public function applications()
+    {
+        return $this->hasMany(Application::class);
+    }
+}
+=======
     public function applications(): HasMany
     {
         return $this->hasMany(Application::class);
@@ -93,3 +126,4 @@ class Job extends Model
         return $this->status instanceof JobStatus ? $this->status->value : (string) $this->status;
     }
 }
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce

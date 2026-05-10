@@ -15,10 +15,12 @@ If you want a quick reference for the environment variables, see [render.env.exa
 What it provisions:
 
 - A Docker-based Laravel web service
-- A PostgreSQL database
 - A persistent disk for uploaded files in `storage/app/public`
+- A worker for queued jobs
 
-Before the first deploy, set `APP_KEY` in Render. The app will read the database URL from Render automatically and generate absolute URLs from Render's public URL.
+For Aiven MySQL, add your Aiven connection values in Render and upload the Aiven CA certificate as a secret file named `aiven-ca.pem` so it is available at `/etc/secrets/aiven-ca.pem`.
+
+Before the first deploy, set `APP_KEY` in Render, then enter your Aiven MySQL host, port, database, username, and password in the Render environment settings.
 
 ## About Laravel
 

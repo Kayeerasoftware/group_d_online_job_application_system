@@ -4,7 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+<<<<<<< HEAD
+=======
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
 
 class SavedJob extends Model
 {
@@ -13,6 +16,20 @@ class SavedJob extends Model
     protected $fillable = [
         'job_seeker_id',
         'job_id',
+<<<<<<< HEAD
+    ];
+
+    public function job()
+    {
+        return $this->belongsTo(Job::class);
+    }
+
+    public function jobSeeker()
+    {
+        return $this->belongsTo(User::class, 'job_seeker_id');
+    }
+}
+=======
         'saved_date',
     ];
 
@@ -33,3 +50,4 @@ class SavedJob extends Model
         return $this->belongsTo(Job::class);
     }
 }
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce

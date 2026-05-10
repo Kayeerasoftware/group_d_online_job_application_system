@@ -4,12 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+<<<<<<< HEAD
+=======
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
 
 class AuditLog extends Model
 {
     use HasFactory;
 
+<<<<<<< HEAD
+    protected $fillable = [
+        'admin_id',
+        'action',
+        'description',
+    ];
+
+    public function admin()
+    {
+        return $this->belongsTo(User::class, 'admin_id');
+    }
+}
+=======
     public const UPDATED_AT = null;
 
     protected $fillable = [
@@ -36,3 +52,4 @@ class AuditLog extends Model
         return $this->belongsTo(User::class, 'admin_id');
     }
 }
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce

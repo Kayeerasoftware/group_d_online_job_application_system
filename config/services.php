@@ -18,22 +18,32 @@ return [
         'token' => env('POSTMARK_TOKEN'),
     ],
 
+<<<<<<< HEAD
+    'ses' => [
+        'key' => env('AWS_ACCESS_KEY_ID'),
+        'secret' => env('AWS_SECRET_ACCESS_KEY'),
+        'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+=======
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),
         'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
     ],
 
     'resend' => [
         'key' => env('RESEND_KEY'),
     ],
 
+<<<<<<< HEAD
+=======
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
@@ -41,6 +51,8 @@ return [
         ],
     ],
 
+<<<<<<< HEAD
+=======
     'twilio' => [
         'sid' => env('TWILIO_SID'),
         'token' => env('TWILIO_AUTH_TOKEN'),
@@ -53,4 +65,5 @@ return [
         'sender_id' => env('AFRICASTALKING_SENDER_ID'),
     ],
 
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
 ];

@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Application;
-use App\Models\JobListing;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request): RedirectResponse
     {
-        $user = auth()->user();
+        $user = $request->user();
 
-        if ($user->isEmployer()) {
-            $jobs = JobListing::where('user_id', $user->id)->withCount('applications')->latest()->get();
-            return view('dashboard.employer', compact('jobs'));
+        if (! $user) {
+            return redirect()->route('login');
         }
 
-        $applications = Application::where('user_id', $user->id)->with('job')->latest()->get();
-        return view('dashboard.applicant', compact('applications'));
+        return match (true) {
+            $user->isAdmin() => redirect()->route('admin.dashboard'),
+            $user->isEmployer() => redirect()->route('employer.dashboard'),
+            default => redirect()->route('seeker.dashboard'),
+        };
     }
 }

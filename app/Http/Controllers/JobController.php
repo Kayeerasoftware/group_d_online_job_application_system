@@ -2,129 +2,161 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Application;
-use App\Models\JobListing;
+use App\Enums\DeliveryStatus;
+use App\Enums\JobStatus;
+use App\Enums\NotificationChannel;
+use App\Enums\UserRole;
+use App\Http\Requests\StoreJobRequest;
+use App\Http\Requests\UpdateJobRequest;
+use App\Models\AuditLog;
+use App\Models\Job;
+use App\Models\Notification;
+use App\Models\User;
+use App\Services\Security\ComplianceChecker;
+use App\Services\Notifications\NotificationDispatcher;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class JobController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
-        $query = JobListing::with('employer')->latest();
+        try {
+            $user = $request->user();
+            $query = Job::query()->with(['employer.employerProfile'])->withCount('applications');
 
-        if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('company_name', 'like', '%' . $request->search . '%')
-                  ->orWhere('location', 'like', '%' . $request->search . '%');
-            });
+            if (! $user || (! $user->isEmployer() && ! $user->isAdmin())) {
+                $query->where('status', JobStatus::Open->value);
+            }
+
+            $query->search($request->string('search')->toString() ?: null);
+
+            if ($request->filled('location')) {
+                $query->where('location', 'like', '%'.$request->string('location')->toString().'%');
+            }
+
+            if ($request->filled('job_type')) {
+                $query->where('job_type', $request->string('job_type')->toString());
+            }
+
+            if ($request->filled('salary_min')) {
+                $minSalary = $request->float('salary_min');
+
+                $query->where(function ($builder) use ($minSalary): void {
+                    $builder->whereNull('salary_max')
+                        ->orWhere('salary_max', '>=', $minSalary);
+                });
+            }
+
+            if ($request->filled('salary_max')) {
+                $maxSalary = $request->float('salary_max');
+
+                $query->where(function ($builder) use ($maxSalary): void {
+                    $builder->whereNull('salary_min')
+                        ->orWhere('salary_min', '<=', $maxSalary);
+                });
+            }
+
+            $jobs = $query->latest()->paginate(10)->withQueryString();
+        } catch (\Throwable $e) {
+            $jobs = new LengthAwarePaginator([], 0, 10, 1, [
+                'path' => $request->url(),
+            ]);
         }
 
-        if ($request->filled('job_type')) {
-            $query->where('job_type', $request->job_type);
-        }
-
-        $jobs = $query->paginate(9)->withQueryString();
         return view('jobs.index', compact('jobs'));
     }
 
-    public function create()
+    public function create(): View
     {
-        abort_unless(auth()->user()->isEmployer(), 403, 'Only employers can post jobs.');
-        return view('jobs.create');
+        return view('jobs.create', [
+            'job' => new Job(),
+        ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreJobRequest $request, ComplianceChecker $checker, NotificationDispatcher $dispatcher): RedirectResponse
     {
-        abort_unless(auth()->user()->isEmployer(), 403);
-
-        $validated = $request->validate([
-            'title'        => 'required|max:255',
-            'description'  => 'required',
-            'company_name' => 'required|max:255',
-            'location'     => 'required|max:255',
-            'salary'       => 'required|numeric|min:0',
-            'job_type'     => 'required|in:full-time,part-time,contract,remote',
-            'deadline'     => 'nullable|date|after:today',
+        $job = Job::create([
+            ...$request->validated(),
+            'employer_id' => $request->user()->id,
+            'status' => JobStatus::Open,
         ]);
 
-        JobListing::create($validated + ['user_id' => auth()->id()]);
+        if ($checker->flagSuspiciousTerms($job->title.' '.$job->description.' '.$job->requirements)) {
+            AuditLog::create([
+                'admin_id' => $request->user()->id,
+                'action' => 'flag_job',
+                'target_type' => Job::class,
+                'target_id' => $job->id,
+                'new_values' => $job->toArray(),
+                'reason' => 'Automated compliance keyword check flagged this job posting.',
+            ]);
 
-        return redirect()->route('jobs.index')->with('success', 'Job posted successfully!');
+            $admin = User::query()->where('role', UserRole::Admin->value)->first();
+
+            if ($admin) {
+                $notification = Notification::create([
+                    'user_id' => $admin->id,
+                    'type' => NotificationChannel::App,
+                    'subject' => 'Job posting flagged for review',
+                    'message' => "The job posting \"{$job->title}\" contains language that requires review.",
+                    'is_read' => false,
+                    'delivery_status' => DeliveryStatus::Pending,
+                ]);
+
+                $dispatcher->dispatch($notification);
+            }
+        }
+
+        return redirect()->route('jobs.show', $job)->with('status', 'Job posted successfully.');
     }
 
-    public function show(JobListing $job)
+    public function show(Request $request, Job $job): View
     {
-        $hasApplied = auth()->check()
-            ? Application::where('job_id', $job->id)->where('user_id', auth()->id())->exists()
+        $job->load(['employer.employerProfile'])->loadCount('applications');
+        $job->increment('views_count');
+
+        $saved = $request->user()
+            ? $request->user()->savedJobs()->where('job_id', $job->id)->exists()
             : false;
 
-        $job->load('employer');
-        return view('jobs.show', compact('job', 'hasApplied'));
+        $applied = $request->user()
+            ? $request->user()->applications()->where('job_id', $job->id)->exists()
+            : false;
+
+        return view('jobs.show', compact('job', 'saved', 'applied'));
     }
 
-    public function edit(JobListing $job)
+    public function edit(Request $request, Job $job): View
     {
-        $this->authorize('update', $job);
+        $this->authorizeOwnership($request, $job);
+
         return view('jobs.edit', compact('job'));
     }
 
-    public function update(Request $request, JobListing $job)
+    public function update(UpdateJobRequest $request, Job $job): RedirectResponse
     {
-        $this->authorize('update', $job);
+        $this->authorizeOwnership($request, $job);
 
-        $validated = $request->validate([
-            'title'        => 'required|max:255',
-            'description'  => 'required',
-            'company_name' => 'required|max:255',
-            'location'     => 'required|max:255',
-            'salary'       => 'required|numeric|min:0',
-            'job_type'     => 'required|in:full-time,part-time,contract,remote',
-            'deadline'     => 'nullable|date',
-        ]);
+        $job->update($request->validated());
 
-        $job->update($validated);
-
-        return redirect()->route('jobs.show', $job)->with('success', 'Job updated successfully!');
+        return redirect()->route('jobs.show', $job)->with('status', 'Job updated successfully.');
     }
 
-    public function destroy(JobListing $job)
+    public function destroy(Request $request, Job $job): RedirectResponse
     {
-        $this->authorize('delete', $job);
+        $this->authorizeOwnership($request, $job);
         $job->delete();
-        return redirect()->route('jobs.index')->with('success', 'Job deleted successfully!');
+
+        return redirect()->route('jobs.index')->with('status', 'Job deleted.');
     }
 
-    public function apply(Request $request, JobListing $job)
+    private function authorizeOwnership(Request $request, Job $job): void
     {
-        abort_unless(auth()->user()->isApplicant(), 403, 'Only applicants can apply for jobs.');
-
-        $alreadyApplied = Application::where('job_id', $job->id)->where('user_id', auth()->id())->exists();
-        if ($alreadyApplied) {
-            return back()->with('error', 'You have already applied for this job.');
+        if (! $request->user()->isAdmin() && $job->employer_id !== $request->user()->id) {
+            abort(403, 'You do not own this job posting.');
         }
-
-        $request->validate([
-            'cv'           => 'required|file|mimes:pdf,doc,docx|max:2048',
-            'cover_letter' => 'nullable|string|max:2000',
-        ]);
-
-        $cvPath = $request->file('cv')->store('cvs', 'public');
-
-        Application::create([
-            'job_id'       => $job->id,
-            'user_id'      => auth()->id(),
-            'cv_path'      => $cvPath,
-            'cover_letter' => $request->cover_letter,
-        ]);
-
-        return redirect()->route('jobs.show', $job)->with('success', 'Application submitted successfully!');
-    }
-
-    public function applications(JobListing $job)
-    {
-        abort_unless(auth()->id() === $job->user_id, 403);
-        $applications = $job->applications()->with('applicant')->latest()->paginate(15);
-        return view('jobs.applications', compact('job', 'applications'));
     }
 }

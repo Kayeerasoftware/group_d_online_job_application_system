@@ -1,138 +1,149 @@
 @extends('layouts.app')
-@section('title', $job->title)
+
+@section('title', 'Job Details')
 
 @section('content')
-<div class="row">
-    <div class="col-lg-8">
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div>
-                        <h2 class="fw-bold mb-1">{{ $job->title }}</h2>
-                        <p class="text-muted mb-0"><i class="bi bi-building me-1"></i>{{ $job->company_name }}</p>
-                    </div>
-                    <span class="badge bg-warning text-dark fs-6">{{ ucfirst($job->job_type) }}</span>
-                </div>
-
-                <div class="row g-3 mb-4">
-                    <div class="col-sm-4">
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-geo-alt-fill text-danger fs-5"></i>
-                            <div>
-                                <div class="small text-muted">Location</div>
-                                <div class="fw-semibold">{{ $job->location }}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-cash-stack text-success fs-5"></i>
-                            <div>
-                                <div class="small text-muted">Salary</div>
-                                <div class="fw-semibold text-success">UGX {{ number_format($job->salary) }}</div>
-                            </div>
-                        </div>
-                    </div>
-                    @if($job->deadline)
-                    <div class="col-sm-4">
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-calendar-event text-warning fs-5"></i>
-                            <div>
-                                <div class="small text-muted">Deadline</div>
-                                <div class="fw-semibold {{ $job->deadline->isPast() ? 'text-danger' : '' }}">
-                                    {{ $job->deadline->format('M d, Y') }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <x-ui.panel tone="surface" class="p-6 md:p-8">
+        <x-ui.page-header
+            eyebrow="Job details"
+            title="{{ $job->title }}"
+            description="{{ $job->description }}"
+        >
+            <x-slot:actions>
+                @auth
+                    @if(auth()->user()->isSeeker() && ! $applied)
+                        <a class="inline-flex items-center justify-center rounded-2xl bg-cyan-400 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300" href="{{ route('applications.create', ['job' => $job->id]) }}">
+                            Apply now
+                        </a>
                     @endif
-                </div>
+                    @if(auth()->user()->isSeeker())
+                        <form method="post" action="{{ route('seeker.saved-jobs.store', $job) }}">
+                            @csrf
+                            <button class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10" type="submit">
+                                {{ $saved ? 'Saved' : 'Save job' }}
+                            </button>
+                        </form>
+                    @endif
+                    @if((auth()->user()->isEmployer() && auth()->id() === $job->employer_id) || auth()->user()->isAdmin())
+                        <a class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10" href="{{ route('jobs.edit', $job) }}">
+                            Edit
+                        </a>
+                        <button
+                            type="button"
+                            class="inline-flex items-center justify-center rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm font-semibold text-rose-200 transition hover:bg-rose-500/20"
+                            data-modal-open="delete-job-{{ $job->id }}"
+                        >
+                            Delete
+                        </button>
+                    @endif
+                @else
+                    <a class="inline-flex items-center justify-center rounded-2xl bg-cyan-400 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300" href="{{ route('register') }}">
+                        Register to apply
+                    </a>
+                @endauth
+            </x-slot:actions>
+        </x-ui.page-header>
 
-                <h5 class="fw-bold">Job Description</h5>
-                <div class="text-muted" style="white-space: pre-line">{{ $job->description }}</div>
-
-                <hr>
-                <small class="text-muted">Posted by <strong>{{ $job->employer->name }}</strong> · {{ $job->created_at->diffForHumans() }}</small>
+        <div class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <div class="rounded-[28px] border border-white/10 bg-slate-950/60 p-5">
+                <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Location</p>
+                <p class="mt-2 text-base font-semibold text-white">{{ $job->location }}</p>
+            </div>
+            <div class="rounded-[28px] border border-white/10 bg-slate-950/60 p-5">
+                <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Type</p>
+                <p class="mt-2 text-base font-semibold text-white">{{ $job->job_type instanceof \App\Enums\JobType ? $job->job_type->value : $job->job_type }}</p>
+            </div>
+            <div class="rounded-[28px] border border-white/10 bg-slate-950/60 p-5">
+                <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Status</p>
+                <p class="mt-2 text-base font-semibold text-white">{{ $job->statusValue() }}</p>
+            </div>
+            <div class="rounded-[28px] border border-white/10 bg-slate-950/60 p-5">
+                <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Deadline</p>
+                <p class="mt-2 text-base font-semibold text-white">{{ optional($job->deadline)->format('Y-m-d') }}</p>
             </div>
         </div>
 
-        {{-- Employer controls --}}
-        @auth
-            @if(auth()->id() === $job->user_id)
-                <div class="d-flex gap-2 mb-4">
-                    <a href="{{ route('jobs.edit', $job) }}" class="btn btn-outline-dark">
-                        <i class="bi bi-pencil me-1"></i>Edit Job
-                    </a>
-                    <a href="{{ route('jobs.applications', $job) }}" class="btn btn-dark">
-                        <i class="bi bi-people me-1"></i>View Applications ({{ $job->applications->count() }})
-                    </a>
-                    <form method="POST" action="{{ route('jobs.destroy', $job) }}"
-                          onsubmit="return confirm('Delete this job?')">
-                        @csrf @method('DELETE')
-                        <button class="btn btn-outline-danger"><i class="bi bi-trash me-1"></i>Delete</button>
-                    </form>
-                </div>
-            @endif
-        @endauth
-    </div>
+        <div class="mt-8 grid gap-6 lg:grid-cols-[1.4fr_0.9fr]">
+            <div class="space-y-6">
+                <x-ui.panel tone="inset" class="p-5 md:p-6">
+                    <p class="text-xs font-semibold uppercase tracking-[0.35em] text-cyan-300/70">Overview</p>
+                    <div class="mt-4 grid gap-4 sm:grid-cols-3">
+                        <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                            <p class="text-[10px] uppercase tracking-[0.3em] text-slate-500">Salary range</p>
+                            <p class="mt-2 text-lg font-semibold text-white">UGX {{ number_format((float) $job->salary_min) }} - UGX {{ number_format((float) $job->salary_max) }}</p>
+                        </div>
+                        <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                            <p class="text-[10px] uppercase tracking-[0.3em] text-slate-500">Views</p>
+                            <p class="mt-2 text-lg font-semibold text-white">{{ number_format($job->views_count ?? 0) }}</p>
+                        </div>
+                        <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                            <p class="text-[10px] uppercase tracking-[0.3em] text-slate-500">Applications</p>
+                            <p class="mt-2 text-lg font-semibold text-white">{{ number_format($job->applications_count ?? 0) }}</p>
+                        </div>
+                    </div>
+                </x-ui.panel>
 
-    {{-- Apply sidebar --}}
-    <div class="col-lg-4">
-        <div class="card border-0 shadow-sm sticky-top" style="top: 80px">
-            <div class="card-body p-4">
-                @guest
-                    <h5 class="fw-bold mb-3">Apply for this Job</h5>
-                    <p class="text-muted small">You need to be logged in as a job seeker to apply.</p>
-                    <a href="{{ route('login') }}" class="btn btn-dark w-100">Login to Apply</a>
-                    <a href="{{ route('register') }}" class="btn btn-outline-warning w-100 mt-2">Create Account</a>
-                @endguest
+                <x-ui.panel tone="inset" class="p-5 md:p-6">
+                    <p class="text-xs font-semibold uppercase tracking-[0.35em] text-cyan-300/70">Description</p>
+                    <p class="mt-4 text-sm leading-8 text-slate-300">{{ $job->description }}</p>
+                </x-ui.panel>
+
+                <x-ui.panel tone="inset" class="p-5 md:p-6">
+                    <p class="text-xs font-semibold uppercase tracking-[0.35em] text-cyan-300/70">Requirements</p>
+                    <p class="mt-4 whitespace-pre-line text-sm leading-8 text-slate-300">{{ $job->requirements }}</p>
+                </x-ui.panel>
+            </div>
+
+            <div class="space-y-6">
+                <x-ui.panel tone="inset" class="p-5 md:p-6">
+                    <p class="text-xs font-semibold uppercase tracking-[0.35em] text-cyan-300/70">Employer</p>
+                    <div class="mt-4 space-y-2 text-sm text-slate-300">
+                        <p><span class="text-slate-500">Company:</span> {{ $job->employer?->employerProfile?->company_name ?? $job->employer?->name }}</p>
+                        <p><span class="text-slate-500">Location:</span> {{ $job->location }}</p>
+                        <p><span class="text-slate-500">Deadline:</span> {{ optional($job->deadline)->format('Y-m-d') }}</p>
+                    </div>
+                </x-ui.panel>
 
                 @auth
-                    @if(auth()->user()->isApplicant())
-                        @if($hasApplied)
-                            <div class="text-center py-3">
-                                <i class="bi bi-check-circle-fill text-success display-4"></i>
-                                <p class="mt-2 fw-semibold">You've already applied!</p>
-                                <a href="{{ route('applications.index') }}" class="btn btn-outline-dark btn-sm">
-                                    View My Applications
-                                </a>
-                            </div>
-                        @elseif($job->deadline && $job->deadline->isPast())
-                            <div class="alert alert-danger mb-0">
-                                <i class="bi bi-x-circle me-1"></i>Application deadline has passed.
-                            </div>
-                        @else
-                            <h5 class="fw-bold mb-3">Apply Now</h5>
-                            <form method="POST" action="{{ route('jobs.apply', $job) }}" enctype="multipart/form-data">
+                    @if(auth()->user()->isAdmin())
+                        <x-ui.panel tone="warning" class="p-5 md:p-6">
+                            <p class="text-xs font-semibold uppercase tracking-[0.35em] text-amber-200/80">Admin moderation</p>
+                            <p class="mt-3 text-sm leading-7 text-amber-50/90">
+                                Flag this posting if it contains discriminatory or non-compliant language. The record will stay visible, but the moderation action will be logged.
+                            </p>
+
+                            <form class="mt-4 space-y-4" method="post" action="{{ route('admin.jobs.flag', $job) }}">
                                 @csrf
-                                <div class="mb-3">
-                                    <label class="form-label fw-semibold">Upload CV <span class="text-danger">*</span></label>
-                                    <input type="file" name="cv" class="form-control @error('cv') is-invalid @enderror"
-                                           accept=".pdf,.doc,.docx" required>
-                                    <div class="form-text">PDF, DOC or DOCX — max 2MB</div>
-                                    @error('cv')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label fw-semibold">Cover Letter</label>
-                                    <textarea name="cover_letter" class="form-control @error('cover_letter') is-invalid @enderror"
-                                              rows="5" placeholder="Tell the employer why you're a great fit...">{{ old('cover_letter') }}</textarea>
-                                    @error('cover_letter')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                </div>
-                                <button type="submit" class="btn btn-warning w-100 fw-bold">
-                                    <i class="bi bi-send me-1"></i>Submit Application
+                                <textarea
+                                    class="min-h-28 w-full rounded-2xl border border-amber-300/20 bg-slate-950/80 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-amber-300/50 focus:ring-2 focus:ring-amber-300/20"
+                                    name="reason"
+                                    placeholder="Optional moderation reason"
+                                ></textarea>
+                                <button class="inline-flex items-center justify-center rounded-2xl bg-amber-300 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-200" type="submit">
+                                    Flag job
                                 </button>
                             </form>
-                        @endif
-                    @elseif(auth()->id() !== $job->user_id)
-                        <div class="alert alert-info mb-0">
-                            <i class="bi bi-info-circle me-1"></i>Employers cannot apply for jobs.
-                        </div>
+                        </x-ui.panel>
                     @endif
                 @endauth
             </div>
         </div>
-    </div>
-</div>
+    </x-ui.panel>
 
-<a href="{{ route('jobs.index') }}" class="btn btn-link ps-0"><i class="bi bi-arrow-left me-1"></i>Back to Jobs</a>
+    <x-ui.modal
+        id="delete-job-{{ $job->id }}"
+        title="Delete this job?"
+        description="This removes the listing from the portal and may affect existing applications."
+    >
+        <form method="post" action="{{ route('jobs.destroy', $job) }}" class="flex items-center justify-end gap-3">
+            @csrf
+            @method('delete')
+            <button type="button" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10" data-modal-close>
+                Cancel
+            </button>
+            <button type="submit" class="rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm font-semibold text-rose-200 transition hover:bg-rose-500/20">
+                Delete job
+            </button>
+        </form>
+    </x-ui.modal>
 @endsection

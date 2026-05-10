@@ -2,21 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class JobListing extends Model
+/**
+ * Compatibility alias for the older project naming.
+ * The exam specification uses Job, but some legacy files refer to JobListing.
+ */
+class JobListing extends Job
 {
-    protected $fillable = ['title', 'description', 'company_name', 'location', 'salary', 'job_type', 'deadline', 'user_id'];
-
-    protected $casts = ['deadline' => 'date'];
-
-    public function employer()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function applications()
-    {
-        return $this->hasMany(Application::class, 'job_id');
-    }
 }

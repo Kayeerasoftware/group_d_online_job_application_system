@@ -1,100 +1,29 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'JobBoard') — Online Job Application System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <style>
-        body { background-color: #f8f9fa; }
-        .navbar-brand { font-weight: 700; font-size: 1.4rem; }
-        .job-card { transition: transform .15s, box-shadow .15s; }
-        .job-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,.1); }
-        .badge-job-type { font-size: .75rem; }
-        .status-pending  { background-color: #ffc107; color: #000; }
-        .status-reviewed { background-color: #0dcaf0; color: #000; }
-        .status-accepted { background-color: #198754; color: #fff; }
-        .status-rejected { background-color: #dc3545; color: #fff; }
-        footer { background: #212529; color: #adb5bd; }
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@yield('title', 'Online Job Application System')</title>
+    @if (file_exists(public_path('hot')) || file_exists(public_path('build/manifest.json')))
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @endif
 </head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-    <div class="container">
-        <a class="navbar-brand text-warning" href="{{ route('jobs.index') }}">
-            <i class="bi bi-briefcase-fill me-1"></i>JobBoard
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navMenu">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('jobs.index') }}"><i class="bi bi-search me-1"></i>Browse Jobs</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ms-auto align-items-center gap-1">
-                @auth
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('dashboard') }}"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a>
-                    </li>
-                    @if(auth()->user()->isEmployer())
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('jobs.create') }}"><i class="bi bi-plus-circle me-1"></i>Post Job</a>
-                        </li>
-                    @else
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('applications.index') }}"><i class="bi bi-file-earmark-text me-1"></i>My Applications</a>
-                        </li>
-                    @endif
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle me-1"></i>{{ auth()->user()->name }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><span class="dropdown-item-text text-muted small">{{ ucfirst(auth()->user()->role) }}</span></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-1"></i>Logout</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                @else
-                    <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
-                    <li class="nav-item"><a class="btn btn-warning btn-sm ms-2" href="{{ route('register') }}">Register</a></li>
-                @endauth
-            </ul>
-        </div>
+<body class="min-h-screen overflow-x-hidden bg-slate-950 text-slate-100 antialiased">
+    <div class="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(34,211,238,0.16),_transparent_30%),radial-gradient(circle_at_top_right,_rgba(14,165,233,0.10),_transparent_28%),linear-gradient(180deg,#020617_0%,#0f172a_45%,#020617_100%)]">
+        <div class="pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-cyan-400/10 blur-3xl animate-float-slow"></div>
+        <div class="pointer-events-none absolute -right-28 top-1/2 h-80 w-80 rounded-full bg-sky-400/10 blur-3xl animate-float-slow" style="animation-delay: -4s;"></div>
+        <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(148,163,184,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.06)_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.85),transparent)]"></div>
+
+        @include('partials.topbar')
+        @auth
+            @include('partials.sidebar')
+        @endauth
+
+        <main class="relative z-10 mx-auto max-w-7xl px-4 pb-12 pt-6 md:px-6 md:pb-16 md:pt-8 animate-fade-up {{ auth()->check() ? 'md:pl-72 xl:pl-80' : '' }}">
+            
+        @include('partials.alerts')
+        @yield('content')
+        </main>
     </div>
-</nav>
-
-<main class="container py-4">
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="bi bi-check-circle me-1"></i>{{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-    @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-circle me-1"></i>{{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
-    @yield('content')
-</main>
-
-<footer class="py-4 mt-5">
-    <div class="container text-center">
-        <p class="mb-0 small">© {{ date('Y') }} JobBoard — Online Job Application System | Group D</p>
-    </div>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

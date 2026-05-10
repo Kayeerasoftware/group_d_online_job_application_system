@@ -39,6 +39,7 @@ return [
 
         'smtp' => [
             'transport' => 'smtp',
+<<<<<<< HEAD
             'url' => env('MAIL_URL'),
             'host' => env('MAIL_HOST', '127.0.0.1'),
             'port' => env('MAIL_PORT', 2525),
@@ -47,6 +48,16 @@ return [
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+=======
+            'scheme' => env('MAIL_SCHEME'),
+            'url' => env('MAIL_URL'),
+            'host' => env('MAIL_HOST', '127.0.0.1'),
+            'port' => env('MAIL_PORT', 2525),
+            'username' => env('MAIL_USERNAME'),
+            'password' => env('MAIL_PASSWORD'),
+            'timeout' => null,
+            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
         ],
 
         'ses' => [
@@ -85,6 +96,10 @@ return [
                 'smtp',
                 'log',
             ],
+<<<<<<< HEAD
+=======
+            'retry_after' => 60,
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
         ],
 
         'roundrobin' => [
@@ -93,6 +108,10 @@ return [
                 'ses',
                 'postmark',
             ],
+<<<<<<< HEAD
+=======
+            'retry_after' => 60,
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
         ],
 
     ],
@@ -113,4 +132,30 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+<<<<<<< HEAD
+=======
+    /*
+    |--------------------------------------------------------------------------
+    | Markdown Mail Settings
+    |--------------------------------------------------------------------------
+    |
+    | If you are using Markdown based email rendering, you may configure your
+    | theme and component paths here, allowing you to customize the design
+    | of the emails. Or, you may simply stick with the Laravel defaults.
+    |
+    */
+
+    'markdown' => [
+        'theme' => env('MAIL_MARKDOWN_THEME', 'default'),
+
+        'paths' => [
+            resource_path('views/vendor/mail'),
+        ],
+
+        'extensions' => [
+            // \League\CommonMark\Extension\Strikethrough\StrikethroughExtension::class,
+        ],
+    ],
+
+>>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
 ];

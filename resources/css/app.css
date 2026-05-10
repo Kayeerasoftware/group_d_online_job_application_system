@@ -1,0 +1,51 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+@keyframes float-slow {
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate3d(0, -14px, 0) scale(1.03);
+    }
+}
+
+@keyframes fade-up {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 14px, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.animate-float-slow {
+    animation: float-slow 12s ease-in-out infinite;
+}
+
+.animate-fade-up {
+    animation: fade-up 600ms ease-out both;
+}
+
+.animate-fade-up-delayed {
+    animation: fade-up 800ms ease-out both;
+}
+
+dialog[data-modal]::backdrop {
+    background: rgba(2, 6, 23, 0.72);
+    backdrop-filter: blur(14px);
+}

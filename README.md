@@ -9,14 +9,13 @@
 
 ## Deploy On Render
 
-This repo now includes a Render blueprint at [render.yaml](render.yaml).
-If you want a quick reference for the environment variables, see [render.env.example](render.env.example).
+This repo includes a Render blueprint at [render.yaml](render.yaml) and a quick env reference at [render.env.example](render.env.example).
 
 What it provisions:
 
 - A Docker-based Laravel web service
-- A persistent disk for uploaded files in `storage/app/public`
 - A worker for queued jobs
+- A persistent disk for uploaded files in `storage/app/public`
 
 For Aiven MySQL, add your Aiven connection values in Render and upload the Aiven CA certificate as a secret file named `aiven-ca.pem` so it is available at `/etc/secrets/aiven-ca.pem`.
 
@@ -38,13 +37,7 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
 
 ## Learning Laravel
 
-<<<<<<< HEAD
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
-=======
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
->>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
 
 If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
@@ -54,21 +47,6 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 
 ### Premium Partners
 
-<<<<<<< HEAD
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-=======
 - **[Vehikl](https://vehikl.com)**
 - **[Tighten Co.](https://tighten.co)**
 - **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
@@ -77,7 +55,6 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 - **[DevSquad](https://devsquad.com/hire-laravel-developers)**
 - **[Redberry](https://redberry.international/laravel-development)**
 - **[Active Logic](https://activelogic.com)**
->>>>>>> 5ac067b5ff45b7df29d47f50329f194f0bdc45ce
 
 ## Contributing
 

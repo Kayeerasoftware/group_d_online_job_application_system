@@ -7,6 +7,19 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Deploy On Render
+
+This repo now includes a Render blueprint at [render.yaml](render.yaml).
+If you want a quick reference for the environment variables, see [render.env.example](render.env.example).
+
+What it provisions:
+
+- A Docker-based Laravel web service
+- A PostgreSQL database
+- A persistent disk for uploaded files in `storage/app/public`
+
+Before the first deploy, set `APP_KEY` in Render. The app will read the database URL from Render automatically and generate absolute URLs from Render's public URL.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

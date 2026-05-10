@@ -1,0 +1,13 @@
+.git
+.github
+.idea
+.vscode
+node_modules
+vendor
+.env
+.env.*
+.phpunit.result.cache
+public/build
+storage/app/public/*
+storage/framework/*
+storage/logs/*

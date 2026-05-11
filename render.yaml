@@ -13,34 +13,58 @@ services:
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
-        value: "false"
+        value: "true"
       - key: APP_KEY
+        sync: false
+      - key: APP_URL
+        value: https://online-job-application-system-group-d.onrender.com/
+      - key: AUDIT_LOG_GET_REQUESTS
+        value: "true"
+      - key: AUDIT_QUEUE_ENABLED
+        value: "false"
+      - key: CACHE_STORE
+        value: file
+      - key: CLOUDINARY_URL
         sync: false
       - key: DB_CONNECTION
         value: mysql
+      - key: DATABASE_URL
+        sync: false
       - key: DB_HOST
         sync: false
       - key: DB_PORT
         sync: false
       - key: DB_DATABASE
-        sync: false
+        value: job_application_system
       - key: DB_USERNAME
         sync: false
       - key: DB_PASSWORD
         sync: false
+      - key: DB_QUEUE_TABLE
+        value: queue_jobs
       - key: MYSQL_ATTR_SSL_CA
-        value: /etc/secrets/aiven-ca.pem
+        value: ca-certificates.crt
       - key: SESSION_DRIVER
         value: cookie
+      - key: SESSION_EXPIRE_ON_CLOSE
+        value: "false"
+      - key: SESSION_LIFETIME
+        value: "43200"
+      - key: SESSION_SAME_SITE
+        value: lax
       - key: SESSION_SECURE_COOKIE
         value: "true"
-      - key: CACHE_STORE
-        value: database
       - key: QUEUE_CONNECTION
-        value: sync
+        value: database
       - key: FILESYSTEM_DISK
-        value: public
+        value: uploads
       - key: LOG_CHANNEL
         value: stderr
+      - key: LOG_LEVEL
+        value: error
+      - key: MAIL_ENCRYPTION
+        value: tls
+      - key: MAIL_FROM_ADDRESS
+        value: kayeerasoftware@gmail.com
       - key: PHP_CATCHALL
         value: "1"

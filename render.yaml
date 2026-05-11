@@ -42,3 +42,5 @@ services:
         value: public
       - key: LOG_CHANNEL
         value: stderr
+      - key: PHP_CATCHALL
+        value: "1"

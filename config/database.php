@@ -3,6 +3,23 @@
 use Illuminate\Support\Str;
 use Pdo\Mysql;
 
+if (! function_exists('mysql_ssl_ca_path')) {
+    function mysql_ssl_ca_path($path): ?string
+    {
+        if (! is_string($path) || trim($path) === '') {
+            return null;
+        }
+
+        if (is_readable($path)) {
+            return $path;
+        }
+
+        $secretPath = '/etc/secrets/'.basename($path);
+
+        return is_readable($secretPath) ? $secretPath : null;
+    }
+}
+
 return [
 
     /*
@@ -62,7 +79,7 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                Mysql::ATTR_SSL_CA => mysql_ssl_ca_path(env('MYSQL_ATTR_SSL_CA')),
             ]) : [],
         ],
 
@@ -82,7 +99,7 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                Mysql::ATTR_SSL_CA => mysql_ssl_ca_path(env('MYSQL_ATTR_SSL_CA')),
             ]) : [],
         ],
 

@@ -15,8 +15,10 @@ What it provisions:
 
 - A Docker-based Laravel web service
 - A persistent disk for uploaded files in `storage/app/public`
+- A Laravel-friendly Nginx site config that routes every request through `public/index.php`
 
 For Aiven MySQL, add your Aiven connection values in Render and upload the Aiven CA certificate as a secret file named `aiven-ca.pem` so it is available at `/etc/secrets/aiven-ca.pem`.
+This project also enables `PHP_CATCHALL=1` so the container rewrites non-file requests to Laravel automatically.
 
 Before the first deploy, set `APP_KEY` in Render, then enter your Aiven MySQL host, port, database, username, and password in the Render environment settings.
 The Render setup uses `QUEUE_CONNECTION=sync`, so queued jobs run inline and do not require a separate worker or queue table.

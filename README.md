@@ -14,12 +14,12 @@ This repo includes a Render blueprint at [render.yaml](render.yaml) and a quick 
 What it provisions:
 
 - A Docker-based Laravel web service
-- A worker for queued jobs
 - A persistent disk for uploaded files in `storage/app/public`
 
 For Aiven MySQL, add your Aiven connection values in Render and upload the Aiven CA certificate as a secret file named `aiven-ca.pem` so it is available at `/etc/secrets/aiven-ca.pem`.
 
 Before the first deploy, set `APP_KEY` in Render, then enter your Aiven MySQL host, port, database, username, and password in the Render environment settings.
+The Render setup uses `QUEUE_CONNECTION=sync`, so queued jobs run inline and do not require a separate worker or queue table.
 
 ## About Laravel
 

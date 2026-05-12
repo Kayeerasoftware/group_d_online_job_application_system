@@ -2,21 +2,15 @@
 
 namespace App\Http\Middleware;
 
-use App\Support\DatabaseBootstrap;
 use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated as Middleware;
-use Throwable;
+use Symfony\Component\HttpFoundation\Response;
 
 class RedirectIfAuthenticated extends Middleware
 {
-    public function handle($request, Closure $next, ...$guards)
+    public function handle(Request $request, Closure $next, string ...$guards): Response
     {
-        app(DatabaseBootstrap::class)->ensure();
-
-        try {
-            return parent::handle($request, $next, ...$guards);
-        } catch (Throwable) {
-            return $next($request);
-        }
+        return parent::handle($request, $next, ...$guards);
     }
 }

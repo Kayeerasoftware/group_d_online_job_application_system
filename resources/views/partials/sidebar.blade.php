@@ -70,24 +70,24 @@
     ];
 @endphp
 
-<div data-sidebar-backdrop class="fixed inset-0 z-30 hidden bg-slate-950/70 backdrop-blur-sm md:hidden"></div>
+<div data-sidebar-backdrop class="fixed inset-0 z-30 hidden bg-[#1a1714]/70 backdrop-blur-sm md:hidden"></div>
 
 <aside
     data-sidebar
-    class="fixed inset-y-0 left-0 z-40 w-72 -translate-x-full border-r border-white/10 bg-slate-950/95 backdrop-blur-xl transition-transform duration-300 md:translate-x-0 xl:w-80"
+    class="app-chrome fixed inset-y-0 left-0 z-40 w-72 -translate-x-full border-r border-white/10 bg-[#1a1714] backdrop-blur-xl transition-transform duration-300 md:translate-x-0 xl:w-80"
 >
     <div class="flex h-full flex-col">
         <div class="flex items-center justify-between border-b border-white/10 px-5 py-5">
             <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-                <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-400/15 text-sm font-bold text-cyan-200 ring-1 ring-cyan-400/30">JA</span>
+                <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-400/15 text-sm font-bold text-emerald-200 ring-1 ring-emerald-400/30">JL</span>
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.35em] text-cyan-300/70">Workspace</p>
-                    <p class="text-lg font-semibold text-white">Job App System</p>
+                    <p class="text-xs font-semibold uppercase tracking-[0.35em] text-white/55">Workspace</p>
+                    <p class="chrome-brand text-lg text-white">Job<span class="text-emerald-200">Link</span></p>
                 </div>
             </a>
             <button
                 type="button"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-lg text-slate-100 transition hover:bg-white/10 md:hidden"
+                class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-lg text-white transition hover:bg-white/10 md:hidden"
                 data-sidebar-close
                 aria-label="Close navigation menu"
             >
@@ -99,63 +99,58 @@
 
         <div class="flex-1 overflow-y-auto px-4 py-5">
             <div class="rounded-[28px] border border-white/10 bg-white/5 p-4 shadow-lg shadow-slate-950/20">
-                <p class="text-xs uppercase tracking-[0.35em] text-slate-400">Signed in as</p>
+                <p class="text-xs uppercase tracking-[0.35em] text-white/45">Signed in as</p>
                 <div class="mt-3 flex items-center gap-3">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-400/15 text-sm font-semibold text-cyan-200 ring-1 ring-cyan-400/30">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-400/15 text-sm font-semibold text-emerald-200 ring-1 ring-emerald-400/30">
                         {{ $initials }}
                     </div>
                     <div class="min-w-0">
                         <p class="truncate font-semibold text-white">{{ $user?->name }}</p>
-                        <p class="truncate text-sm text-slate-400">{{ $user?->email }}</p>
+                        <p class="truncate text-sm text-white/55">{{ $user?->email }}</p>
                     </div>
                 </div>
-                <div class="mt-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-950/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-cyan-200">
-                    <span class="h-2 w-2 rounded-full bg-cyan-400"></span>
+                <div class="mt-4 chrome-chip">
+                    <span class="h-2 w-2 rounded-full bg-emerald-300"></span>
                     {{ $user?->roleValue() }}
                 </div>
             </div>
 
             <nav class="mt-6 space-y-6">
                 <div>
-                    <p class="px-3 text-xs font-semibold uppercase tracking-[0.35em] text-slate-500">Main Navigation</p>
+                    <p class="px-3 text-xs font-semibold uppercase tracking-[0.35em] text-white/40">Main Navigation</p>
                     <div class="mt-3 space-y-1">
                         @foreach($links as $link)
                             <a
                                 href="{{ route($link['route']) }}"
                                 @class([
-                                    'group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition',
-                                    'bg-cyan-400/10 text-cyan-100 ring-1 ring-cyan-400/20' => request()->routeIs($link['active']),
-                                    'text-slate-300 hover:bg-white/5 hover:text-white' => ! request()->routeIs($link['active']),
+                                    'chrome-link',
+                                    'is-active' => request()->routeIs($link['active']),
                                 ])
                             >
-                                <span @class([
-                                    'flex h-9 w-9 items-center justify-center rounded-2xl border transition',
-                                    'border-cyan-400/20 bg-cyan-400/10 text-cyan-200' => request()->routeIs($link['active']),
-                                    'border-white/10 bg-white/5 text-slate-400 group-hover:border-white/20 group-hover:text-slate-200' => ! request()->routeIs($link['active']),
-                                ])>
+                                <span class="flex h-9 w-9 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white/70">
                                     {!! $icons[$link['route']] ?? $icons['dashboard'] !!}
                                 </span>
-                                <span>{{ $link['label'] }}</span>
+                                <span class="text-sm font-medium">{{ $link['label'] }}</span>
                             </a>
                         @endforeach
                     </div>
                 </div>
 
-                <div class="rounded-[28px] border border-white/10 bg-slate-950/70 p-4">
-                    <p class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500">Quick Actions</p>
+                <div class="rounded-[28px] border border-white/10 bg-white/5 p-4">
+                    <p class="text-xs font-semibold uppercase tracking-[0.35em] text-white/40">Quick Actions</p>
                     <div class="mt-3 space-y-2">
                         @foreach($quickActions as $action)
                             <a
                                 href="{{ route($action['route']) }}"
-                                class="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-200 transition hover:-translate-y-0.5 hover:bg-white/10"
+                                class="flex items-center justify-between rounded-2xl border border-white/10 bg-[#221e1a] px-4 py-3 text-sm font-semibold text-white/85 transition hover:-translate-y-0.5 hover:bg-[#2a241f]"
                             >
                                 <span class="flex items-center gap-3">
-                                    <span class="flex h-8 w-8 items-center justify-center rounded-2xl border border-white/10 bg-slate-950/70 text-slate-400">
+                                    <span class="flex h-8 w-8 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white/65">
                                         {!! $icons[$action['route']] ?? $icons['jobs.index'] !!}
                                     </span>
                                     <span>{{ $action['label'] }}</span>
                                 </span>
-                                <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" class="h-4 w-4 text-white/35" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m9 5 7 7-7 7" />
                                 </svg>
                             </a>
@@ -168,7 +163,7 @@
         <div class="border-t border-white/10 p-4">
             <form method="post" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-2xl bg-cyan-400 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300">
+                <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-semibold text-[#1a1714] transition hover:bg-emerald-300">
                     <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10 17l5-5-5-5" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H3" />

@@ -7,21 +7,21 @@
 <dialog
     id="{{ $id }}"
     data-modal
-    class="w-[min(100vw-1.5rem,42rem)] rounded-[32px] border-0 bg-transparent p-0 text-slate-100 shadow-2xl shadow-slate-950/60"
+    class="modal-shell w-[min(100vw-1.5rem,42rem)] border-0 bg-transparent p-0 text-slate-100 shadow-2xl shadow-slate-950/60"
 >
-    <div class="overflow-hidden rounded-[32px] border border-white/10 bg-slate-950/95 p-6 backdrop-blur-xl md:p-7">
+    <div class="modal-card overflow-hidden p-6 md:p-7">
         <div class="flex items-start justify-between gap-4">
             <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.35em] text-cyan-300/80">Popup</p>
-                <h2 class="mt-2 text-2xl font-semibold text-white">{{ $title }}</h2>
+                <p class="section-eyebrow">Popup</p>
+                <h2 class="mt-2 text-2xl font-semibold text-[color:var(--text)]">{{ $title }}</h2>
                 @if($description)
-                    <p class="mt-2 text-sm leading-6 text-slate-400">{{ $description }}</p>
+                    <p class="mt-2 text-sm leading-6 text-[color:var(--text2)]">{{ $description }}</p>
                 @endif
             </div>
 
             <button
                 type="button"
-                class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-200 transition hover:bg-white/10"
+                class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface2)] text-[color:var(--text)] transition hover:bg-[color:var(--surface)]"
                 data-modal-close
                 aria-label="Close popup"
             >

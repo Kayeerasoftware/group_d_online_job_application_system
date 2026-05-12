@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JobLink Uganda — Online Job Application System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F5F0;
+    --surface: #FFFFFF;
+    --surface2: #F0EDE6;
+    --border: #E2DDD6;
+    --border2: #CCC8C0;
+    --text: #1A1714;
+    --text2: #6B6560;
+    --text3: #9C9690;
+    --accent: #1E6B4F;
+    --accent-light: #E8F4EF;
+    --accent2: #D4580E;
+    --accent2-light: #FDF1EA;
+    --blue: #1B5FAD;
+    --blue-light: #E8F0FB;
+    --amber: #B07A10;
+    --amber-light: #FBF4E2;
+    --red: #C53030;
+    --red-light: #FEF0F0;
+    --serif: 'DM Serif Display', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+    --radius: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.05);
+    --shadow-lg: 0 4px 24px rgba(0,0,0,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  .nav {
+    background: var(--text);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-logo {
+    font-family: var(--serif);
+    font-size: 20px;
+    color: #fff;
+    white-space: nowrap;
+    padding: 14px 0;
+    margin-right: 1rem;
+  }
+  .nav-logo span { color: #6EE0B4; }
+  .nav-tabs { display: flex; gap: 0; flex-shrink: 0; }
+  .nav-tab {
+    padding: 14px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.55);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+    text-transform: uppercase;
+  }
+  .nav-tab:hover { color: rgba(255,255,255,0.85); }
+  .nav-tab.active { color: #fff; border-bottom-color: #6EE0B4; }
+
+  /* PAGES */
+  .page { display: none; padding: 2rem; max-width: 1200px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 0.5rem;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+  }
+  .card-sm { padding: 1rem 1.25rem; border-radius: var(--radius); }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+  .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
+
+  /* BADGES */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 99px;
+    font-size: 12px; font-weight: 500;
+  }
+  .badge-green { background: var(--accent-light); color: var(--accent); }
+  .badge-amber { background: var(--amber-light); color: var(--amber); }
+  .badge-red { background: var(--red-light); color: var(--red); }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+  .badge-orange { background: var(--accent2-light); color: var(--accent2); }
+  .badge-gray { background: var(--surface2); color: var(--text2); }
+
+  /* BTNS */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 20px; border-radius: var(--radius);
+    font-size: 14px; font-weight: 500;
+    cursor: pointer; border: none;
+    transition: filter 0.15s, transform 0.1s;
+    font-family: var(--sans);
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { filter: brightness(1.1); }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--border); }
+  .btn-danger { background: var(--red-light); color: var(--red); border: 1px solid #F9C5C5; }
+  .btn-sm { padding: 7px 14px; font-size: 13px; }
+  .btn-xs { padding: 4px 10px; font-size: 12px; border-radius: 6px; }
+
+  /* FORM ELEMENTS */
+  .field { margin-bottom: 1.25rem; }
+  .label {
+    display: block; font-size: 13px; font-weight: 500;
+    color: var(--text2); margin-bottom: 6px;
+  }
+  .input {
+    width: 100%; padding: 10px 14px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); font-size: 14px; color: var(--text);
+    font-family: var(--sans); transition: border-color 0.15s;
+    outline: none;
+  }
+  .input:focus { border-color: var(--accent); }
+  .input::placeholder { color: var(--text3); }
+  select.input { cursor: pointer; }
+  textarea.input { min-height: 100px; resize: vertical; }
+
+  /* STAT CARD */
+  .stat { background: var(--surface2); border-radius: var(--radius); padding: 1rem; }
+  .stat-label { font-size: 12px; color: var(--text3); margin-bottom: 4px; }
+  .stat-value { font-size: 28px; font-weight: 600; color: var(--text); line-height: 1; }
+  .stat-sub { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left; font-size: 12px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--text3); padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 12px 12px; font-size: 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+
+  /* AVATAR */
+  .avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; flex-shrink: 0;
+  }
+
+  /* SIDEBAR LAYOUT */
+  .with-sidebar { display: flex; gap: 1.5rem; align-items: flex-start; }
+  .sidebar { width: 240px; flex-shrink: 0; }
+  .main-area { flex: 1; min-width: 0; }
+  .sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
+  .sidebar-item {
+    padding: 9px 14px; border-radius: var(--radius);
+    font-size: 14px; cursor: pointer;
+    display: flex; align-items: center; gap: 10px;
+    color: var(--text2); transition: background 0.12s, color 0.12s;
+  }
+  .sidebar-item:hover { background: var(--surface2); color: var(--text); }
+  .sidebar-item.active { background: var(--accent-light); color: var(--accent); font-weight: 500; }
+
+  /* JOB CARD */
+  .job-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .job-card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+  .job-card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+  .company-logo {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--surface2); display: flex; align-items: center;
+    justify-content: center; font-size: 18px; flex-shrink: 0;
+    border: 1px solid var(--border);
+  }
+  .job-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .job-company { font-size: 13px; color: var(--text2); }
+  .job-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .job-meta-item {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 12px; color: var(--text3);
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    height: 6px; background: var(--surface2);
+    border-radius: 99px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 99px; }
+
+  /* NOTIFICATION DOT */
+  .notif-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent2); display: inline-block;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+  .page-title { font-family: var(--serif); font-size: 28px; }
+  .page-subtitle { color: var(--text2); font-size: 14px; margin-top: 2px; }
+
+  /* STATUS STEPS */
+  .steps { display: flex; align-items: center; gap: 0; }
+  .step { display: flex; flex-direction: column; align-items: center; flex: 1; }
+  .step-dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; position: relative; z-index: 1;
+  }
+  .step-label { font-size: 11px; margin-top: 6px; color: var(--text3); text-align: center; }
+  .step-line {
+    flex: 1; height: 2px; background: var(--border);
+    margin-top: -14px; position: relative; z-index: 0;
+  }
+  .step-done .step-dot { background: var(--accent); color: #fff; }
+  .step-done .step-label { color: var(--accent); }
+  .step-active .step-dot { background: var(--blue); color: #fff; }
+  .step-active .step-label { color: var(--blue); font-weight: 500; }
+  .step-pending .step-dot { background: var(--surface2); color: var(--text3); border: 1px solid var(--border); }
+
+  /* MODAL BG */
+  .modal-backdrop {
+    background: rgba(20,18,14,0.5);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 400px;
+  }
+  .modal {
+    background: var(--surface);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    width: 100%; max-width: 480px;
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* SEARCH BAR */
+  .search-bar {
+    display: flex; gap: 8px; align-items: center;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 8px 14px;
+    flex: 1;
+  }
+  .search-bar input {
+    border: none; outline: none; background: transparent;
+    font-size: 14px; color: var(--text); font-family: var(--sans);
+    flex: 1;
+  }
+  .search-bar input::placeholder { color: var(--text3); }
+
+  /* TABS */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+  .tab {
+    padding: 10px 20px; font-size: 14px; cursor: pointer;
+    color: var(--text2); border-bottom: 2px solid transparent;
+    transition: color 0.12s, border-color 0.12s; font-weight: 500;
+    margin-bottom: -1px;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: 1.25rem 0; }
+
+  /* MOBILE FRAME */
+  .mobile-frame {
+    width: 375px; background: var(--surface);
+    border-radius: 40px; overflow: hidden;
+    border: 8px solid var(--text); box-shadow: var(--shadow-lg);
+    margin: 0 auto;
+  }
+  .mobile-notch {
+    height: 44px; background: var(--text);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .mobile-notch-pill {
+    width: 120px; height: 22px; background: #000;
+    border-radius: 99px;
+  }
+  .mobile-content { padding: 0 16px 24px; background: var(--bg); }
+  .mobile-header { background: var(--surface); padding: 16px; margin: 0 -16px 16px; }
+  .mobile-card {
+    background: var(--surface); border-radius: 14px;
+    border: 1px solid var(--border); padding: 14px; margin-bottom: 10px;
+  }
+
+  /* CHART BAR */
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 80px; }
+  .bar {
+    flex: 1; background: var(--accent-light);
+    border-radius: 4px 4px 0 0;
+    position: relative; transition: background 0.15s;
+    min-width: 0;
+  }
+  .bar:hover { background: var(--accent); }
+  .bar-label {
+    position: absolute; bottom: -20px; left: 0; right: 0;
+    text-align: center; font-size: 10px; color: var(--text3);
+  }
+
+  /* NOTIFICATION ITEM */
+  .notif-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px; border-radius: var(--radius);
+    transition: background 0.12s;
+  }
+  .notif-item:hover { background: var(--surface2); }
+  .notif-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--text);
+    border-radius: var(--radius-xl);
+    padding: 3rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(110,224,180,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(110,224,180,0.15); color: #6EE0B4;
+    padding: 4px 12px; border-radius: 99px; font-size: 12px; font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .hero-title { font-family: var(--serif); font-size: 42px; color: #fff; line-height: 1.15; margin-bottom: 1rem; }
+  .hero-sub { color: rgba(255,255,255,0.6); font-size: 16px; margin-bottom: 1.5rem; max-width: 480px; }
+  .hero-search { display: flex; gap: 8px; max-width: 560px; }
+  .hero-search .input { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: #fff; }
+  .hero-search .input::placeholder { color: rgba(255,255,255,0.4); }
+  .hero-stats { display: flex; gap: 2rem; margin-top: 2rem; }
+  .hero-stat-val { font-size: 24px; font-weight: 700; color: #fff; }
+  .hero-stat-label { font-size: 12px; color: rgba(255,255,255,0.5); }
+
+  /* FILTER PILLS */
+  .filter-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .pill {
+    padding: 6px 14px; border-radius: 99px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    border: 1px solid var(--border); color: var(--text2);
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+  }
+  .pill:hover { background: var(--surface2); }
+  .pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* AUDIT LOG */
+  .audit-row { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; }
+  .audit-line { width: 1px; background: var(--border); position: absolute; left: 15px; top: 28px; bottom: 0; }
+  .audit-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--border2); flex-shrink: 0; margin-top: 5px;
+  }
+
+  /* COMPLIANCE */
+  .compliance-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .compliance-item:last-child { border-bottom: none; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .page { padding: 1rem; }
+    .with-sidebar { flex-direction: column; }
+    .sidebar { width: 100%; }
+    .hero { padding: 1.5rem; }
+    .hero-title { font-size: 28px; }
+    .hero-stats { gap: 1rem; }
+    .hero-search { flex-direction: column; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .mobile-frame { width: 100%; max-width: 360px; }
+    .topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
+  }
+  @media (max-width: 480px) {
+    .nav-tab { padding: 14px 12px; font-size: 11px; }
+    .hero-title { font-size: 24px; }
+    .page-title { font-size: 22px; }
+    .stat-value { font-size: 22px; }
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  .page.active .card, .page.active .job-card, .page.active .stat, .page.active .mobile-frame {
+    animation: fadeUp 0.3s ease both;
+  }
+  .page.active .card:nth-child(2) { animation-delay: 0.05s; }
+  .page.active .card:nth-child(3) { animation-delay: 0.1s; }
+  .page.active .card:nth-child(4) { animation-delay: 0.15s; }
+
+  /* ROLE SWITCHER */
+  .role-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8);
+    padding: 6px 12px; border-radius: 99px; font-size: 12px;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .dot-online { width: 7px; height: 7px; border-radius: 50%; background: #6EE0B4; }
+
+  /* UPLOAD AREA */
+  .upload-area {
+    border: 2px dashed var(--border); border-radius: var(--radius-lg);
+    padding: 2rem; text-align: center; cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .upload-area:hover { border-color: var(--accent); background: var(--accent-light); }
+
+  /* TOOLTIP-LIKE TAG */
+  .info-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 12px; color: var(--blue); background: var(--blue-light);
+    padding: 3px 8px; border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="nav">
+  <div class="nav-logo">Job<span>Link</span></div>
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="showPage('landing')">🏠 Landing</div>
+    <div class="nav-tab" onclick="showPage('seeker-dashboard')">👤 Seeker Dashboard</div>
+    <div class="nav-tab" onclick="showPage('job-search')">🔍 Job Search</div>
+    <div class="nav-tab" onclick="showPage('apply')">📄 Apply</div>
+    <div class="nav-tab" onclick="showPage('employer-dashboard')">🏢 Employer</div>
+    <div class="nav-tab" onclick="showPage('post-job')">➕ Post Job</div>
+    <div class="nav-tab" onclick="showPage('applications-review')">📋 Review Apps</div>
+    <div class="nav-tab" onclick="showPage('admin-dashboard')">🔧 Admin</div>
+    <div class="nav-tab" onclick="showPage('reg-report')">📊 Regulatory</div>
+    <div class="nav-tab" onclick="showPage('mobile')">📱 Mobile</div>
+    <div class="nav-tab" onclick="showPage('auth')">🔐 Auth</div>
+  </div>
+</nav>
+
+<!-- ===================== PAGE 1: LANDING ===================== -->
+<div id="landing" class="page active">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-tag">
+      <div class="dot-online"></div>
+      Uganda's #1 Job Platform
+    </div>
+    <div class="hero-title">Find your next<br><em>great opportunity</em></div>
+    <div class="hero-sub">Connect with top employers across Uganda. Secure, transparent, and built for every screen.</div>
+    <div class="hero-search">
+      <input class="input" placeholder="Job title, skill, or company..." style="flex:1;">
+      <input class="input" placeholder="Location — Kampala, Entebbe..." style="width:200px;">
+      <button class="btn btn-primary">Search Jobs</button>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-val">3,840</div>
+        <div class="hero-stat-label">Active Jobs</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">1,200+</div>
+        <div class="hero-stat-label">Employers</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">47K</div>
+        <div class="hero-stat-label">Job Seekers</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Pills -->
+  <div class="filter-pills">
+    <div class="pill active">All Industries</div>
+    <div class="pill">Technology</div>
+    <div class="pill">Finance</div>
+    <div class="pill">Healthcare</div>
+    <div class="pill">Education</div>
+    <div class="pill">NGO / INGO</div>
+    <div class="pill">Construction</div>
+    <div class="pill">Agriculture</div>
+  </div>
+
+  <!-- Featured Jobs -->
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+    <div>
+      <div class="section-label">Featured Listings</div>
+      <h2 style="font-family:var(--serif); font-size:22px;">Trending this week</h2>
+    </div>
+    <a href="#" style="font-size:13px; color:var(--accent); text-decoration:none; font-weight:500;">View all →</a>
+  </div>
+
+  <div class="grid-2">
+    <div class="job-card">
+      <div class="job-card-header">
+        <div class="company-logo">🏦</div>
+        <div>
+          <div class="job-title">Senior Data Analyst</div>
+          <div class="job-company">Stanbic Bank Uganda</div>
+        </div>
+        <div style="margin-left:auto;"><span class="badge badge-green">Open</span></div>
+      </div>
+      <div style="font-size:13px; color:var(--text2); line-height:1.5;">
+        Analyze financial data, build dashboards, and support strategic decision-making across the retail banking division.
+      </div>
+      <div class="job-meta">
+        <span class="job-meta-item">📍 Kampala CBD</span>
+        <span class="job-meta-item">💼 Full-time</span>
+        <span class="job-meta-item">💰 UGX 3.2M–4.5M</span>
+        <span class="job-meta-item">⏰ 12 days left</span>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:12px;">
+        <button class="btn btn-primary btn-sm">Apply Now</button>
+        <button class="btn btn-secondary btn-sm">Save</button>
+      </div>
+    </div>
+
+    <div class="job-card">
+      <div class="job-card-header">
+        <div class="company-logo">🌿</div>
+        <div>
+          <div class="job-title">Programs Manager</div>
+          <div class="job-company">USAID / Chemonics</div>
+        </div>
+        <div style="margin-left:auto;"><span class="badge badge-amber">Closing soon</span></div>
+      </div>
+      <div style="font-size:13px; color:var(--text2); line-height:1.5;">
+        Lead multi-stakeholder agricultural programs in Northern Uganda. Experience in USAID-funded projects required.
+      </div>
+      <div class="job-meta">
+        <span class="job-meta-item">📍 Gulu</span>
+        <span class="job-meta-item">💼 Contract</span>
+        <span class="job-meta-item">💰 USD 2,800/mo</span>
+        <span class="job-meta-item">⏰ 3 days left</span>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:12px;">
+        <button class="btn btn-primary btn-sm">Apply Now</button>
+        <button class="btn btn-secondary btn-sm">Save</button>
+      </div>
+    </div>
+
+    <div class="job-card">
+      <div class="job-card-header">
+        <div class="company-logo">📱</div>
+        <div>
+          <div class="job-title">Mobile Developer (Flutter)</div>
+          <div class="job-company">Flutterwave Africa</div>
+        </div>
+        <div style="margin-left:auto;"><span class="badge badge-green">Open</span></div>
+      </div>
+      <div style="font-size:13px; color:var(--text2); line-height:1.5;">
+        Build cross-platform mobile apps for East Africa's fastest-growing fintech. Remote-first culture with Kampala office.
+      </div>
+      <div class="job-meta">
+        <span class="job-meta-item">📍 Remote / Kampala</span>
+        <span class="job-meta-item">💼 Full-time</span>
+        <span class="job-meta-item">💰 UGX 5–8M</span>
+        <span class="job-meta-item">⏰ 20 days left</span>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:12px;">
+        <button class="btn btn-primary btn-sm">Apply Now</button>
+        <button class="btn btn-secondary btn-sm">Save</button>
+      </div>
+    </div>
+
+    <div class="job-card">
+      <div class="job-card-header">
+        <div class="company-logo">🏥</div>
+        <div>
+          <div class="job-title">Clinical Nurse — ICU</div>
+          <div class="job-company">Mulago National Hospital</div>
+        </div>
+        <div style="margin-left:auto;"><span class="badge badge-green">Open</span></div>
+      </div>
+      <div style="font-size:13px; color:var(--text2); line-height:1.5;">
+        Experienced ICU nurse needed for the expanded Critical Care Unit. Government pay scale plus accommodation allowance.
+      </div>
+      <div class="job-meta">
+        <span class="job-meta-item">📍 Mulago Hill, Kampala</span>
+        <span class="job-meta-item">💼 Full-time</span>
+        <span class="job-meta-item">💰 Gov. Scale U4</span>
+        <span class="job-meta-item">⏰ 30 days left</span>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:12px;">
+        <button class="btn btn-primary btn-sm">Apply Now</button>
+        <button class="btn btn-secondary btn-sm">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div style="margin-top:2.5rem; margin-bottom:1rem;">
+    <div class="section-label">How it works</div>
+    <h2 style="font-family:var(--serif); font-size:22px;">Three steps to your next job</h2>
+  </div>
+  <div class="grid-3">
+    <div class="card" style="text-align:center;">
+      <div style="font-size:36px; margin-bottom:12px;">📋</div>
+      <div style="font-size:16px; font-weight:600; margin-bottom:6px;">Create Profile</div>
+      <div style="font-size:13px; color:var(--text2);">Upload your CV, list skills, and set your job preferences in under 5 minutes.</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="font-size:36px; margin-bottom:12px;">🔍</div>
+      <div style="font-size:16px; font-weight:600; margin-bottom:6px;">Find & Apply</div>
+      <div style="font-size:13px; color:var(--text2);">Search thousands of verified listings. Filter by salary, location, and job type.</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="font-size:36px; margin-bottom:12px;">🔔</div>
+      <div style="font-size:16px; font-weight:600; margin-bottom:6px;">Get Notified</div>
+      <div style="font-size:13px; color:var(--text2);">Track your applications in real-time. SMS + email alerts at every stage.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAGE 2: SEEKER DASHBOARD ===================== -->
+<div id="seeker-dashboard" class="page">
+  <div class="topbar">
+    <div>
+      <div class="page-title">Good morning, Nathan 👋</div>
+      <div class="page-subtitle">You have 2 new updates on your applications</div>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <div class="badge badge-green" style="gap:6px;"><div class="dot-online"></div> Profile 85% complete</div>
+      <button class="btn btn-secondary btn-sm">Edit Profile</button>
+    </div>
+  </div>
+
+  <div class="with-sidebar">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Profile card -->
+      <div class="card card-sm" style="margin-bottom:1rem; text-align:center;">
+        <div style="width:64px;height:64px;border-radius:50%;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:24px;margin:0 auto 10px;">NK</div>
+        <div style="font-weight:600; font-size:15px;">Kayeera Nathan</div>
+        <div style="font-size:12px; color:var(--text2); margin-bottom:8px;">Software Engineer · Kampala</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:85%;background:var(--accent);"></div></div>
+        <div style="font-size:11px; color:var(--text3); margin-top:4px;">Profile 85% complete</div>
+      </div>
+      <!-- Sidebar Nav -->
+      <div class="sidebar-nav">
+        <div class="sidebar-item active">📊 Dashboard</div>
+        <div class="sidebar-item">📄 My Applications</div>
+        <div class="sidebar-item">🔖 Saved Jobs</div>
+        <div class="sidebar-item">👤 My Profile</div>
+        <div class="sidebar-item">🔔 Notifications <span class="badge badge-orange" style="margin-left:auto;padding:2px 6px;">3</span></div>
+        <div class="sidebar-item">⚙️ Settings</div>
+      </div>
+    </div>
+
+    <!-- Main -->
+    <div class="main-area">
+      <!-- Stats -->
+      <div class="grid-4" style="margin-bottom:1.5rem;">
+        <div class="stat">
+          <div class="stat-label">Applications</div>
+          <div class="stat-value">12</div>
+          <div class="stat-sub">↑ 3 this week</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Shortlisted</div>
+          <div class="stat-value" style="color:var(--amber);">3</div>
+          <div class="stat-sub">Awaiting interview</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Saved Jobs</div>
+          <div class="stat-value" style="color:var(--blue);">8</div>
+          <div class="stat-sub">2 closing soon</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Profile Views</div>
+          <div class="stat-value">47</div>
+          <div class="stat-sub">Last 30 days</div>
+        </div>
+      </div>
+
+      <!-- Recent applications -->
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+          <div style="font-weight:600;">Recent Applications</div>
+          <a href="#" style="font-size:13px; color:var(--accent); text-decoration:none;">View all</a>
+        </div>
+        <table>
+          <thead><tr>
+            <th>Job Title</th><th>Company</th><th>Applied</th><th>Status</th><th></th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Flutter Developer</strong></td>
+              <td style="color:var(--text2);">Flutterwave</td>
+              <td style="color:var(--text3); font-size:13px;">May 8</td>
+              <td><span class="badge badge-amber">Reviewed</span></td>
+              <td><button class="btn btn-secondary btn-xs">Details</button></td>
+            </tr>
+            <tr>
+              <td><strong>Backend Engineer</strong></td>
+              <td style="color:var(--text2);">Andela</td>
+              <td style="color:var(--text3); font-size:13px;">May 5</td>
+              <td><span class="badge badge-green">Shortlisted ✓</span></td>
+              <td><button class="btn btn-secondary btn-xs">Details</button></td>
+            </tr>
+            <tr>
+              <td><strong>Systems Analyst</strong></td>
+              <td style="color:var(--text2);">MTN Uganda</td>
+              <td style="color:var(--text3); font-size:13px;">Apr 30</td>
+              <td><span class="badge badge-gray">Pending</span></td>
+              <td><button class="btn btn-secondary btn-xs">Details</button></td>
+            </tr>
+            <tr>
+              <td><strong>IT Support Officer</strong></td>
+              <td style="color:var(--text2);">UNICEF Uganda</td>
+              <td style="color:var(--text3); font-size:13px;">Apr 24</td>
+              <td><span class="badge badge-red">Rejected</span></td>
+              <td><button class="btn btn-secondary btn-xs">Details</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Application status tracker -->
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="font-weight:600; margin-bottom:1.25rem;">Application Tracker — Andela Backend Engineer</div>
+        <div class="steps">
+          <div class="step step-done">
+            <div class="step-dot">✓</div>
+            <div class="step-label">Applied</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="step step-done">
+            <div class="step-dot">✓</div>
+            <div class="step-label">Reviewed</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="step step-active">
+            <div class="step-dot">●</div>
+            <div class="step-label">Shortlisted</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="step step-pending">
+            <div class="step-dot">4</div>
+            <div class="step-label">Interview</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="step step-pending">
+            <div class="step-dot">5</div>
+            <div class="step-label">Hired</div>
+          </div>
+        </div>
+        <div style="margin-top:1rem; padding:12px; background:var(--accent-light); border-radius:var(--radius); font-size:13px; color:var(--accent);">
+          🎉 Congratulations! You've been shortlisted. Expect a call from HR within 2 working days.
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="card">
+        <div style="font-weight:600; margin-bottom:12px;">Recent Notifications</div>
+        <div class="notif-item">
+          <div class="notif-icon" style="background:var(--accent-light);">✉️</div>
+          <div>
+            <div style="font-size:14px; font-weight:500;">Application shortlisted — Andela</div>
+            <div style="font-size:12px; color:var(--text3);">2 hours ago · Email + SMS sent</div>
+          </div>
+          <div class="notif-dot" style="margin-left:auto; margin-top:4px;"></div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon" style="background:var(--amber-light);">🔔</div>
+          <div>
+            <div style="font-size:14px; font-weight:500;">Saved job closing in 3 days</div>
+            <div style="font-size:12px; color:var(--text3);">Yesterday · USAID Programs Manager</div>
+          </div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon" style="background:var(--blue-light);">👁️</div>
+          <div>
+            <div style="font-size:14px; font-weight:500;">MTN Uganda viewed your profile</div>
+            <div style="font-size:12px; color:var(--text3);">2 days ago</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAGE 3: JOB SEARCH ===================== -->
+<div id="job-search" class="page">
+  <div class="topbar">
+    <div>
+      <div class="page-title">Job Search</div>
+      <div class="page-subtitle">3,840 active listings across Uganda</div>
+    </div>
+  </div>
+
+  <!-- Search row -->
+  <div style="display:flex; gap:10px; margin-bottom:1.25rem; flex-wrap:wrap;">
+    <div class="search-bar" style="flex:2; min-width:200px;">
+      🔍 <input placeholder="Search by title, skill, or keyword...">
+    </div>
+    <input class="input" placeholder="📍 Location" style="width:160px;">
+    <select class="input" style="width:140px;"><option>All Types</option><option>Full-time</option><option>Part-time</option><option>Contract</option><option>Internship</option></select>
+    <button class="btn btn-primary">Search</button>
+  </div>
+
+  <div class="filter-pills" style="margin-bottom:1.5rem;">
+    <div class="pill active">All Industries</div>
+    <div class="pill">Tech & IT</div>
+    <div class="pill">Finance</div>
+    <div class="pill">Health</div>
+    <div class="pill">NGO</div>
+    <div class="pill">Education</div>
+    <div class="pill">UGX 2M+</div>
+    <div class="pill">Remote</div>
+  </div>
+
+  <div class="with-sidebar">
+    <!-- Filter sidebar -->
+    <div class="sidebar">
+      <div class="card card-sm">
+        <div style="font-weight:600; margin-bottom:12px; font-size:14px;">Filters</div>
+        <div class="field">
+          <label class="label">Salary Range (UGX)</label>
+          <input class="input" placeholder="Min (e.g. 1,500,000)">
+          <input class="input" style="margin-top:6px;" placeholder="Max (e.g. 5,000,000)">
+        </div>
+        <div class="field">
+          <label class="label">Experience Level</label>
+          <select class="input"><option>Any Level</option><option>Entry (0–2 yrs)</option><option>Mid (3–5 yrs)</option><option>Senior (6+ yrs)</option></select>
+        </div>
+        <div class="field">
+          <label class="label">Job Type</label>
+          <div style="display:flex; flex-direction:column; gap:6px; font-size:13px;">
+            <label style="display:flex; gap:8px; align-items:center;"><input type="checkbox" checked> Full-time</label>
+            <label style="display:flex; gap:8px; align-items:center;"><input type="checkbox"> Part-time</label>
+            <label style="display:flex; gap:8px; align-items:center;"><input type="checkbox" checked> Contract</label>
+            <label style="display:flex; gap:8px; align-items:center;"><input type="checkbox"> Internship</label>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Posted Within</label>
+          <select class="input"><option>Any time</option><option>Last 24 hours</option><option>Last 7 days</option><option>Last 30 days</option></select>
+        </div>
+        <button class="btn btn-primary" style="width:100%;">Apply Filters</button>
+        <button class="btn btn-secondary" style="width:100%; margin-top:8px;">Reset</button>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="main-area">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <div style="font-size:14px; color:var(--text2);">Showing <strong>124 results</strong> for "developer"</div>
+        <select class="input" style="width:160px; padding:7px 12px;"><option>Most Recent</option><option>Best Match</option><option>Highest Salary</option></select>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <!-- Job result items -->
+        <div class="job-card" style="display:flex; gap:16px; align-items:flex-start;">
+          <div class="company-logo" style="width:52px; height:52px;">💻</div>
+          <div style="flex:1; min-width:0;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
+              <div>
+                <div class="job-title">Full Stack Laravel Developer</div>
+                <div class="job-company">Yo! Uganda · Kampala CBD</div>
+              </div>
+              <span class="badge badge-green">Open</span>
+            </div>
+            <div style="font-size:13px; color:var(--text2); margin:6px 0;">Build and maintain e-commerce and fintech platforms using Laravel, Vue.js, and MySQL. 2+ years experience required.</div>
+            <div class="job-meta">
+              <span class="job-meta-item">💼 Full-time</span>
+              <span class="job-meta-item">💰 UGX 3.5–5M</span>
+              <span class="job-meta-item">⏰ 18 days left</span>
+              <span class="job-meta-item">👁 234 views</span>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px; flex-shrink:0;">
+            <button class="btn btn-primary btn-sm">Apply</button>
+            <button class="btn btn-secondary btn-sm">Save</button>
+          </div>
+        </div>
+
+        <div class="job-card" style="display:flex; gap:16px; align-items:flex-start;">
+          <div class="company-logo" style="width:52px; height:52px;">🌐</div>
+          <div style="flex:1; min-width:0;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
+              <div>
+                <div class="job-title">DevOps Engineer</div>
+                <div class="job-company">Andela · Remote / Nairobi</div>
+              </div>
+              <span class="badge badge-amber">Closing soon</span>
+            </div>
+            <div style="font-size:13px; color:var(--text2); margin:6px 0;">Manage CI/CD pipelines, AWS infrastructure, and support 50+ developers across East Africa.</div>
+            <div class="job-meta">
+              <span class="job-meta-item">💼 Contract</span>
+              <span class="job-meta-item">💰 USD 3,000–4,200</span>
+              <span class="job-meta-item">⏰ 3 days left</span>
+              <span class="job-meta-item">👁 891 views</span>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px; flex-shrink:0;">
+            <button class="btn btn-primary btn-sm">Apply</button>
+            <button class="btn btn-secondary btn-sm">Save</button>
+          </div>
+        </div>
+
+        <div class="job-card" style="display:flex; gap:16px; align-items:flex-start;">
+          <div class="company-logo" style="width:52px; height:52px;">📡</div>
+          <div style="flex:1; min-width:0;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
+              <div>
+                <div class="job-title">React Frontend Developer</div>
+                <div class="job-company">Airtel Uganda · Kampala</div>
+              </div>
+              <span class="badge badge-green">Open</span>
+            </div>
+            <div style="font-size:13px; color:var(--text2); margin:6px 0;">Create beautiful, responsive customer-facing applications for Airtel Money and self-care portals.</div>
+            <div class="job-meta">
+              <span class="job-meta-item">💼 Full-time</span>
+              <span class="job-meta-item">💰 UGX 4–6M</span>
+              <span class="job-meta-item">⏰ 25 days left</span>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px; flex-shrink:0;">
+            <button class="btn btn-primary btn-sm">Apply</button>
+            <button class="btn btn-secondary btn-sm">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div style="display:flex; justify-content:center; gap:6px; margin-top:1.5rem;">
+        <button class="btn btn-secondary btn-xs">← Prev</button>
+        <button class="btn btn-primary btn-xs">1</button>
+        <button class="btn btn-secondary btn-xs">2</button>
+        <button class="btn btn-secondary btn-xs">3</button>
+        <span style="padding:4px 8px; font-size:12px; color:var(--text3);">...</span>
+        <button class="btn btn-secondary btn-xs">12</button>
+        <button class="btn btn-secondary btn-xs">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAGE 4: APPLY ===================== -->
+<div id="apply" class="page">
+  <div style="max-width:700px; margin:0 auto;">
+    <!-- Job being applied for -->
+    <div class="card" style="margin-bottom:1.5rem; display:flex; gap:16px; align-items:flex-start;">
+      <div class="company-logo" style="width:56px; height:56px;">💻</div>
+      <div>
+        <div class="job-title" style="font-size:18px;">Full Stack Laravel Developer</div>
+        <div class="job-company" style="font-size:14px;">Yo! Uganda · Kampala CBD</div>
+        <div class="job-meta" style="margin-top:8px;">
+          <span class="job-meta-item">💼 Full-time</span>
+          <span class="job-meta-item">💰 UGX 3.5–5M/mo</span>
+          <span class="job-meta-item">⏰ Deadline: 30 May 2026</span>
+        </div>
+      </div>
+      <span class="badge badge-green" style="margin-left:auto; flex-shrink:0;">Open</span>
+    </div>
+
+    <!-- Application form -->
+    <div class="card">
+      <div style="font-family:var(--serif); font-size:22px; margin-bottom:4px;">Submit Application</div>
+      <div style="font-size:13px; color:var(--text2); margin-bottom:1.5rem;">UC-09 · All fields required unless marked optional</div>
+
+      <div class="divider"></div>
+
+      <div style="font-size:13px; font-weight:600; color:var(--text2); margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em;">1. Personal Information (pre-filled from profile)</div>
+      <div class="grid-2">
+        <div class="field">
+          <label class="label">Full Name</label>
+          <input class="input" value="Kayeera Nathan" readonly style="background:var(--surface2);">
+        </div>
+        <div class="field">
+          <label class="label">Email</label>
+          <input class="input" value="k.nathan@email.com" readonly style="background:var(--surface2);">
+        </div>
+        <div class="field">
+          <label class="label">Phone</label>
+          <input class="input" value="+256 701 234 567" readonly style="background:var(--surface2);">
+        </div>
+        <div class="field">
+          <label class="label">Location</label>
+          <input class="input" value="Kampala, Uganda" readonly style="background:var(--surface2);">
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div style="font-size:13px; font-weight:600; color:var(--text2); margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em;">2. Cover Letter</div>
+
+      <div class="field">
+        <label class="label">Cover Letter <span style="color:var(--text3); font-weight:400;">(min. 50 characters)</span></label>
+        <textarea class="input" style="min-height:160px;" placeholder="Explain why you are the ideal candidate for this role. Highlight relevant experience, projects, and what excites you about working at Yo! Uganda...">I am a passionate Laravel developer with 3 years of commercial experience building high-traffic web applications. I recently led the backend rewrite of a fintech platform serving 40,000+ users, leveraging Laravel Queues, Redis caching, and MySQL optimisation techniques that reduced average API response time by 65%...</textarea>
+        <div style="display:flex; justify-content:flex-end; font-size:12px; color:var(--accent); margin-top:4px;">✓ 284 characters — minimum met</div>
+      </div>
+
+      <div class="divider"></div>
+      <div style="font-size:13px; font-weight:600; color:var(--text2); margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em;">3. CV / Resume</div>
+
+      <!-- Current CV -->
+      <div style="display:flex; align-items:center; gap:12px; padding:12px; background:var(--surface2); border-radius:var(--radius); margin-bottom:10px;">
+        <div style="font-size:24px;">📄</div>
+        <div>
+          <div style="font-size:14px; font-weight:500;">Kayeera_Nathan_CV_2026.pdf</div>
+          <div style="font-size:12px; color:var(--text3);">From profile · 1.2 MB · PDF</div>
+        </div>
+        <span class="badge badge-green" style="margin-left:auto;">Current CV</span>
+      </div>
+
+      <div class="upload-area">
+        <div style="font-size:24px; margin-bottom:8px;">📤</div>
+        <div style="font-size:14px; font-weight:500; margin-bottom:4px;">Upload a different CV (optional)</div>
+        <div style="font-size:12px; color:var(--text3);">PDF or DOCX only · Max 2MB</div>
+      </div>
+
+      <div class="divider"></div>
+      <div style="font-size:13px; font-weight:600; color:var(--text2); margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em;">4. Notifications</div>
+
+      <div style="background:var(--blue-light); border-radius:var(--radius); padding:12px; font-size:13px; color:var(--blue); margin-bottom:1.5rem;">
+        📧 You'll receive confirmation via <strong>email</strong> and <strong>SMS</strong> once your application is submitted. The employer will also be notified instantly via Mailgun / Africa's Talking.
+      </div>
+
+      <div style="display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap;">
+        <button class="btn btn-secondary">Save as Draft</button>
+        <button class="btn btn-primary" style="min-width:160px;">✓ Submit Application</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAGE 5: EMPLOYER DASHBOARD ===================== -->
+<div id="employer-dashboard" class="page">
+  <div class="topbar">
+    <div>
+      <div class="page-title">Employer Dashboard</div>
+      <div class="page-subtitle">Yo! Uganda — Kampala · Verified ✓</div>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button class="btn btn-secondary btn-sm">📊 Analytics</button>
+      <button class="btn btn-primary" onclick="showPage('post-job')">+ Post New Job</button>
+    </div>
+  </div>
+
+  <div class="with-sidebar">
+    <div class="sidebar">
+      <div class="card card-sm" style="margin-bottom:1rem; text-align:center;">
+        <div style="font-size:40px; margin-bottom:8px;">🏢</div>
+        <div style="font-weight:600;">Yo! Uganda Ltd</div>
+        <div style="font-size:12px; color:var(--text2); margin-bottom:8px;">Technology · Kampala</div>
+        <span class="badge badge-green">Verified Employer</span>
+      </div>
+      <div class="sidebar-nav">
+        <div class="sidebar-item active">📊 Overview</div>
+        <div class="sidebar-item">💼 My Job Posts</div>
+        <div class="sidebar-item">📋 All Applications</div>
+        <div class="sidebar-item">👥 Shortlisted</div>
+        <div class="sidebar-item">🔔 Notifications <span class="badge badge-orange" style="margin-left:auto;padding:2px 6px;">7</span></div>
+        <div class="sidebar-item">🏢 Company Profile</div>
+        <div class="sidebar-item">⚙️ Settings</div>
+      </div>
+    </div>
+
+    <div class="main-area">
+      <!-- Stats -->
+      <div class="grid-4" style="margin-bottom:1.5rem;">
+        <div class="stat"><div class="stat-label">Active Postings</div><div class="stat-value">5</div><div class="stat-sub">2 closing this week</div></div>
+        <div class="stat"><div class="stat-label">Total Applications</div><div class="stat-value" style="color:var(--blue);">143</div><div class="stat-sub">↑ 28 this week</div></div>
+        <div class="stat"><div class="stat-label">Shortlisted</div><div class="stat-value" style="color:var(--amber);">18</div><div class="stat-sub">Pending interview</div></div>
+        <div class="stat"><div class="stat-label">Hired (YTD)</div><div class="stat-value" style="color:var(--accent);">4</div><div class="stat-sub">2.8% conversion</div></div>
+      </div>
+
+      <!-- Active job posts with CRUD -->
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+          <div style="font-weight:600;">Active Job Postings</div>
+          <button class="btn btn-primary btn-sm" onclick="showPage('post-job')">+ New Job</button>
+        </div>
+        <table>
+          <thead><tr>
+            <th>Title</th><th>Type</th><th>Applications</th><th>Deadline</th><th>Status</th><th>Actions</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Full Stack Laravel Dev</strong></td>
+              <td style="font-size:13px; color:var(--text2);">Full-time</td>
+              <td><strong>47</strong> <span style="color:var(--text3); font-size:12px;">apps</span></td>
+              <td style="font-size:13px; color:var(--text2);">30 May</td>
+              <td><span class="badge badge-green">Open</span></td>
+              <td>
+                <div style="display:flex; gap:4px;">
+                  <button class="btn btn-secondary btn-xs">✏️</button>
+                  <button class="btn btn-secondary btn-xs">👁</button>
+                  <button class="btn btn-danger btn-xs">🗑</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>UI/UX Designer</strong></td>
+              <td style="font-size:13px; color:var(--text2);">Contract</td>
+              <td><strong>31</strong> <span style="color:var(--text3); font-size:12px;">apps</span></td>
+              <td style="font-size:13px; color:var(--amber);">15 May ⚠</td>
+              <td><span class="badge badge-amber">Closing Soon</span></td>
+              <td>
+                <div style="display:flex; gap:4px;">
+                  <button class="btn btn-secondary btn-xs">✏️</button>
+                  <button class="btn btn-secondary btn-xs">👁</button>
+                  <button class="btn btn-danger btn-xs">🗑</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>QA Test Engineer</strong></td>
+              <td style="font-size:13px; color:var(--text2);">Full-time</td>
+              <td><strong>22</strong> <span style="color:var(--text3); font-size:12px;">apps</span></td>
+              <td style="font-size:13px; color:var(--text2);">10 Jun</td>
+              <td><span class="badge badge-green">Open</span></td>
+              <td>
+                <div style="display:flex; gap:4px;">
+                  <button class="btn btn-secondary btn-xs">✏️</button>
+                  <button class="btn btn-secondary btn-xs">👁</button>
+                  <button class="btn btn-danger btn-xs">🗑</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Technical Writer</strong></td>
+              <td style="font-size:13px; color:var(--text2);">Part-time</td>
+              <td><strong>12</strong> <span style="color:var(--text3); font-size:12px;">apps</span></td>
+              <td style="font-size:13px; color:var(--text2);">20 Jun</td>
+              <td><span class="badge badge-gray">Draft</span></td>
+              <td>
+                <div style="display:flex; gap:4px;">
+                  <button class="btn btn-secondary btn-xs">✏️</button>
+                  <button class="btn btn-primary btn-xs">Publish</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Analytics chart -->
+      <div class="card">
+        <div style="font-weight:600; margin-bottom:1rem;">Applications per Job (This Month)</div>
+        <div class="bar-chart" style="margin-bottom:24px;">
+          <div class="bar" style="height:85%;"><div class="bar-label">Laravel</div></div>
+          <div class="bar" style="height:66%;"><div class="bar-label">UI/UX</div></div>
+          <div class="bar" style="height:46%;"><div class="bar-label">QA</div></div>
+          <div class="bar" style="height:25%;"><div class="bar-label">Writer</div></div>
+          <div class="bar" style="height:38%;"><div class="bar-label">DevOps</div></div>
+        </div>
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button class="btn btn-secondary btn-sm">📥 Export CSV</button>
+          <button class="btn btn-secondary btn-sm">📄 Export PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAGE 6: POST JOB ===================== -->
+<div id="post-job" class="page">
+  <div style="max-width:700px; margin:0 auto;">
+    <div class="topbar">
+      <div>
+        <div class="page-title">Post a New Job</div>
+        <div class="page-subtitle">UC-04 · Fill all required fields to publish your listing</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label class="label">Job Title <span style="color:var(--red);">*</span></label>
+        <input class="input" value="Full Stack Laravel Developer" placeholder="e.g. Senior Software Engineer">
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label class="label">Job Type <span style="color:var(--red);">*</span></label>
+          <select class="input">
+            <option>Full-time</option><option>Part-time</option><option>Contract</option><option>Internship</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label">Industry</label>
+          <select class="input">
+            <option selected>Technology</option><option>Finance</option><option>Health</option><option>NGO</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label">Location <span style="color:var(--red);">*</span></label>
+          <input class="input" placeholder="Kampala, Entebbe, Remote..." value="Kampala CBD">
+        </div>
+        <div class="field">
+          <label class="label">Application Deadline <span style="color:var(--red);">*</span></label>
+          <input class="input" type="date" value="2026-05-30">
+        </div>
+        <div class="field">
+          <label class="label">Min Salary (UGX)</label>
+          <input class="input" placeholder="e.g. 3,500,000" value="3500000">
+        </div>
+        <div class="field">
+          <label class="label">Max Salary (UGX)</label>
+          <input class="input" placeholder="e.g. 5,000,000" value="5000000">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Job Description <span style="color:var(--red);">*</span></label>
+        <textarea class="input" style="min-height:130px;">We are looking for an experienced Full Stack Laravel Developer to join our engineering team at Yo! Uganda. You will design, build, and maintain robust web applications that serve thousands of customers across East Africa. The ideal candidate has 2+ years of hands-on Laravel experience and a passion for clean, testable code.</textarea>
+      </div>
+
+      <div class="field">
+        <label class="label">Requirements</label>
+        <textarea class="input" style="min-height:100px;">• 2+ years Laravel experience (v10/11)
+• Proficiency in MySQL, REST APIs, and Vue.js
+• Experience with Git and CI/CD pipelines
+• Strong written and verbal communication</textarea>
+      </div>
+
+      <!-- Compliance check banner -->
+      <div style="background:var(--amber-light); border:1px solid #F0D08A; border-radius:var(--radius); padding:12px; margin-bottom:1.25rem; font-size:13px; color:var(--amber);">
+        ⚠️ <strong>Compliance Check</strong> — Our system automatically scans for discriminatory language (e.g. gender, age, nationality restrictions) before publishing. Flagged posts will be sent to Admin for review within 24 hours per Uganda Employment Act 2006.
+      </div>
+
+      <div style="display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap;">
+        <button class="btn btn-secondary">Save as Draft</button>
+        <button class="btn btn-secondary">Preview</button>
+        <button class="btn btn-primary">🚀 Publish Job</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAGE 7: APPLICATIONS REVIEW ===================== -->
+<div id="applications-review" class="page">
+  <div class="topbar">
+    <div>
+      <div class="page-title">Review Applications</div>
+      <div class="page-subtitle">Full Stack Laravel Developer · 47 total applicants</div>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button class="btn btn-secondary btn-sm">📥 Export CSV</button>
+      <button class="btn btn-secondary btn-sm">📊 Analytics</button>
+    </div>
+  </div>
+
+  <!-- Filter tabs -->
+  <div class="tabs">
+    <div class="tab active">All (47)</div>
+    <div class="tab">Pending (24)</div>
+    <div class="tab">Reviewed (10)</div>
+    <div class="tab">Shortlisted (8)</div>
+    <div class="tab">Rejected (4)</div>
+    <div class="tab">Hired (1)</div>
+  </div>
+
+  <!-- Application rows -->
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr>
+        <th>Applicant</th><th>Applied</th><th>Experience</th><th>CV</th><th>Status</th><th>Actions</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="avatar" style="background:var(--accent-light); color:var(--accent);">NK</div>
+              <div>
+                <div style="font-weight:500; font-size:14px;">Kayeera Nathan</div>
+                <div style="font-size:12px; color:var(--text3);">k.nathan@gmail.com</div>
+              </div>
+            </div>
+          </td>
+          <td style="font-size:13px; color:var(--text2);">May 8, 2026</td>
+          <td style="font-size:13px; color:var(--text2);">3 years Laravel</td>
+          <td><a href="#" style="font-size:13px; color:var(--accent); text-decoration:none;">📄 View CV</a></td>
+          <td><span class="badge badge-green">Shortlisted</span></td>
+          <td>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button class="btn btn-secondary btn-xs">View</button>
+              <select style="font-size:12px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; background:var(--surface);">
+                <option>Shortlisted</option><option>Pending</option><option>Rejected</option><option>Hired</option>
+              </select>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="avatar" style="background:var(--blue-light); color:var(--blue);">IM</div>
+              <div>
+                <div style="font-weight:500; font-size:14px;">Isabella Mugisha</div>
+                <div style="font-size:12px; color:var(--text3);">i.mugisha@proton.me</div>
+              </div>
+            </div>
+          </td>
+          <td style="font-size:13px; color:var(--text2);">May 7, 2026</td>
+          <td style="font-size:13px; color:var(--text2);">5 years PHP/Laravel</td>
+          <td><a href="#" style="font-size:13px; color:var(--accent); text-decoration:none;">📄 View CV</a></td>
+          <td><span class="badge badge-amber">Reviewed</span></td>
+          <td>
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-secondary btn-xs">View</button>
+              <select style="font-size:12px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; background:var(--surface);">
+                <option>Reviewed</option><option>Pending</option><option>Shortlisted</option><option>Rejected</option>
+              </select>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="avatar" style="background:var(--amber-light); color:var(--amber);">SP</div>
+              <div>
+                <div style="font-weight:500; font-size:14px;">Ssali Peter Joshua</div>
+                <div style="font-size:12px; color:var(--text3);">ssali.peter@outlook.com</div>
+              </div>
+            </div>
+          </td>
+          <td style="font-size:13px; color:var(--text2);">May 5, 2026</td>
+          <td style="font-size:13px; color:var(--text2);">2 years Junior Dev</td>
+          <td><a href="#" style="font-size:13px; color:var(--accent); text-decoration:none;">📄 View CV</a></td>
+          <td><span class="badge badge-gray">Pending</span></td>
+          <td>
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-secondary btn-xs">View</button>
+              <select style="font-size:12px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; background:var(--surface);">
+                <option>Pending</option><option>Reviewed</option><option>Shortlisted</option><option>Rejected</option>
+              </select>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="avatar" style="background:var(--red-light); color:var(--red);">BA</div>
+              <div>
+                <div style="font-weight:500; font-size:14px;">Benard Amukuza</div>
+                <div style="font-size:12px; color:var(--text3);">b.amukuza@email.com</div>
+              </div>
+            </div>
+          </td>
+          <td style="font-size:13px; color:var(--text2);">May 3, 2026</td>
+          <td style="font-size:13px; color:var(--text2);">1 year Intern</td>
+          <td><a href="#" style="font-size:13px; color:var(--accent); text-decoration:none;">📄 View CV</a></td>
+          <td><span class="badge badge-red">Rejected</span></td>
+          <td>
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-secondary btn-xs">View</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Confirm status change modal -->
+  <div style="margin-top:1.5rem;">
+    <div class="section-label" style="margin-bottom:0.5rem;">UC-12 — Status Change Confirmation (Modal Preview)</div>
+    <div class="modal-backdrop">
+      <div class="modal">
+        <div style="font-size:18px; font-weight:600; margin-bottom:8px;">Confirm Status Update</div>
+        <div style="font-size:14px; color:var(--text2); margin-bottom:1.25rem;">
+          Change <strong>Kayeera Nathan</strong>'s status to <strong style="color:var(--accent);">Shortlisted</strong>?
+          This will send an automatic notification via email and SMS.
+        </div>
+        <div style="background:var(--accent-light); border-radius:var(--radius); padding:10px; font-size:13px; color:var(--accent); margin-bottom:1.25rem;">
+          📧 "Your application for <em>Full Stack Laravel Developer</em> at Yo! Uganda has been updated to Shortlisted."
+        </div>
+        <div style="display:flex; gap:8px; justify-content:flex-end;">
+          <button class="btn btn-secondary btn-sm">Cancel</button>
+          <button class="btn btn-primary btn-sm">Confirm & Notify</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAGE 8: ADMIN DASHBOARD ===================== -->
+<div id="admin-dashboard" class="page">
+  <div class="topbar">
+    <div>
+      <div class="page-title">Admin Dashboard</div>
+      <div class="page-subtitle">System Administrator · UC-14, UC-15, UC-ADMIN</div>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <span class="badge badge-green" style="gap:6px;"><div class="dot-online"></div> System Healthy</span>
+    </div>
+  </div>
+
+  <div class="with-sidebar">
+    <div class="sidebar">
+      <div class="sidebar-nav">
+        <div class="sidebar-item active">📊 Overview</div>
+        <div class="sidebar-item">👥 User Management</div>
+        <div class="sidebar-item">💼 Job Moderation</div>
+        <div class="sidebar-item">📋 Audit Logs</div>
+        <div class="sidebar-item">🔑 API Keys</div>
+        <div class="sidebar-item">📊 Reports</div>
+        <div class="sidebar-item">⚙️ System Health</div>
+      </div>
+    </div>
+
+    <div class="main-area">
+      <!-- System stats -->
+      <div class="grid-4" style="margin-bottom:1.5rem;">
+        <div class="stat"><div class="stat-label">Total Users</div><div class="stat-value">4,821</div><div class="stat-sub">↑ 184 this week</div></div>
+        <div class="stat"><div class="stat-label">Active Jobs</div><div class="stat-value" style="color:var(--accent);">631</div><div class="stat-sub">47 added today</div></div>
+        <div class="stat"><div class="stat-label">Flagged Posts</div><div class="stat-value" style="color:var(--red);">3</div><div class="stat-sub">Needs review</div></div>
+        <div class="stat"><div class="stat-label">API Uptime</div><div class="stat-value" style="color:var(--accent);">99.8%</div><div class="stat-sub">Last 30 days</div></div>
+      </div>
+
+      <!-- User management (UC-14) -->
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+          <div style="font-weight:600;">User Management — UC-14</div>
+          <div class="search-bar" style="max-width:260px;">
+            🔍 <input placeholder="Search users...">
+          </div>
+        </div>
+        <table>
+          <thead><tr>
+            <th>User</th><th>Role</th><th>Joined</th><th>Status</th><th>Actions</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div class="avatar" style="background:var(--accent-light);color:var(--accent);width:32px;height:32px;font-size:11px;">NK</div>
+                  <div>
+                    <div style="font-size:13px; font-weight:500;">Kayeera Nathan</div>
+                    <div style="font-size:11px; color:var(--text3);">k.nathan@gmail.com</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="badge badge-blue">Job Seeker</span></td>
+              <td style="font-size:12px; color:var(--text3);">Jan 14, 2026</td>
+              <td><span class="badge badge-green">Active</span></td>
+              <td>
+                <div style="display:flex; gap:4px;">
+                  <button class="btn btn-secondary btn-xs">View</button>
+                  <button class="btn btn-danger btn-xs">Suspend</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div class="avatar" style="background:var(--amber-light);color:var(--amber);width:32px;height:32px;font-size:11px;">YU</div>
+                  <div>
+                    <div style="font-size:13px; font-weight:500;">Yo! Uganda HR</div>
+                    <div style="font-size:11px; color:var(--text3);">hr@yo.co.ug</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="badge badge-orange">Employer</span></td>
+              <td style="font-size:12px; color:var(--text3);">Mar 2, 2026</td>
+              <td><span class="badge badge-green">Active</span></td>
+              <td>
+                <div style="display:flex; gap:4px;">
+                  <button class="btn btn-secondary btn-xs">View</button>
+                  <button class="btn btn-danger btn-xs">Suspend</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div class="avatar" style="background:var(--red-light);color:var(--red);width:32px;height:32px;font-size:11px;">SP</div>
+                  <div>
+                    <div style="font-size:13px; font-weight:500;">Spam Recruiter 01</div>
+                    <div style="font-size:11px; color:var(--text3);">fake@scam.org</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="badge badge-orange">Employer</span></td>
+              <td style="font-size:12px; color:var(--text3);">May 10, 2026</td>
+              <td><span class="badge badge-red">Flagged</span></td>
+              <td>
+                <div style="display:flex; gap:4px;">
+                  <button class="btn btn-secondary btn-xs">View</button>
+                  <button class="btn btn-danger btn-xs">Delete</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Audit Log -->
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="font-weight:600; margin-bottom:1rem;">Audit Log — UC-15</div>
+        <div style="position:relative;">
+          <div class="audit-row">
+            <div class="audit-dot" style="background:var(--red);"></div>
+            <div>
+              <div style="font-size:13px; font-weight:500;">Admin suspended user <code style="font-family:var(--mono); font-size:12px; background:var(--surface2); padding:1px 5px; border-radius:4px;">spam@scam.org</code></div>
+              <div style="font-size:11px; color:var(--text3);">Today 09:41 · IP: 41.73.204.11 · Reason: Fraudulent job posts</div>
+            </div>
+          </div>
+          <div class="audit-row">
+            <div class="audit-dot" style="background:var(--accent);"></div>
+            <div>
+              <div style="font-size:13px; font-weight:500;">Generated Q1 2026 regulatory report</div>
+              <div style="font-size:11px; color:var(--text3);">Today 08:12 · Admin: admin@joblink.ug</div>
+            </div>
+          </div>
+          <div class="audit-row">
+            <div class="audit-dot" style="background:var(--amber);"></div>
+            <div>
+              <div style="font-size:13px; font-weight:500;">API key rotated — Mailgun Production</div>
+              <div style="font-size:11px; color:var(--text3);">Yesterday 16:30 · Triggered by expiry alert</div>
+            </div>
+          </div>
+          <div class="audit-row">
+            <div class="audit-dot"></div>
+            <div>
+              <div style="font-size:13px; font-weight:500;">Employer Yo! Uganda verified</div>
+              <div style="font-size:11px; color:var(--text3);">May 10 14:45 · Documents reviewed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- API Keys -->
+      <div class="card">
+        <div style="font-weight:600; margin-bottom:1rem;">Third-Party API Keys — FR-ADMIN-04</div>
+        <div class="compliance-item">
+          <div style="font-size:20px;">📧</div>
+          <div style="flex:1;">
+            <div style="font-size:14px; font-weight:500;">Mailgun (Email)</div>
+            <div style="font-size:12px; color:var(--text3); font-family:var(--mono);">key-●●●●●●●●●●●e3f4 · Expires Aug 2026</div>
+          </div>
+          <span class="badge badge-green">Active</span>
+          <button class="btn btn-secondary btn-xs">Rotate</button>
+        </div>
+        <div class="compliance-item">
+          <div style="font-size:20px;">📱</div>
+          <div style="flex:1;">
+            <div style="font-size:14px; font-weight:500;">Africa's Talking (SMS)</div>
+            <div style="font-size:12px; color:var(--text3); font-family:var(--mono);">AT●●●●●●●●●●●●9ab1 · Expires Dec 2026</div>
+          </div>
+          <span class="badge badge-green">Active</span>
+          <button class="btn btn-secondary btn-xs">Rotate</button>
+        </div>
+        <div class="compliance-item">
+          <div style="font-size:20px;">💬</div>
+          <div style="flex:1;">
+            <div style="font-size:14px; font-weight:500;">Twilio (Fallback SMS)</div>
+            <div style="font-size:12px; color:var(--text3); font-family:var(--mono);">AC●●●●●●●●●●●●d22c · Standby</div>
+          </div>
+          <span class="badge badge-gray">Standby</span>
+          <button class="btn btn-secondary btn-xs">Activate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAGE 9: REGULATORY REPORT ===================== -->
+<div id="reg-report" class="page">
+  <div class="topbar">
+    <div>
+      <div class="page-title">Regulatory Reports</div>
+      <div class="page-subtitle">UC-16 · Government Labor Regulatory Body (MGLSD) — Anonymized Data Only</div>
+    </div>
+    <button class="btn btn-primary">+ Generate New Report</button>
+  </div>
+
+  <div class="with-sidebar">
+    <div class="sidebar">
+      <div class="card card-sm" style="margin-bottom:1rem;">
+        <div style="font-size:13px; font-weight:600; margin-bottom:10px;">Generate Report</div>
+        <div class="field">
+          <label class="label">Report Type</label>
+          <select class="input" style="font-size:13px;">
+            <option>Hiring by Industry</option>
+            <option>Salary Trends</option>
+            <option>Application Volume</option>
+            <option>Job Type Distribution</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label">Date Range</label>
+          <select class="input" style="font-size:13px;">
+            <option>Q1 2026 (Jan–Mar)</option>
+            <option>Q2 2026 (Apr–Jun)</option>
+            <option>Full Year 2025</option>
+          </select>
+        </div>
+        <div style="background:var(--accent-light); border-radius:var(--radius); padding:8px; font-size:12px; color:var(--accent); margin-bottom:10px;">
+          🔒 No PII included — names, emails, and phones are excluded per NFR-11 & Uganda Data Protection Act 2019.
+        </div>
+        <button class="btn btn-primary" style="width:100%; font-size:13px;">Generate</button>
+      </div>
+      <div class="sidebar-nav">
+        <div class="sidebar-item active">📊 Reports</div>
+        <div class="sidebar-item">🚩 Flagged Jobs</div>
+        <div class="sidebar-item">📋 Audit Trail</div>
+        <div class="sidebar-item">⚙️ Settings</div>
+      </div>
+    </div>
+
+    <div class="main-area">
+      <!-- Report preview -->
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem; flex-wrap:wrap; gap:10px;">
+          <div>
+            <div style="font-weight:600; font-size:16px;">Hiring by Industry — Q1 2026</div>
+            <div style="font-size:12px; color:var(--text3); margin-top:2px;">Generated: May 11, 2026 · By: admin@joblink.ug · Ref: RPT-2026-Q1-001</div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <span class="badge badge-green">Submitted to MGLSD</span>
+            <button class="btn btn-secondary btn-sm">📄 Download PDF</button>
+            <button class="btn btn-secondary btn-sm">📊 Download JSON</button>
+          </div>
+        </div>
+        <div class="divider"></div>
+
+        <!-- Aggregated data (no PII) -->
+        <div class="grid-4" style="margin-bottom:1.25rem;">
+          <div class="stat"><div class="stat-label">Jobs Posted</div><div class="stat-value">1,847</div></div>
+          <div class="stat"><div class="stat-label">Applications</div><div class="stat-value">24,631</div></div>
+          <div class="stat"><div class="stat-label">Avg Salary (UGX)</div><div class="stat-value" style="font-size:20px;">2.8M</div></div>
+          <div class="stat"><div class="stat-label">Hire Rate</div><div class="stat-value">3.1%</div></div>
+        </div>
+
+        <div style="font-size:13px; font-weight:600; color:var(--text2); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.05em;">Jobs by Industry (Top 5)</div>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:1.25rem;">
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:3px;"><span>Technology & ICT</span><span style="font-weight:600;">428 jobs</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:76%; background:var(--accent);"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:3px;"><span>NGO / Development</span><span style="font-weight:600;">316 jobs</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:56%; background:var(--blue);"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:3px;"><span>Finance & Banking</span><span style="font-weight:600;">284 jobs</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:50%; background:var(--amber);"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:3px;"><span>Healthcare</span><span style="font-weight:600;">219 jobs</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:39%; background:var(--accent2);"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:3px;"><span>Education</span><span style="font-weight:600;">178 jobs</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:31%; background:var(--red);"></div></div>
+          </div>
+        </div>
+
+        <div class="info-tag">ℹ️ No personally identifiable information (PII) included in this report — FR-GOV-01, NFR-11</div>
+      </div>
+
+      <!-- Flagged jobs (UC-17) -->
+      <div class="card">
+        <div style="font-weight:600; margin-bottom:1rem;">🚩 Flagged Job Postings — UC-17</div>
+        <div class="compliance-item">
+          <div style="font-size:20px;">⚠️</div>
+          <div style="flex:1;">
+            <div style="font-size:14px; font-weight:500;">Office Administrator — "Females only, age 20–28"</div>
+            <div style="font-size:12px; color:var(--text3);">Flagged by: Automated keyword scan · May 9, 2026</div>
+            <div style="font-size:12px; color:var(--red); margin-top:2px;">Violates: Employment Act 2006, s.6 — Non-discrimination</div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <button class="btn btn-danger btn-xs">Remove Post</button>
+            <button class="btn btn-secondary btn-xs">Warn Employer</button>
+          </div>
+        </div>
+        <div class="compliance-item">
+          <div style="font-size:20px;">⚠️</div>
+          <div style="flex:1;">
+            <div style="font-size:14px; font-weight:500;">Security Guard — "Must be from Buganda tribe"</div>
+            <div style="font-size:12px; color:var(--text3);">Flagged by: Government regulatory body report · May 7, 2026</div>
+            <div style="font-size:12px; color:var(--red); margin-top:2px;">Violates: Ethnic/tribal discrimination clause</div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <button class="btn btn-danger btn-xs">Remove Post</button>
+            <button class="btn btn-secondary btn-xs">Warn Employer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAGE 10: MOBILE VIEW ===================== -->
+<div id="mobile" class="page">
+  <div class="topbar">
+    <div>
+      <div class="page-title">Mobile Experience</div>
+      <div class="page-subtitle">Responsive design — works on 320px+ screens per NFR-07</div>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:2rem; flex-wrap:wrap; justify-content:center;">
+    <!-- Mobile Frame 1: Home -->
+    <div class="mobile-frame" style="max-width:340px;">
+      <div class="mobile-notch"><div class="mobile-notch-pill"></div></div>
+      <div style="background:var(--text); padding:12px 16px; display:flex; justify-content:space-between; align-items:center;">
+        <div style="font-family:var(--serif); color:#fff; font-size:18px;">Job<span style="color:#6EE0B4;">Link</span></div>
+        <div style="color:rgba(255,255,255,0.7); font-size:22px;">☰</div>
+      </div>
+      <div style="background:var(--bg); padding:0 16px 20px;">
+        <div style="padding:16px 0; border-bottom:1px solid var(--border); margin-bottom:14px;">
+          <div style="font-size:12px; color:var(--text2); margin-bottom:4px;">Good morning 👋</div>
+          <div style="font-family:var(--serif); font-size:20px; color:var(--text);">Nathan, 3 updates</div>
+        </div>
+        <!-- Search -->
+        <div style="display:flex; gap:8px; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 12px; margin-bottom:14px;">
+          <span style="color:var(--text3);">🔍</span>
+          <span style="color:var(--text3); font-size:14px;">Search jobs in Uganda...</span>
+        </div>
+        <!-- Mini stats -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
+          <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px; text-align:center;">
+            <div style="font-size:20px; font-weight:700; color:var(--accent);">12</div>
+            <div style="font-size:11px; color:var(--text3);">Applications</div>
+          </div>
+          <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px; text-align:center;">
+            <div style="font-size:20px; font-weight:700; color:var(--amber);">3</div>
+            <div style="font-size:11px; color:var(--text3);">Shortlisted</div>
+          </div>
+        </div>
+        <!-- Job card mobile -->
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:10px;">
+          <div style="display:flex; gap:10px; margin-bottom:8px;">
+            <div style="width:38px; height:38px; background:var(--surface2); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">💻</div>
+            <div>
+              <div style="font-size:13px; font-weight:600;">Full Stack Laravel Dev</div>
+              <div style="font-size:11px; color:var(--text2);">Yo! Uganda · Kampala</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <span style="font-size:10px; background:var(--accent-light); color:var(--accent); padding:2px 7px; border-radius:99px;">Full-time</span>
+            <span style="font-size:10px; background:var(--surface2); color:var(--text2); padding:2px 7px; border-radius:99px;">UGX 3.5–5M</span>
+            <span style="font-size:10px; background:var(--amber-light); color:var(--amber); padding:2px 7px; border-radius:99px;">18 days left</span>
+          </div>
+          <div style="display:flex; gap:6px; margin-top:8px;">
+            <button style="flex:1; background:var(--accent); color:#fff; border:none; border-radius:8px; padding:8px; font-size:12px; font-weight:600; cursor:pointer;">Apply</button>
+            <button style="flex:1; background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:8px; font-size:12px; cursor:pointer;">Save</button>
+          </div>
+        </div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px;">
+          <div style="display:flex; gap:10px; margin-bottom:8px;">
+            <div style="width:38px; height:38px; background:var(--blue-light); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">🏦</div>
+            <div>
+              <div style="font-size:13px; font-weight:600;">Data Analyst</div>
+              <div style="font-size:11px; color:var(--text2);">Stanbic · Kampala CBD</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <span style="font-size:10px; background:var(--accent-light); color:var(--accent); padding:2px 7px; border-radius:99px;">Full-time</span>
+            <span style="font-size:10px; background:var(--surface2); color:var(--text2); padding:2px 7px; border-radius:99px;">UGX 3.2–4.5M</span>
+          </div>
+        </div>
+        <!-- Bottom nav -->
+        <div style="display:flex; justify-content:space-around; padding:14px 0 0; border-top:1px solid var(--border); margin-top:14px;">
+          <div style="text-align:center; color:var(--accent);">
+            <div style="font-size:20px;">🏠</div>
+            <div style="font-size:10px; font-weight:500;">Home</div>
+          </div>
+          <div style="text-align:center; color:var(--text3);">
+            <div style="font-size:20px;">🔍</div>
+            <div style="font-size:10px;">Search</div>
+          </div>
+          <div style="text-align:center; color:var(--text3);">
+            <div style="font-size:20px; position:relative;">🔔 <span style="position:absolute; top:-4px; right:-4px; background:var(--accent2); width:8px; height:8px; border-radius:50%; display:inline-block;"></span></div>
+            <div style="font-size:10px;">Alerts</div>
+          </div>
+          <div style="text-align:center; color:var(--text3);">
+            <div style="font-size:20px;">👤</div>
+            <div style="font-size:10px;">Profile</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Frame 2: Notification SMS -->
+    <div class="mobile-frame" style="max-width:340px;">
+      <div class="mobile-notch"><div class="mobile-notch-pill"></div></div>
+      <div style="background:var(--surface2); padding:8px 16px; font-size:12px; color:var(--text2); text-align:center;">Messages · Africa's Talking SMS</div>
+      <div style="background:var(--bg); padding:12px 16px 20px;">
+        <div style="font-size:13px; font-weight:600; margin-bottom:14px; color:var(--text2);">JobLink Uganda (+256 800 001)</div>
+        <div style="background:var(--surface); border-radius:12px 12px 0 12px; padding:12px; font-size:13px; line-height:1.6; max-width:85%; margin-bottom:10px; border:1px solid var(--border);">
+          ✅ <strong>Application Received</strong><br>
+          Hi Nathan, your application for <em>Full Stack Laravel Developer</em> at Yo! Uganda has been received. Track status at joblink.ug/applications
+        </div>
+        <div style="font-size:10px; color:var(--text3); margin-bottom:14px; margin-left:2px;">Today 10:32 AM · Delivered</div>
+        <div style="background:var(--accent); border-radius:12px 12px 12px 0; padding:12px; font-size:13px; line-height:1.6; max-width:85%; margin-bottom:10px; color:#fff; margin-left:auto;">
+          🎉 <strong>Great News!</strong><br>
+          Hi Nathan, your application for <em>Full Stack Laravel Developer</em> at Yo! Uganda has been updated to <strong>Shortlisted</strong>. Expect a call from HR soon. 🚀
+        </div>
+        <div style="font-size:10px; color:var(--text3); margin-bottom:14px; text-align:right;">Today 2:15 PM · Delivered ✓✓</div>
+        <div style="background:var(--surface); border-radius:12px 12px 0 12px; padding:12px; font-size:13px; line-height:1.6; max-width:85%; border:1px solid var(--border);">
+          📅 <strong>Interview Reminder</strong><br>
+          Your interview with Yo! Uganda is tomorrow, May 13 at 10:00 AM. Office: Plot 7, Kampala Road. Reply CONFIRM or RESCHEDULE.
+        </div>
+        <div style="font-size:10px; color:var(--text3); margin-top:4px; margin-left:2px;">Today 4:00 PM · Delivered</div>
+        <div style="display:flex; gap:8px; margin-top:16px;">
+          <div style="flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px; font-size:13px; color:var(--text3);">Reply...</div>
+          <button style="background:var(--accent); color:#fff; border:none; border-radius:10px; padding:10px 14px; font-size:16px; cursor:pointer;">↑</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAGE 11: AUTH ===================== -->
+<div id="auth" class="page">
+  <div style="max-width:900px; margin:0 auto;">
+    <div class="topbar" style="justify-content:center; margin-bottom:2rem;">
+      <div style="text-align:center;">
+        <div style="font-family:var(--serif); font-size:36px; margin-bottom:4px;">Job<span style="color:var(--accent);">Link</span></div>
+        <div style="color:var(--text2); font-size:14px;">Secure authentication — Laravel Breeze / Jetstream</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Login -->
+      <div class="card">
+        <div style="font-family:var(--serif); font-size:22px; margin-bottom:4px;">Welcome back</div>
+        <div style="font-size:13px; color:var(--text2); margin-bottom:1.5rem;">Login to your account</div>
+
+        <div class="field">
+          <label class="label">Email Address</label>
+          <input class="input" type="email" placeholder="you@email.com" value="k.nathan@gmail.com">
+        </div>
+        <div class="field">
+          <label class="label">Password</label>
+          <div style="position:relative;">
+            <input class="input" type="password" value="••••••••••" style="padding-right:42px;">
+            <span style="position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--text3); cursor:pointer;">👁</span>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; margin-bottom:1.25rem;">
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+            <input type="checkbox" checked> Remember me
+          </label>
+          <a href="#" style="color:var(--accent); text-decoration:none;">Forgot password?</a>
+        </div>
+        <button class="btn btn-primary" style="width:100%; justify-content:center;">Login →</button>
+        <div class="divider"></div>
+        <div style="text-align:center; font-size:13px; color:var(--text2);">
+          Don't have an account? <a href="#" style="color:var(--accent); text-decoration:none; font-weight:500;">Register here</a>
+        </div>
+      </div>
+
+      <!-- Register -->
+      <div class="card">
+        <div style="font-family:var(--serif); font-size:22px; margin-bottom:4px;">Create account</div>
+        <div style="font-size:13px; color:var(--text2); margin-bottom:1rem;">Register as a job seeker or employer</div>
+
+        <!-- Role selector -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:1.25rem;">
+          <div style="border:2px solid var(--accent); border-radius:var(--radius); padding:12px; text-align:center; background:var(--accent-light); cursor:pointer;">
+            <div style="font-size:22px; margin-bottom:4px;">👤</div>
+            <div style="font-size:13px; font-weight:600; color:var(--accent);">Job Seeker</div>
+            <div style="font-size:11px; color:var(--accent);">Find & apply for jobs</div>
+          </div>
+          <div style="border:1px solid var(--border); border-radius:var(--radius); padding:12px; text-align:center; cursor:pointer;">
+            <div style="font-size:22px; margin-bottom:4px;">🏢</div>
+            <div style="font-size:13px; font-weight:600;">Employer</div>
+            <div style="font-size:11px; color:var(--text3);">Post jobs & hire</div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="gap:10px;">
+          <div class="field" style="margin-bottom:10px;">
+            <label class="label">First Name</label>
+            <input class="input" placeholder="Nathan">
+          </div>
+          <div class="field" style="margin-bottom:10px;">
+            <label class="label">Last Name</label>
+            <input class="input" placeholder="Kayeera">
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Email</label>
+          <input class="input" placeholder="you@email.com">
+        </div>
+        <div class="field">
+          <label class="label">Phone (for SMS alerts)</label>
+          <input class="input" placeholder="+256 7XX XXX XXX">
+        </div>
+        <div class="field">
+          <label class="label">Password</label>
+          <input class="input" type="password" placeholder="Min 8 characters">
+        </div>
+        <div style="font-size:12px; color:var(--text3); margin-bottom:1rem;">
+          By registering, you agree to our Terms of Service and Privacy Policy. Your data is protected under Uganda's Data Protection Act 2019.
+        </div>
+        <button class="btn btn-primary" style="width:100%; justify-content:center;">Create Account →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const tabs = document.querySelectorAll('.nav-tab');
+  const map = {
+    'landing': 0, 'seeker-dashboard': 1, 'job-search': 2, 'apply': 3,
+    'employer-dashboard': 4, 'post-job': 5, 'applications-review': 6,
+    'admin-dashboard': 7, 'reg-report': 8, 'mobile': 9, 'auth': 10
+  };
+  if (map[id] !== undefined) tabs[map[id]].classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// Interactive filter pills
+document.querySelectorAll('.filter-pills .pill').forEach(pill => {
+  pill.addEventListener('click', function() {
+    this.closest('.filter-pills').querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Interactive sidebar items
+document.querySelectorAll('.sidebar-item').forEach(item => {
+  item.addEventListener('click', function() {
+    this.closest('.sidebar-nav').querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Interactive tabs
+document.querySelectorAll('.tabs .tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    this.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

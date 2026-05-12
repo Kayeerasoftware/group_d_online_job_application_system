@@ -5,7 +5,7 @@ services:
     plan: starter
     dockerfilePath: ./Dockerfile
     healthCheckPath: /
-    preDeployCommand: "php artisan optimize:clear; php artisan storage:link || true; php artisan migrate --force; php artisan config:cache"
+    preDeployCommand: "php artisan optimize:clear; php artisan storage:link || true; php artisan config:cache"
     disk:
       name: app-storage
       mountPath: /var/www/html/storage/app/public

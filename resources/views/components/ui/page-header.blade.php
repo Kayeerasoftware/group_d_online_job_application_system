@@ -4,18 +4,18 @@
     'description' => null,
 ])
 
-<div {{ $attributes->merge(['class' => 'flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between']) }}>
+<div {{ $attributes->merge(['class' => 'page-header']) }}>
     <div class="max-w-3xl space-y-3">
         @if($eyebrow)
-            <p class="text-sm font-semibold uppercase tracking-[0.35em] text-cyan-300/80">{{ $eyebrow }}</p>
+            <p class="section-eyebrow">{{ $eyebrow }}</p>
         @endif
 
         @if($title)
-            <h1 class="text-3xl font-semibold tracking-tight text-white md:text-4xl">{{ $title }}</h1>
+            <h1 class="page-title">{{ $title }}</h1>
         @endif
 
         @if($description)
-            <p class="max-w-3xl text-sm leading-7 text-slate-400 md:text-base">{{ $description }}</p>
+            <p class="page-description">{{ $description }}</p>
         @endif
     </div>
 

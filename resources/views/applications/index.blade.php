@@ -9,18 +9,16 @@
         description="A cleaner review queue for seekers, employers, and administrators."
     >
         <x-slot:actions>
-            @if($job && auth()->check() && auth()->user()->isEmployer())
+            @if($job && safe_auth_check() && safe_auth_user()?->isEmployer())
                 <a class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10" href="{{ route('employer.applications.export', $job) }}">
                     Export CSV
                 </a>
             @endif
-            @auth
-                @if(auth()->user()->isSeeker())
+            @if(safe_auth_check() && safe_auth_user()?->isSeeker())
                     <a class="inline-flex items-center justify-center rounded-2xl bg-cyan-400 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300" href="{{ route('jobs.index') }}">
                         Apply to jobs
                     </a>
-                @endif
-            @endauth
+            @endif
         </x-slot:actions>
     </x-ui.page-header>
 

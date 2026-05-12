@@ -5,7 +5,7 @@ services:
     plan: starter
     dockerfilePath: ./Dockerfile
     healthCheckPath: /
-    preDeployCommand: "php artisan storage:link || true && php artisan migrate --force && php artisan config:cache"
+    preDeployCommand: "php artisan optimize:clear; php artisan storage:link || true; php artisan migrate --force || true; php artisan config:cache"
     disk:
       name: app-storage
       mountPath: /var/www/html/storage/app/public
@@ -13,7 +13,7 @@ services:
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
-        value: "true"
+        value: "false"
       - key: APP_KEY
         sync: false
       - key: APP_URL
@@ -28,8 +28,6 @@ services:
         sync: false
       - key: DB_CONNECTION
         value: mysql
-      - key: DATABASE_URL
-        sync: false
       - key: DB_HOST
         sync: false
       - key: DB_PORT
@@ -55,7 +53,7 @@ services:
       - key: SESSION_SECURE_COOKIE
         value: "true"
       - key: QUEUE_CONNECTION
-        value: database
+        value: sync
       - key: FILESYSTEM_DISK
         value: uploads
       - key: LOG_CHANNEL

@@ -1,11 +1,11 @@
 @php
-    $user = auth()->user();
+    $user = safe_auth_user();
     $pageTitle = trim($__env->yieldContent('title', 'Dashboard'));
 @endphp
 
-<header class="app-chrome sticky top-0 z-30 border-b border-white/10 bg-[#1a1714] backdrop-blur-xl {{ auth()->check() ? 'md:pl-72 xl:pl-80' : '' }}">
+<header class="app-chrome sticky top-0 z-30 border-b border-white/10 bg-[#1a1714] backdrop-blur-xl {{ safe_auth_check() ? 'md:pl-72 xl:pl-80' : '' }}">
     <div class="mx-auto flex max-w-7xl items-center gap-4 px-4 py-4 md:px-6">
-        @auth
+        @if (safe_auth_check())
             <button
                 type="button"
                 class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-[#f9f7f3] transition hover:bg-white/10 md:hidden"
@@ -16,9 +16,9 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
             </button>
-        @endauth
+        @endif
 
-        <a href="{{ auth()->check() ? route('dashboard') : route('home') }}" class="flex min-w-0 items-center gap-3">
+        <a href="{{ safe_auth_check() ? route('dashboard') : route('home') }}" class="flex min-w-0 items-center gap-3">
             <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-400/15 text-sm font-bold text-emerald-200 ring-1 ring-emerald-400/30">JL</span>
             <span class="min-w-0">
                 <span class="block chrome-brand text-lg text-white">Job<span class="text-emerald-200">Link</span></span>
@@ -45,7 +45,7 @@
         </div>
 
         <div class="ml-auto flex items-center gap-3">
-            @guest
+            @if (! safe_auth_check())
                 <a href="{{ route('jobs.index') }}" class="hidden rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white/85 transition hover:bg-white/10 md:inline-flex">
                     Browse Jobs
                 </a>
@@ -108,7 +108,7 @@
                         Logout
                     </button>
                 </form>
-            @endguest
+            @endif
         </div>
     </div>
 </header>

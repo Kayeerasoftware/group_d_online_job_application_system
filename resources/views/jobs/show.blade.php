@@ -10,21 +10,20 @@
             description="{{ $job->description }}"
         >
             <x-slot:actions>
-                @auth
-                    @if(auth()->user()->isSeeker() && ! $applied)
+                @if(safe_auth_check() && safe_auth_user()?->isSeeker() && ! $applied)
                         <a class="inline-flex items-center justify-center rounded-2xl bg-cyan-400 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300" href="{{ route('applications.create', ['job' => $job->id]) }}">
                             Apply now
                         </a>
-                    @endif
-                    @if(auth()->user()->isSeeker())
+                @endif
+                @if(safe_auth_check() && safe_auth_user()?->isSeeker())
                         <form method="post" action="{{ route('seeker.saved-jobs.store', $job) }}">
                             @csrf
                             <button class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10" type="submit">
                                 {{ $saved ? 'Saved' : 'Save job' }}
                             </button>
                         </form>
-                    @endif
-                    @if((auth()->user()->isEmployer() && auth()->id() === $job->employer_id) || auth()->user()->isAdmin())
+                @endif
+                @if((safe_auth_check() && safe_auth_user()?->isEmployer() && safe_auth_id() === $job->employer_id) || (safe_auth_check() && safe_auth_user()?->isAdmin()))
                         <a class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10" href="{{ route('jobs.edit', $job) }}">
                             Edit
                         </a>
@@ -35,12 +34,11 @@
                         >
                             Delete
                         </button>
-                    @endif
                 @else
                     <a class="inline-flex items-center justify-center rounded-2xl bg-cyan-400 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300" href="{{ route('register') }}">
                         Register to apply
                     </a>
-                @endauth
+                @endif
             </x-slot:actions>
         </x-ui.page-header>
 
@@ -104,8 +102,7 @@
                     </div>
                 </x-ui.panel>
 
-                @auth
-                    @if(auth()->user()->isAdmin())
+                @if(safe_auth_check() && safe_auth_user()?->isAdmin())
                         <x-ui.panel tone="warning" class="p-5 md:p-6">
                             <p class="text-xs font-semibold uppercase tracking-[0.35em] text-amber-200/80">Admin moderation</p>
                             <p class="mt-3 text-sm leading-7 text-amber-50/90">
@@ -124,8 +121,7 @@
                                 </button>
                             </form>
                         </x-ui.panel>
-                    @endif
-                @endauth
+                @endif
             </div>
         </div>
     </x-ui.panel>

@@ -1,4 +1,4 @@
-@if(auth()->check() && (auth()->user()->isEmployer() || auth()->user()->isAdmin()))
+@if(safe_auth_check() && (safe_auth_user()?->isEmployer() || safe_auth_user()?->isAdmin()))
     <form class="space-y-4" method="post" action="{{ route('applications.status', $application) }}">
         @csrf
         @method('patch')

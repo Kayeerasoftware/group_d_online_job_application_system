@@ -1,5 +1,5 @@
 @php
-    $user = auth()->user();
+    $user = safe_auth_user();
     $initials = collect(preg_split('/\s+/', trim($user?->name ?? 'U')) ?: ['U'])
         ->filter()
         ->map(fn ($part) => mb_substr($part, 0, 1))

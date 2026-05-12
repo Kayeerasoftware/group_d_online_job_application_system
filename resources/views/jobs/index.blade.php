@@ -9,13 +9,11 @@
         description="Search, filter, and compare open roles in a cleaner workspace built for fast scanning."
     >
         <x-slot:actions>
-            @auth
-                @if(auth()->user()->isEmployer())
+            @if(safe_auth_check() && safe_auth_user()?->isEmployer())
                     <a class="inline-flex items-center justify-center rounded-2xl bg-cyan-400 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300" href="{{ route('jobs.create') }}">
                         Post a Job
                     </a>
-                @endif
-            @endauth
+            @endif
         </x-slot:actions>
     </x-ui.page-header>
 
@@ -99,13 +97,11 @@
                                     <a class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-slate-100 transition hover:bg-white/10" href="{{ route('jobs.show', $job) }}">
                                         Open
                                     </a>
-                                    @auth
-                                        @if(auth()->user()->isEmployer() && auth()->id() === $job->employer_id)
+                                    @if(safe_auth_check() && safe_auth_user()?->isEmployer() && safe_auth_id() === $job->employer_id)
                                             <a class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-slate-100 transition hover:bg-white/10" href="{{ route('jobs.edit', $job) }}">
                                                 Edit
                                             </a>
-                                        @endif
-                                    @endauth
+                                    @endif
                                 </div>
                             </td>
                         </tr>

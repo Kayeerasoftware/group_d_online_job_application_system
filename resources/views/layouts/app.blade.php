@@ -15,11 +15,11 @@
         <div class="pointer-events-none absolute -right-28 top-1/2 h-80 w-80 rounded-full bg-sky-500/10 blur-3xl animate-float-slow" style="animation-delay: -4s;"></div>
 
         @include('partials.topbar')
-        @auth
+        @if (safe_auth_check())
             @include('partials.sidebar')
-        @endauth
+        @endif
 
-        <main class="app-main relative z-10 mx-auto max-w-7xl px-4 pb-12 pt-6 md:px-6 md:pb-16 md:pt-8 animate-fade-up {{ auth()->check() ? 'md:pl-72 xl:pl-80' : '' }}">
+        <main class="app-main relative z-10 mx-auto max-w-7xl px-4 pb-12 pt-6 md:px-6 md:pb-16 md:pt-8 animate-fade-up {{ safe_auth_check() ? 'md:pl-72 xl:pl-80' : '' }}">
             <div class="joblink-content">
                 @include('partials.alerts')
                 @yield('content')

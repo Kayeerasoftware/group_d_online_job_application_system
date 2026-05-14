@@ -7,6 +7,24 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Run Locally
+
+This repo now includes a local-friendly `.env` so you can run the app on your machine without using Render.
+
+Typical local startup:
+
+1. Make sure PHP 8.2+, Composer, Node.js, and npm are installed.
+2. Run `php artisan key:generate` if you want a fresh local app key.
+3. Make sure your local MySQL service is running and the `job_application_system` database exists.
+4. Run `php artisan migrate` to create the tables in the local database.
+5. Run `php artisan storage:link` so uploaded files are reachable from `/storage`.
+6. Start the app with `php artisan serve`.
+7. In another terminal, run `npm run dev` for front-end assets.
+
+Optional:
+
+- Run `php artisan db:seed` if you want the demo data.
+
 ## Deploy On Render
 
 This repo includes a Render blueprint at [render.yaml](render.yaml) and a quick env reference at [render.env.example](render.env.example).

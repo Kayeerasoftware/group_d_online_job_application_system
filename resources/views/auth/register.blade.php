@@ -174,7 +174,7 @@
                             data-register-password-confirmation
                         >
                         <div class="flex items-center gap-2 text-xs font-medium text-rose-300" data-password-match-status>
-                            <span class="inline-flex h-4 w-4 items-center justify-center rounded-full border border-rose-400 text-[10px] leading-none text-rose-400">&times;</span>
+                            <span class="inline-flex h-4 w-4 items-center justify-center rounded-full border border-rose-400 text-[10px] leading-none text-rose-500">&times;</span>
                             Mismatch
                         </div>
                     </div>

@@ -9,22 +9,41 @@
     @endif
 </head>
 <body class="joblink-theme min-h-screen overflow-x-hidden antialiased">
-    <div class="joblink-canvas relative min-h-screen overflow-hidden">
-        <div class="joblink-grid pointer-events-none absolute inset-0 opacity-70 [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.88),transparent)]"></div>
-        <div class="pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl animate-float-slow"></div>
-        <div class="pointer-events-none absolute -right-28 top-1/2 h-80 w-80 rounded-full bg-sky-500/10 blur-3xl animate-float-slow" style="animation-delay: -4s;"></div>
+    @if (request()->routeIs('home'))
+        <div class="joblink-canvas relative min-h-screen overflow-hidden">
+            <div class="joblink-grid pointer-events-none absolute inset-0 opacity-70 [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.88),transparent)]"></div>
+            <div class="pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl animate-float-slow"></div>
+            <div class="pointer-events-none absolute -right-28 top-1/2 h-80 w-80 rounded-full bg-sky-500/10 blur-3xl animate-float-slow" style="animation-delay: -4s;"></div>
 
-        @include('partials.topbar')
-        @if (safe_auth_check())
-            @include('partials.sidebar')
-        @endif
+            @include('partials.topbar')
 
-        <main class="app-main relative z-10 mx-auto max-w-7xl px-4 pb-12 pt-6 md:px-6 md:pb-16 md:pt-8 animate-fade-up {{ safe_auth_check() ? 'md:pl-72 xl:pl-80' : '' }}">
-            <div class="joblink-content">
+            <main class="app-main relative z-10 mx-auto w-full max-w-7xl px-4 pb-12 pt-6 md:px-6 md:pb-16 md:pt-8 animate-fade-up">
                 @include('partials.alerts')
-                @yield('content')
-            </div>
-        </main>
-    </div>
+
+                <div class="joblink-content">
+                    @yield('content')
+                </div>
+            </main>
+        </div>
+    @else
+        <div class="joblink-canvas relative min-h-screen overflow-hidden">
+            <div class="joblink-grid pointer-events-none absolute inset-0 opacity-70 [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.88),transparent)]"></div>
+            <div class="pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl animate-float-slow"></div>
+            <div class="pointer-events-none absolute -right-28 top-1/2 h-80 w-80 rounded-full bg-sky-500/10 blur-3xl animate-float-slow" style="animation-delay: -4s;"></div>
+
+            @include('partials.topbar')
+            @if (safe_auth_check())
+                @include('partials.sidebar')
+            @endif
+
+            <main class="app-main relative z-10 mx-auto max-w-7xl px-4 pb-12 pt-6 md:px-6 md:pb-16 md:pt-8 animate-fade-up {{ safe_auth_check() ? 'md:pl-72 xl:pl-80' : '' }}">
+                @include('partials.alerts')
+
+                <div class="joblink-content">
+                    @yield('content')
+                </div>
+            </main>
+        </div>
+    @endif
 </body>
 </html>

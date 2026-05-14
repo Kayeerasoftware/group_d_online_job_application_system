@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
 @import 'tailwindcss';
+@import './Authentication-navs.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -221,114 +222,6 @@ body.joblink-theme {
     flex: 1;
     flex-direction: column;
     width: 100%;
-}
-
-.auth-header {
-    padding-top: 0.5rem;
-}
-
-.auth-header__inner {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 1rem;
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    padding: 0.75rem 1rem;
-}
-
-.auth-brand-link {
-    display: inline-flex;
-    align-items: center;
-    color: inherit;
-    text-decoration: none;
-}
-
-.auth-logo-frame {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border-radius: 18px;
-    line-height: 0;
-}
-
-.auth-logo-frame::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border: 1px solid rgba(30, 107, 79, 0.2);
-    border-radius: inherit;
-    pointer-events: none;
-}
-
-.auth-logo-frame__runner {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    overflow: visible;
-}
-
-.auth-logo-frame__runner rect {
-    fill: none;
-    stroke: var(--accent);
-    stroke-width: 1.25;
-    stroke-linecap: round;
-    stroke-dasharray: 12 88;
-    stroke-dashoffset: 0;
-    vector-effect: non-scaling-stroke;
-    animation: auth-logo-runner 2.4s linear infinite;
-}
-
-@keyframes auth-logo-runner {
-    to {
-        stroke-dashoffset: -100;
-    }
-}
-
-.auth-brand {
-    min-width: 0;
-    text-align: center;
-}
-
-.auth-brand__logo {
-    height: 76px;
-    width: auto;
-    max-width: 100%;
-    flex: none;
-    object-fit: contain;
-    background: transparent;
-    padding: 0;
-    box-shadow: none;
-}
-
-.auth-brand__eyebrow {
-    margin: 0;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--accent);
-}
-
-.auth-brand__title {
-    margin-top: 4px;
-    font-family: var(--serif);
-    font-size: clamp(1.8rem, 2.6vw, 2.5rem);
-    line-height: 1;
-    letter-spacing: -0.03em;
-}
-
-.auth-header__note {
-    margin: 0;
-    max-width: 22rem;
-    justify-self: end;
-    text-align: right;
-    font-size: 0.95rem;
-    line-height: 1.55;
-    color: var(--text2);
 }
 
 .auth-main {
@@ -794,31 +687,6 @@ body.joblink-theme {
 }
 
 @media (max-width: 767px) {
-    .auth-header__inner {
-        grid-template-columns: auto auto;
-        justify-content: center;
-        gap: 10px;
-        padding: 0.45rem 0.75rem;
-    }
-
-    .auth-brand__logo {
-        height: 56px;
-    }
-
-    .auth-brand__eyebrow {
-        font-size: 9px;
-        letter-spacing: 0.24em;
-    }
-
-    .auth-brand__title {
-        margin-top: 2px;
-        font-size: 1.55rem;
-    }
-
-    .auth-header__note {
-        display: none;
-    }
-
     .auth-main {
         padding: 18px 12px 24px;
     }

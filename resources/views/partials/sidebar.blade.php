@@ -7,171 +7,120 @@
         ->implode('');
 
     $links = [
-        ['label' => 'Dashboard', 'route' => 'dashboard', 'active' => 'dashboard'],
-        ['label' => 'Jobs', 'route' => 'jobs.index', 'active' => 'jobs.*'],
-    ];
-
-    $quickActions = [
-        ['label' => 'Browse Jobs', 'route' => 'jobs.index', 'active' => 'jobs.index'],
+        ['label' => 'Dashboard', 'route' => 'dashboard', 'active' => 'dashboard', 'icon' => 'dashboard'],
+        ['label' => 'Members', 'route' => 'jobs.index', 'active' => 'jobs.*', 'icon' => 'members'],
+        ['label' => 'Loans', 'route' => 'jobs.index', 'active' => 'jobs.*', 'icon' => 'loans'],
     ];
 
     if ($user?->isSeeker()) {
-        $links = array_merge($links, [
-            ['label' => 'Saved Jobs', 'route' => 'seeker.saved-jobs.index', 'active' => 'seeker.saved-jobs.*'],
-            ['label' => 'Applications', 'route' => 'applications.index', 'active' => 'applications.*'],
-            ['label' => 'Notifications', 'route' => 'seeker.notifications.index', 'active' => 'seeker.notifications.*'],
-            ['label' => 'Profile', 'route' => 'seeker.profile.edit', 'active' => 'seeker.profile.*'],
-        ]);
-        $quickActions = [
-            ['label' => 'Browse Jobs', 'route' => 'jobs.index', 'active' => 'jobs.index'],
-            ['label' => 'Saved Jobs', 'route' => 'seeker.saved-jobs.index', 'active' => 'seeker.saved-jobs.*'],
-            ['label' => 'Edit Profile', 'route' => 'seeker.profile.edit', 'active' => 'seeker.profile.*'],
-        ];
-    } elseif ($user?->isEmployer()) {
-        $links = array_merge($links, [
-            ['label' => 'Post a Job', 'route' => 'jobs.create', 'active' => 'jobs.create'],
-            ['label' => 'Company Profile', 'route' => 'employer.profile.edit', 'active' => 'employer.profile.*'],
-            ['label' => 'Applications', 'route' => 'applications.index', 'active' => 'applications.*'],
-        ]);
-        $quickActions = [
-            ['label' => 'Post a Job', 'route' => 'jobs.create', 'active' => 'jobs.create'],
-            ['label' => 'View Jobs', 'route' => 'jobs.index', 'active' => 'jobs.index'],
-            ['label' => 'Edit Company Profile', 'route' => 'employer.profile.edit', 'active' => 'employer.profile.*'],
-        ];
-    } elseif ($user?->isAdmin()) {
-        $links = array_merge($links, [
-            ['label' => 'Users', 'route' => 'admin.users.index', 'active' => 'admin.users.*'],
-            ['label' => 'Audit Logs', 'route' => 'admin.audit-logs.index', 'active' => 'admin.audit-logs.*'],
-            ['label' => 'Reports', 'route' => 'admin.reports.index', 'active' => 'admin.reports.*'],
-            ['label' => 'System Health', 'route' => 'admin.system.index', 'active' => 'admin.system.*'],
-        ]);
-        $quickActions = [
-            ['label' => 'Users', 'route' => 'admin.users.index', 'active' => 'admin.users.*'],
-            ['label' => 'Generate Report', 'route' => 'admin.reports.create', 'active' => 'admin.reports.create'],
-            ['label' => 'Audit Logs', 'route' => 'admin.audit-logs.index', 'active' => 'admin.audit-logs.*'],
-            ['label' => 'System Health', 'route' => 'admin.system.index', 'active' => 'admin.system.*'],
+        $links = [
+            ['label' => 'Dashboard', 'route' => 'dashboard', 'active' => 'dashboard', 'icon' => 'dashboard'],
+            ['label' => 'Members', 'route' => 'jobs.index', 'active' => 'jobs.*', 'icon' => 'members'],
+            ['label' => 'Loans', 'route' => 'jobs.index', 'active' => 'jobs.*', 'icon' => 'loans'],
+            ['label' => 'Loan Applications', 'route' => 'applications.index', 'active' => 'applications.*', 'icon' => 'applications'],
+            ['label' => 'Fundraising', 'route' => 'seeker.saved-jobs.index', 'active' => 'seeker.saved-jobs.*', 'icon' => 'fundraising'],
+            ['label' => 'Transactions', 'route' => 'seeker.notifications.index', 'active' => 'seeker.notifications.*', 'icon' => 'transactions'],
+            ['label' => 'Financial', 'route' => 'seeker.profile.edit', 'active' => 'seeker.profile.*', 'icon' => 'financial'],
+            ['label' => 'Projects', 'route' => 'seeker.profile.edit', 'active' => 'seeker.profile.*', 'icon' => 'projects'],
+            ['label' => 'Users', 'route' => 'seeker.profile.edit', 'active' => 'seeker.profile.*', 'icon' => 'users'],
+            ['label' => 'Settings', 'route' => 'seeker.profile.edit', 'active' => 'seeker.profile.*', 'icon' => 'settings'],
         ];
     }
-
-    $icons = [
-        'dashboard' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.5V6a2 2 0 0 1 2-2h4v9.5H3Zm10-9.5h6a2 2 0 0 1 2 2v5h-8V4Zm0 10h8v6a2 2 0 0 1-2 2h-6v-8Zm-10 0h8v8H5a2 2 0 0 1-2-2v-6Z" /></svg>',
-        'jobs.index' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16v11H4z" /><path stroke-linecap="round" stroke-linejoin="round" d="M9 7V5a3 3 0 0 1 6 0v2" /></svg>',
-        'seeker.saved-jobs.index' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 4h12a2 2 0 0 1 2 2v16l-8-5-8 5V6a2 2 0 0 1 2-2Z" /></svg>',
-        'applications.index' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5h6l4 4v10a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6M9 17h6" /></svg>',
-        'seeker.notifications.index' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17H9m8-2V9a5 5 0 0 0-10 0v6L5 17h14l-1-2Z" /></svg>',
-        'seeker.profile.edit' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M4 20a8 8 0 0 1 16 0" /></svg>',
-        'jobs.create' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14" /></svg>',
-        'employer.profile.edit' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h10M4 17h16" /></svg>',
-        'admin.users.index' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20a4 4 0 0 0-8 0" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" /></svg>',
-        'admin.audit-logs.index' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 4h9l5 5v11H6z" /><path stroke-linecap="round" stroke-linejoin="round" d="M9 14h6M9 18h6" /></svg>',
-        'admin.reports.index' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 4h10v16H7z" /><path stroke-linecap="round" stroke-linejoin="round" d="M9 8h6M9 12h6M9 16h4" /></svg>',
-        'admin.reports.create' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14" /></svg>',
-        'admin.system.index' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h3m9 0h3M12 4.5v3m0 9v3M6.1 6.1l2.1 2.1m7.6 7.6 2.1 2.1M17.9 6.1l-2.1 2.1M8.2 15.8l-2.1 2.1" /></svg>',
-    ];
 @endphp
 
-<div data-sidebar-backdrop class="fixed inset-0 z-30 hidden bg-[#1a1714]/70 backdrop-blur-sm md:hidden"></div>
+<div data-sidebar-backdrop class="fixed inset-0 z-30 hidden bg-slate-900/50 backdrop-blur-sm md:hidden"></div>
 
 <aside
     data-sidebar
-    class="app-chrome fixed inset-y-0 left-0 z-40 w-72 -translate-x-full border-r border-white/10 bg-[#1a1714] backdrop-blur-xl transition-transform duration-300 md:translate-x-0 xl:w-80"
+    class="fixed inset-y-0 left-0 z-40 w-64 -translate-x-full border-r border-slate-200 bg-slate-100 transition-transform duration-300 md:translate-x-0"
 >
     <div class="flex h-full flex-col">
-        <div class="flex items-center justify-between border-b border-white/10 px-5 py-5">
-            <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-                <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-400/15 text-sm font-bold text-emerald-200 ring-1 ring-emerald-400/30">JL</span>
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.35em] text-white/55">Workspace</p>
-                    <p class="chrome-brand text-lg text-white">Job<span class="text-emerald-200">Link</span></p>
-                </div>
-            </a>
+        <div class="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3">
             <button
                 type="button"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-lg text-white transition hover:bg-white/10 md:hidden"
+                class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 md:hidden"
                 data-sidebar-close
                 aria-label="Close navigation menu"
             >
-                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6 6 18" />
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
 
-        <div class="flex-1 overflow-y-auto px-4 py-5">
-            <div class="rounded-[28px] border border-white/10 bg-white/5 p-4 shadow-lg shadow-slate-950/20">
-                <p class="text-xs uppercase tracking-[0.35em] text-white/45">Signed in as</p>
-                <div class="mt-3 flex items-center gap-3">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-400/15 text-sm font-semibold text-emerald-200 ring-1 ring-emerald-400/30">
-                        {{ $initials }}
-                    </div>
-                    <div class="min-w-0">
-                        <p class="truncate font-semibold text-white">{{ $user?->name }}</p>
-                        <p class="truncate text-sm text-white/55">{{ $user?->email }}</p>
-                    </div>
+        <div class="flex-1 overflow-y-auto px-3 py-4">
+            <div class="mb-4 flex items-center gap-3 rounded-lg bg-white p-3 shadow-sm">
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-slate-300 text-sm font-bold text-slate-700">
+                    {{ $initials }}
                 </div>
-                <div class="mt-4 chrome-chip">
-                    <span class="h-2 w-2 rounded-full bg-emerald-300"></span>
-                    {{ $user?->roleValue() }}
+                <div class="min-w-0 flex-1">
+                    <p class="truncate text-sm font-semibold text-slate-900">{{ $user?->name }}</p>
+                    <p class="truncate text-xs text-slate-500">{{ $user?->roleValue() }}</p>
                 </div>
             </div>
 
-            <nav class="mt-6 space-y-6">
-                <div>
-                    <p class="px-3 text-xs font-semibold uppercase tracking-[0.35em] text-white/40">Main Navigation</p>
-                    <div class="mt-3 space-y-1">
-                        @foreach($links as $link)
-                            <a
-                                href="{{ route($link['route']) }}"
-                                @class([
-                                    'chrome-link',
-                                    'is-active' => request()->routeIs($link['active']),
-                                ])
-                            >
-                                <span class="flex h-9 w-9 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white/70">
-                                    {!! $icons[$link['route']] ?? $icons['dashboard'] !!}
-                                </span>
-                                <span class="text-sm font-medium">{{ $link['label'] }}</span>
-                            </a>
-                        @endforeach
-                    </div>
+            <div class="mb-3 rounded-lg bg-white px-3 py-2 shadow-sm">
+                <div class="flex items-center gap-2 text-slate-400">
+                    <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input type="text" placeholder="Search menu..." class="w-full border-0 bg-transparent text-sm text-slate-600 placeholder-slate-400 focus:outline-none">
                 </div>
+            </div>
 
-                <div class="rounded-[28px] border border-white/10 bg-white/5 p-4">
-                    <p class="text-xs font-semibold uppercase tracking-[0.35em] text-white/40">Quick Actions</p>
-                    <div class="mt-3 space-y-2">
-                        @foreach($quickActions as $action)
-                            <a
-                                href="{{ route($action['route']) }}"
-                                class="flex items-center justify-between rounded-2xl border border-white/10 bg-[#221e1a] px-4 py-3 text-sm font-semibold text-white/85 transition hover:-translate-y-0.5 hover:bg-[#2a241f]"
-                            >
-                                <span class="flex items-center gap-3">
-                                    <span class="flex h-8 w-8 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white/65">
-                                        {!! $icons[$action['route']] ?? $icons['jobs.index'] !!}
-                                    </span>
-                                    <span>{{ $action['label'] }}</span>
-                                </span>
-                                <svg viewBox="0 0 24 24" class="h-4 w-4 text-white/35" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m9 5 7 7-7 7" />
-                                </svg>
-                            </a>
-                        @endforeach
-                    </div>
-                </div>
+            <nav class="space-y-1">
+                @foreach($links as $link)
+                    <a
+                        href="{{ route($link['route']) }}"
+                        @class([
+                            'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition',
+                            'bg-blue-600 text-white' => request()->routeIs($link['active']),
+                            'text-slate-700 hover:bg-white' => !request()->routeIs($link['active']),
+                        ])
+                    >
+                        @if($link['icon'] === 'dashboard')
+                            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                        @elseif($link['icon'] === 'members')
+                            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                        @elseif($link['icon'] === 'loans')
+                            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 00-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg>
+                        @elseif($link['icon'] === 'applications')
+                            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+                        @elseif($link['icon'] === 'fundraising')
+                            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        @elseif($link['icon'] === 'transactions')
+                            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                        @elseif($link['icon'] === 'financial')
+                            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+                        @elseif($link['icon'] === 'projects')
+                            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                        @elseif($link['icon'] === 'users')
+                            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        @else
+                            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94L14.4 2.81c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                        @endif
+                        <span>{{ $link['label'] }}</span>
+                    </a>
+                @endforeach
             </nav>
         </div>
 
-        <div class="border-t border-white/10 p-4">
+        <div class="border-t border-slate-200 bg-white p-3">
             <form method="post" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-semibold text-[#1a1714] transition hover:bg-emerald-300">
-                    <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 17l5-5-5-5" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H3" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 3h3a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-3" />
+                <button type="submit" class="mb-2 flex w-full items-center gap-3 rounded-lg bg-green-500 px-3 py-2 text-sm font-semibold text-white transition hover:bg-green-600">
+                    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                     </svg>
                     Logout
                 </button>
             </form>
+            <button class="flex w-full items-center justify-center gap-2 rounded-lg bg-white px-3 py-2 text-xs font-medium text-slate-600 shadow-sm transition hover:bg-slate-50">
+                <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor">
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                </svg>
+                Chat
+            </button>
         </div>
     </div>
 </aside>

@@ -14,6 +14,13 @@
         <div class="pointer-events-none absolute -left-24 top-16 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl animate-float-slow"></div>
         <div class="pointer-events-none absolute -right-24 bottom-20 h-80 w-80 rounded-full bg-sky-500/10 blur-3xl animate-float-slow" style="animation-delay: -4s;"></div>
 
+        @php
+            $compactHeaderAction = [
+                'label' => 'Browse Jobs',
+                'href' => route('jobs.index'),
+            ];
+        @endphp
+
         <main class="relative mx-auto flex min-h-screen w-full max-w-3xl items-center justify-center px-4 py-8 md:px-6">
             <section class="joblink-content w-full rounded-[32px] border border-white/10 bg-[rgba(255,255,255,0.92)] p-4 shadow-2xl shadow-slate-950/10 backdrop-blur-xl md:p-6 animate-fade-up">
                 <div class="mb-6 flex items-center justify-between gap-4">
@@ -24,8 +31,8 @@
                             <span class="block text-base font-semibold">Job App System</span>
                         </span>
                     </a>
-                    <a href="{{ route('jobs.index') }}" class="rounded-full border border-[color:var(--border)] bg-[color:var(--surface2)] px-4 py-2 text-sm font-semibold text-[color:var(--text)] transition hover:bg-[color:var(--surface)]">
-                        Browse Jobs
+                    <a href="{{ $compactHeaderAction['href'] }}" class="rounded-full border border-[color:var(--border)] bg-[color:var(--surface2)] px-4 py-2 text-sm font-semibold text-[color:var(--text)] transition hover:bg-[color:var(--surface)]">
+                        {{ $compactHeaderAction['label'] }}
                     </a>
                 </div>
 

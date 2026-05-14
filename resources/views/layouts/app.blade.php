@@ -10,10 +10,10 @@
 </head>
 <body class="joblink-theme min-h-screen overflow-x-hidden antialiased">
     @if (request()->routeIs('home'))
-        <div class="joblink-canvas relative min-h-screen overflow-hidden">
-            <div class="joblink-grid pointer-events-none absolute inset-0 opacity-70 [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.88),transparent)]"></div>
-            <div class="pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl animate-float-slow"></div>
-            <div class="pointer-events-none absolute -right-28 top-1/2 h-80 w-80 rounded-full bg-sky-500/10 blur-3xl animate-float-slow" style="animation-delay: -4s;"></div>
+        <div class="joblink-canvas relative min-h-screen overflow-hidden bg-[#fffdd0]">
+            <div class="joblink-grid pointer-events-none absolute inset-0 opacity-70 [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.88),transparent)] hidden"></div>
+            <div class="pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl animate-float-slow hidden"></div>
+            <div class="pointer-events-none absolute -right-28 top-1/2 h-80 w-80 rounded-full bg-sky-500/10 blur-3xl animate-float-slow hidden" style="animation-delay: -4s;"></div>
 
             @include('partials.topbar')
 
@@ -26,10 +26,10 @@
             </main>
         </div>
     @else
-        <div class="joblink-canvas relative min-h-screen overflow-hidden">
-            <div class="joblink-grid pointer-events-none absolute inset-0 opacity-70 [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.88),transparent)]"></div>
-            <div class="pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl animate-float-slow"></div>
-            <div class="pointer-events-none absolute -right-28 top-1/2 h-80 w-80 rounded-full bg-sky-500/10 blur-3xl animate-float-slow" style="animation-delay: -4s;"></div>
+        <div class="joblink-canvas relative min-h-screen overflow-hidden bg-[#fffdd0]">
+            <div class="joblink-grid pointer-events-none absolute inset-0 opacity-70 [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.88),transparent)] hidden"></div>
+            <div class="pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl animate-float-slow hidden"></div>
+            <div class="pointer-events-none absolute -right-28 top-1/2 h-80 w-80 rounded-full bg-sky-500/10 blur-3xl animate-float-slow hidden" style="animation-delay: -4s;"></div>
 
             @include('partials.topbar')
             @if (safe_auth_check())

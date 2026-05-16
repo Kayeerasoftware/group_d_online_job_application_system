@@ -36,7 +36,7 @@ class JobSeekerProfileController extends Controller
     {
         $profile = $request->user()->seekerProfile()->firstOrCreate(['user_id' => $request->user()->id]);
 
-        return view('profiles.seeker.edit', compact('profile'));
+        return view('jobseeker.profile-edit', compact('profile'));
     }
 
     public function update(UpdateJobSeekerProfileRequest $request): RedirectResponse

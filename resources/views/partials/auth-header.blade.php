@@ -3,6 +3,7 @@
     $headerLayout = $headerLayout ?? 'default';
     $headerCenterLabel = $headerCenterLabel ?? null;
     $headerRightLines = $headerRightLines ?? [];
+    $headerClass = $headerClass ?? '';
     $navItems = $navItems ?? [];
     $roleItems = $roleItems ?? [];
     $roleNavLabel = $roleNavLabel ?? 'Register as';
@@ -12,7 +13,7 @@
     $headerActionVariant = $headerAction['variant'] ?? 'outline';
 @endphp
 
-<header class="auth-header auth-header--{{ $headerVariant }} {{ $headerLayout === 'full' ? 'auth-header--full' : '' }}">
+<header class="auth-header auth-header--{{ $headerVariant }} {{ $headerLayout === 'full' ? 'auth-header--full' : '' }} {{ $headerClass }}">
     <div class="auth-header__inner">
         @if ($headerLayout === 'full')
             <a href="{{ route('home') }}" class="auth-header__brand auth-header__brand--icon-only" aria-label="Go to home page">

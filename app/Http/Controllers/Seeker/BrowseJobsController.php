@@ -40,9 +40,14 @@ class BrowseJobsController extends Controller
             ->pluck('job_id')
             ->toArray();
 
+        $appliedJobIds = $request->user()->applications()
+            ->pluck('job_id')
+            ->toArray();
+
         return view('jobseeker.browse-jobs', [
             'jobs' => $jobs,
             'savedJobIds' => $savedJobIds,
+            'appliedJobIds' => $appliedJobIds,
         ]);
     }
 }

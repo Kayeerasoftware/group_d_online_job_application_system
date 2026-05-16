@@ -48,6 +48,10 @@ class ApplicationController extends Controller
     {
         $job = $request->integer('job') ? Job::findOrFail($request->integer('job')) : null;
 
+        if ($request->user()?->isSeeker()) {
+            return view('jobseeker.applications-create', compact('job'));
+        }
+
         return view('applications.create', compact('job'));
     }
 
@@ -100,6 +104,10 @@ class ApplicationController extends Controller
             "Your application for {$job->title} was submitted successfully.",
             $dispatcher
         );
+
+        if ($user->isSeeker()) {
+            return redirect()->route('seeker.applications')->with('status', 'Application submitted successfully.');
+        }
 
         return redirect()->route('applications.show', $application)->with('status', 'Application submitted successfully.');
     }

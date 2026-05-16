@@ -18,7 +18,66 @@
         </div>
     </div>
 
-    <!-- Saved Jobs Grid -->
+    <!-- Animated Separator Line -->
+    <div class="relative h-2 bg-gray-200 rounded-full overflow-visible mb-6">
+        <div class="h-full bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full animate-slide-right"></div>
+        <span class="absolute -top-6 text-2xl md:text-3xl text-yellow-600 font-bold animate-slide-text whitespace-nowrap z-10">Loading Saved Jobs...</span>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 mb-6">
+        <!-- Total Saved -->
+        <div class="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-yellow-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-bookmark text-white text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-gray-600 font-semibold leading-tight">Total Saved</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">{{ $savedJobs->total() }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full-time -->
+        <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-blue-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-briefcase text-white text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-gray-600 font-semibold leading-tight">Full-time</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">{{ $metrics['fullTime'] }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part-time -->
+        <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-purple-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-clock text-white text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-gray-600 font-semibold leading-tight">Part-time</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">{{ $metrics['partTime'] }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Remote -->
+        <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-green-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-green-500 to-green-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-map-marker-alt text-white text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-gray-600 font-semibold leading-tight">Remote</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">{{ $metrics['remote'] }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
     @if($savedJobs->count() > 0)
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         @foreach($savedJobs as $savedJob)
@@ -91,4 +150,22 @@
     </div>
     @endif
 </div>
+
+<style>
+@keyframes slide-right {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}
+.animate-slide-right {
+    animation: slide-right 5s ease-out forwards;
+}
+@keyframes slide-text {
+    0% { left: 0%; opacity: 1; }
+    95% { opacity: 1; }
+    100% { left: 100%; opacity: 0; }
+}
+.animate-slide-text {
+    animation: slide-text 5s ease-out forwards;
+}
+</style>
 @endsection

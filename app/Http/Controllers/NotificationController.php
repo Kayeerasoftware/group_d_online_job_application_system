@@ -18,7 +18,7 @@ class NotificationController extends Controller
             ->latest()
             ->paginate(15);
 
-        return view('notifications.index', compact('notifications'));
+        return view('jobseeker.notifications', compact('notifications'));
     }
 
     public function create()

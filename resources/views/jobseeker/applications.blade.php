@@ -14,7 +14,70 @@
         </div>
     </div>
 
+    <!-- Animated Separator Line -->
+    <div class="relative h-2 bg-gray-200 rounded-full overflow-visible mb-6">
+        <div class="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full animate-slide-right"></div>
+        <span class="absolute -top-6 text-2xl md:text-3xl text-purple-600 font-bold animate-slide-text whitespace-nowrap z-10">Loading Applications...</span>
+    </div>
+
     <!-- Stats Cards -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-3 mb-6">
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-gray-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-gray-500 to-gray-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-file-alt text-white text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-gray-600 font-semibold leading-tight">Total</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">{{ $stats['total'] ?? 0 }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-blue-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-clock text-white text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-gray-600 font-semibold leading-tight">Pending</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">{{ $stats['pending'] ?? 0 }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-green-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-green-500 to-green-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-check-circle text-white text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-gray-600 font-semibold leading-tight">Shortlisted</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">{{ $stats['shortlisted'] ?? 0 }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-orange-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-orange-500 to-orange-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-calendar-check text-white text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-gray-600 font-semibold leading-tight">Interviews</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">{{ $stats['interview'] ?? 0 }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="bg-gradient-to-r from-red-50 to-red-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-red-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-red-500 to-red-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-times-circle text-white text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-gray-600 font-semibold leading-tight">Rejected</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">{{ $stats['rejected'] ?? 0 }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
         <div class="bg-white rounded-lg shadow-md p-4 text-center">
             <p class="text-3xl font-bold text-gray-900">{{ $stats['total'] }}</p>
@@ -115,4 +178,22 @@
     </div>
     @endif
 </div>
+
+<style>
+@keyframes slide-right {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}
+.animate-slide-right {
+    animation: slide-right 5s ease-out forwards;
+}
+@keyframes slide-text {
+    0% { left: 0%; opacity: 1; }
+    95% { opacity: 1; }
+    100% { left: 100%; opacity: 0; }
+}
+.animate-slide-text {
+    animation: slide-text 5s ease-out forwards;
+}
+</style>
 @endsection

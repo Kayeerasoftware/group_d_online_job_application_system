@@ -18,7 +18,66 @@
         </div>
     </div>
 
-    <!-- Search & Filters -->
+    <!-- Animated Separator Line -->
+    <div class="relative h-2 bg-gray-200 rounded-full overflow-visible mb-6">
+        <div class="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full animate-slide-right"></div>
+        <span class="absolute -top-6 text-2xl md:text-3xl text-blue-600 font-bold animate-slide-text whitespace-nowrap z-10">Loading Jobs...</span>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 mb-6">
+        <!-- Total Jobs -->
+        <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-blue-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-briefcase text-white text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-gray-600 font-semibold leading-tight">Total Jobs</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">{{ $jobs->total() }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full-time -->
+        <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-green-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-green-500 to-green-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-check-circle text-white text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-gray-600 font-semibold leading-tight">Full-time</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">0</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Remote -->
+        <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-purple-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-map-marker-alt text-white text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-gray-600 font-semibold leading-tight">Remote</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">0</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Internship -->
+        <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-orange-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-orange-500 to-orange-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-graduation-cap text-white text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-gray-600 font-semibold leading-tight">Internship</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">0</h3>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="bg-white rounded-xl shadow-lg p-6">
         <form method="GET" action="{{ route('seeker.browse-jobs') }}" class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -94,14 +153,25 @@
                 @endif
             </div>
 
-            <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+            <div class="flex items-center justify-between pt-4 border-t border-gray-200 gap-2">
                 <div class="flex gap-4 text-sm text-gray-600">
                     <span><i class="fas fa-eye mr-1"></i>{{ $job->views_count ?? 0 }} views</span>
                     <span><i class="fas fa-users mr-1"></i>{{ $job->applications_count ?? 0 }} applied</span>
                 </div>
-                <a href="{{ route('jobs.show', $job) }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition text-sm">
-                    View Details
-                </a>
+                <div class="flex gap-2">
+                    @if(in_array($job->id, $appliedJobIds))
+                        <button disabled class="px-3 py-2 bg-green-100 text-green-700 rounded-lg font-semibold cursor-not-allowed text-sm whitespace-nowrap">
+                            <i class="fas fa-check mr-1"></i>Applied
+                        </button>
+                    @else
+                        <a href="{{ route('seeker.applications.create', ['job' => $job->id]) }}" class="px-3 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition text-sm whitespace-nowrap">
+                            <i class="fas fa-paper-plane mr-1"></i>Apply
+                        </a>
+                    @endif
+                    <a href="{{ route('jobs.show', $job) }}" class="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition text-sm whitespace-nowrap">
+                        <i class="fas fa-eye mr-1"></i>View
+                    </a>
+                </div>
             </div>
         </div>
         @endforeach
@@ -122,6 +192,24 @@
     </div>
     @endif
 </div>
+
+<style>
+@keyframes slide-right {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}
+.animate-slide-right {
+    animation: slide-right 5s ease-out forwards;
+}
+@keyframes slide-text {
+    0% { left: 0%; opacity: 1; }
+    95% { opacity: 1; }
+    100% { left: 100%; opacity: 0; }
+}
+.animate-slide-text {
+    animation: slide-text 5s ease-out forwards;
+}
+</style>
 
 <script>
 function toggleSaveJob(jobId) {

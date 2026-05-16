@@ -43,6 +43,71 @@
     box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
 }
 
+.auth-header--home.auth-header--full .auth-header__inner {
+    background:
+        radial-gradient(circle at 12% 24%, rgba(255, 255, 255, 0.22), transparent 28%),
+        radial-gradient(circle at 82% 16%, rgba(255, 255, 255, 0.14), transparent 26%),
+        radial-gradient(circle at 50% 100%, rgba(255, 255, 255, 0.12), transparent 38%),
+        linear-gradient(135deg, #0d5b40 0%, #168360 38%, #34b27f 72%, #8ae6bf 100%);
+    border-bottom-color: rgba(20, 83, 60, 0.2);
+    box-shadow:
+        0 16px 32px rgba(8, 38, 27, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.auth-header--home.auth-header--full .auth-header__inner::before {
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 68%);
+}
+
+.auth-header--home.auth-header--full .auth-header__inner::after {
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.12), transparent 72%);
+}
+
+.auth-header--home .auth-header__center-eyebrow {
+    color: rgba(241, 255, 248, 0.9);
+}
+
+.auth-header--home .auth-header__right-line {
+    color: rgba(241, 255, 248, 0.88);
+}
+
+.auth-header--home .auth-header__center-title {
+    color: #f6fffb;
+    text-shadow: 0 1px 14px rgba(3, 29, 21, 0.18);
+}
+
+.auth-header--home .auth-header__logo--large {
+    filter: brightness(1.08) saturate(0.96);
+}
+
+.auth-header--home .auth-header__mobile-name,
+.auth-header--home .auth-header__brand,
+.auth-header--home .auth-header__brand:hover,
+.auth-header--home .auth-header__brand:focus-visible {
+    color: #f6fffb;
+}
+
+.auth-header--home .auth-header__right-stack {
+    text-shadow: 0 1px 10px rgba(3, 29, 21, 0.12);
+}
+
+.auth-header--home .auth-header__right-line + .auth-header__right-line {
+    color: rgba(232, 250, 243, 0.86);
+}
+
+.auth-header--home .auth-header__inner::before,
+.auth-header--home .auth-header__inner::after {
+    mix-blend-mode: screen;
+}
+
+.auth-header--home .auth-header__center-eyebrow {
+    letter-spacing: 0.22em;
+}
+
+.auth-header--home .auth-header__center-stack {
+    color: #ffffff;
+}
+
 .auth-header--full .auth-header__inner::before,
 .auth-header--full .auth-header__inner::after {
     content: '';

@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Employer\DashboardController as EmployerDashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -28,7 +29,7 @@ use App\Http\Controllers\Admin\JobModerationController as AdminJobModerationCont
 use App\Http\Controllers\AuditLogController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome')->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
@@ -60,17 +61,6 @@ Route::post('/jobs', [JobController::class, 'store'])->middleware(['auth', 'empl
 Route::put('/jobs/{job}', [JobController::class, 'update'])->middleware(['auth', 'employer'])->name('jobs.update');
 Route::delete('/jobs/{job}', [JobController::class, 'destroy'])->middleware(['auth', 'employer'])->name('jobs.destroy');
 
-Route::get('/applications', [ApplicationController::class, 'index'])->middleware('auth')->name('applications.index');
-Route::get('/applications/create', [ApplicationController::class, 'create'])->middleware(['auth', 'seeker'])->name('applications.create');
-Route::get('/applications/{application}', [ApplicationController::class, 'show'])->middleware('auth')->name('applications.show');
-Route::get('/applications/{application}/edit', [ApplicationController::class, 'edit'])->middleware('auth')->name('applications.edit');
-Route::post('/applications', [ApplicationController::class, 'store'])->middleware(['auth', 'seeker'])->name('applications.store');
-Route::put('/applications/{application}', [ApplicationController::class, 'update'])->middleware('auth')->name('applications.update');
-Route::patch('/applications/{application}/status', [ApplicationController::class, 'update'])
-    ->middleware('auth')
-    ->name('applications.status');
-Route::delete('/applications/{application}', [ApplicationController::class, 'destroy'])->middleware('auth')->name('applications.destroy');
-
 Route::prefix('seeker')->middleware(['auth', 'seeker'])->name('seeker.')->group(function (): void {
     Route::get('/dashboard', [SeekerDashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [JobSeekerProfileController::class, 'show'])->name('profile');
@@ -78,6 +68,8 @@ Route::prefix('seeker')->middleware(['auth', 'seeker'])->name('seeker.')->group(
     Route::put('/profile', [JobSeekerProfileController::class, 'update'])->name('profile.update');
     Route::get('/browse-jobs', [BrowseJobsController::class, 'index'])->name('browse-jobs');
     Route::get('/applications', [ApplicationsController::class, 'index'])->name('applications');
+    Route::get('/applications/create', [ApplicationController::class, 'create'])->name('applications.create');
+    Route::post('/applications', [ApplicationController::class, 'store'])->name('applications.store');
     Route::get('/saved-jobs', [SavedJobsController::class, 'index'])->name('saved-jobs');
     Route::post('/saved-jobs/{job}', [SavedJobController::class, 'store'])->name('saved-jobs.store');
     Route::delete('/saved-jobs/{savedJob}', [SavedJobController::class, 'destroy'])->name('saved-jobs.destroy');

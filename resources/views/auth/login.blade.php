@@ -15,22 +15,61 @@
             'Stay organised with a tidy, easy-to-read dashboard',
             'Return anytime without losing your progress',
         ];
+
+        $highlights = [
+            ['value' => '3', 'label' => 'Roles supported'],
+            ['value' => '24/7', 'label' => 'Account access'],
+            ['value' => '1 tap', 'label' => 'Recover fast'],
+        ];
     @endphp
 
-    <div class="login-page">
-        <section class="login-banner" aria-labelledby="login-banner-title">
-            <h1 id="login-banner-title" class="login-banner__title">Welcome Back To the Sign-In Page</h1>
+    <div class="login-page login-page--premium">
+        <section class="login-banner login-banner--hero" aria-labelledby="login-banner-title">
+            <div class="login-banner__copy">
+                <span class="login-banner__eyebrow">Secure access</span>
+                <h1 id="login-banner-title" class="login-banner__title">Sign back in and keep moving</h1>
+                <p class="login-banner__text">
+                    Return to your applications, saved jobs, notifications, and employer tools without losing your flow.
+                </p>
+            </div>
+
+            <div class="login-banner__highlights" aria-label="Login highlights">
+                @foreach ($highlights as $highlight)
+                    <div class="login-banner__highlight">
+                        <span class="login-banner__highlight-value">{{ $highlight['value'] }}</span>
+                        <span class="login-banner__highlight-label">{{ $highlight['label'] }}</span>
+                    </div>
+                @endforeach
+            </div>
         </section>
 
         <div class="login-panels-wrap">
             <div class="login-grid">
-                <div class="login-card-stack">
-                    <p class="login-card__eyebrow">Don't have an acount yet?</p>
-                    <section class="login-panel login-panel--invite" aria-labelledby="login-invite-title">
-                        <div class="login-panel__bar">Create account</div>
+                <div class="login-card-stack login-card-stack--story">
+                    <p class="login-card__eyebrow">A smoother way to sign in</p>
+                    <section class="login-panel login-panel--invite login-panel--story" aria-labelledby="login-invite-title">
+                        <div class="login-panel__bar">Platform benefits</div>
 
                         <div class="login-panel__body">
+                            <div class="login-summary">
+                                <div class="login-summary__item">
+                                    <span class="login-summary__value">Fast</span>
+                                    <span class="login-summary__label">Continue where you left off</span>
+                                </div>
+                                <div class="login-summary__item">
+                                    <span class="login-summary__value">Safe</span>
+                                    <span class="login-summary__label">Protected account access</span>
+                                </div>
+                                <div class="login-summary__item">
+                                    <span class="login-summary__value">Clear</span>
+                                    <span class="login-summary__label">Manage jobs and alerts</span>
+                                </div>
+                            </div>
+
                             <h2 id="login-invite-title" class="login-panel__title">What you gain</h2>
+                            <p class="login-panel__intro">
+                                One account gives you a cleaner, more organised way to track your work across the platform.
+                            </p>
 
                             <ul class="login-advantage-list">
                                 @foreach ($advantages as $advantage)
@@ -52,18 +91,23 @@
                     </section>
                 </div>
 
-                <div class="login-card-stack">
+                <div class="login-card-stack login-card-stack--form">
                     <div class="login-mobile-register">
                         <span>New here?</span>
                         <a href="{{ route('register') }}">Create account</a>
                     </div>
                     @include('partials.alerts', ['alertMode' => 'dialog'])
-                    <p class="login-card__eyebrow">Alweady have an count?</p>
-                    <section class="login-panel login-panel--form" aria-labelledby="login-form-title">
+                    <p class="login-card__eyebrow">Already have an account?</p>
+                    <section class="login-panel login-panel--form login-panel--auth" aria-labelledby="login-form-title">
                         <div class="login-panel__bar">Sign in</div>
 
                         <div class="login-panel__body">
-                            <h2 id="login-form-title" class="sr-only">Sign in form</h2>
+                            <div class="login-form-intro">
+                                <h2 id="login-form-title" class="login-panel__title">Welcome back</h2>
+                                <p class="login-panel__intro">
+                                    Use your email and password to resume applications, review hiring activity, and stay connected.
+                                </p>
+                            </div>
 
                             <form method="post" action="{{ route('login.store') }}" class="login-form">
                                 @csrf

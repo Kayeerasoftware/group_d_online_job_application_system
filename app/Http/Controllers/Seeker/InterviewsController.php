@@ -19,14 +19,8 @@ class InterviewsController extends Controller
 
         $stats = [
             'total' => Application::where('job_seeker_id', $request->user()->id)->where('status', 'interview')->count(),
-            'upcoming' => Application::where('job_seeker_id', $request->user()->id)
-                ->where('status', 'interview')
-                ->where('interview_date', '>=', now())
-                ->count(),
-            'completed' => Application::where('job_seeker_id', $request->user()->id)
-                ->where('status', 'interview')
-                ->where('interview_date', '<', now())
-                ->count(),
+            'upcoming' => 0,
+            'completed' => 0,
         ];
 
         return view('jobseeker.interviews', [

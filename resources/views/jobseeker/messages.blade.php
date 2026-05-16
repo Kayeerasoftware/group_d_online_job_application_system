@@ -5,104 +5,116 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header -->
-    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg shadow-lg p-6">
-        <div>
-            <h1 class="text-3xl font-bold text-white mb-2">Messages</h1>
-            <p class="text-indigo-100">Communicate with employers and recruiters</p>
+    <div class="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-lg shadow-lg p-6">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-white mb-2">Messages</h1>
+                <p class="text-teal-100">Communicate with employers and recruiters</p>
+            </div>
+            <div class="text-right">
+                <p class="text-3xl font-bold text-white">0</p>
+                <p class="text-teal-100 text-sm">Unread</p>
+            </div>
         </div>
     </div>
 
-    <!-- Messages Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Conversations List -->
-        <div class="lg:col-span-1">
-            <div class="bg-white rounded-xl shadow-lg p-4">
-                <h2 class="text-lg font-bold text-gray-900 mb-4">Conversations</h2>
-                <div class="space-y-2">
-                    <!-- Sample Conversation -->
-                    <div class="p-3 bg-blue-50 rounded-lg border-l-4 border-blue-600 cursor-pointer hover:bg-blue-100 transition">
-                        <p class="font-semibold text-gray-900 text-sm">Tech Innovations Inc.</p>
-                        <p class="text-xs text-gray-600 mt-1 truncate">Thanks for your application...</p>
-                        <p class="text-xs text-gray-500 mt-1">2 hours ago</p>
-                    </div>
-                    <div class="p-3 bg-gray-50 rounded-lg border-l-4 border-gray-300 cursor-pointer hover:bg-gray-100 transition">
-                        <p class="font-semibold text-gray-900 text-sm">Digital Solutions Ltd.</p>
-                        <p class="text-xs text-gray-600 mt-1 truncate">We would like to schedule...</p>
-                        <p class="text-xs text-gray-500 mt-1">1 day ago</p>
-                    </div>
-                    <div class="p-3 bg-gray-50 rounded-lg border-l-4 border-gray-300 cursor-pointer hover:bg-gray-100 transition">
-                        <p class="font-semibold text-gray-900 text-sm">Enterprise Systems Co.</p>
-                        <p class="text-xs text-gray-600 mt-1 truncate">Thank you for your interest...</p>
-                        <p class="text-xs text-gray-500 mt-1">3 days ago</p>
-                    </div>
+    <!-- Animated Separator Line -->
+    <div class="relative h-2 bg-gray-200 rounded-full overflow-visible mb-6">
+        <div class="h-full bg-gradient-to-r from-teal-500 to-teal-600 rounded-full animate-slide-right"></div>
+        <span class="absolute -top-6 text-2xl md:text-3xl text-teal-600 font-bold animate-slide-text whitespace-nowrap z-10">Loading Messages...</span>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 mb-6">
+        <!-- Total Conversations -->
+        <div class="bg-gradient-to-r from-teal-50 to-teal-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-teal-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-teal-500 to-teal-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-comments text-white text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-gray-600 font-semibold leading-tight">Total</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">0</h3>
                 </div>
             </div>
         </div>
 
-        <!-- Message Thread -->
-        <div class="lg:col-span-2">
-            <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col h-full">
-                <div class="border-b border-gray-200 pb-4 mb-4">
-                    <h2 class="text-xl font-bold text-gray-900">Tech Innovations Inc.</h2>
-                    <p class="text-sm text-gray-600">Senior React Developer Position</p>
+        <!-- Unread -->
+        <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-blue-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-envelope text-white text-base md:text-lg"></i>
                 </div>
-
-                <!-- Messages -->
-                <div class="flex-1 space-y-4 mb-4 overflow-y-auto max-h-96">
-                    <!-- Employer Message -->
-                    <div class="flex gap-3">
-                        <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold flex-shrink-0">
-                            T
-                        </div>
-                        <div>
-                            <p class="text-sm font-semibold text-gray-900">Sarah Johnson</p>
-                            <div class="mt-1 p-3 bg-gray-100 rounded-lg">
-                                <p class="text-sm text-gray-800">Thanks for your application! We're impressed with your profile and would like to move forward with an interview.</p>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">2 hours ago</p>
-                        </div>
-                    </div>
-
-                    <!-- Your Message -->
-                    <div class="flex gap-3 justify-end">
-                        <div class="text-right">
-                            <p class="text-sm font-semibold text-gray-900">You</p>
-                            <div class="mt-1 p-3 bg-blue-600 text-white rounded-lg">
-                                <p class="text-sm">Thank you for the opportunity! I'm very interested in this position.</p>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">1 hour ago</p>
-                        </div>
-                        <div class="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white font-bold flex-shrink-0">
-                            Y
-                        </div>
-                    </div>
-
-                    <!-- Employer Message -->
-                    <div class="flex gap-3">
-                        <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold flex-shrink-0">
-                            T
-                        </div>
-                        <div>
-                            <p class="text-sm font-semibold text-gray-900">Sarah Johnson</p>
-                            <div class="mt-1 p-3 bg-gray-100 rounded-lg">
-                                <p class="text-sm text-gray-800">Great! We'll send you the interview details shortly. The interview will be conducted via video call.</p>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">30 minutes ago</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Message Input -->
-                <div class="border-t border-gray-200 pt-4">
-                    <div class="flex gap-2">
-                        <input type="text" placeholder="Type your message..." class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition">
-                        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-gray-600 font-semibold leading-tight">Unread</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">0</h3>
                 </div>
             </div>
         </div>
+
+        <!-- Active Chats -->
+        <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-green-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-green-500 to-green-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-check-circle text-white text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-gray-600 font-semibold leading-tight">Active</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">0</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Archived -->
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-gray-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-gray-500 to-gray-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-archive text-white text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-gray-600 font-semibold leading-tight">Archived</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">0</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="bg-white rounded-xl shadow-lg p-4">
+        <form method="GET" action="{{ route('seeker.messages') }}" class="flex gap-3">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search conversations..." class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition">
+            <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- Empty State -->
+    <div class="bg-white rounded-xl shadow-lg p-12 text-center">
+        <i class="fas fa-inbox text-6xl text-gray-300 mb-4 block"></i>
+        <h3 class="text-2xl font-bold text-gray-900 mb-2">No conversations yet</h3>
+        <p class="text-gray-600 mb-6">Messages from employers will appear here</p>
+        <a href="{{ route('seeker.browse-jobs') }}" class="inline-block px-6 py-3 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition">
+            <i class="fas fa-search mr-2"></i>Browse Jobs
+        </a>
     </div>
 </div>
+
+<style>
+@keyframes slide-right {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}
+.animate-slide-right {
+    animation: slide-right 5s ease-out forwards;
+}
+@keyframes slide-text {
+    0% { left: 0%; opacity: 1; }
+    95% { opacity: 1; }
+    100% { left: 100%; opacity: 0; }
+}
+.animate-slide-text {
+    animation: slide-text 5s ease-out forwards;
+}
+</style>
 @endsection

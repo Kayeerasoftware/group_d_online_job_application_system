@@ -14,16 +14,16 @@
 
     if ($user?->isSeeker()) {
         $links = [
-            ['label' => 'Dashboard', 'route' => 'dashboard', 'active' => 'dashboard', 'icon' => 'dashboard'],
-            ['label' => 'Members', 'route' => 'jobs.index', 'active' => 'jobs.*', 'icon' => 'members'],
-            ['label' => 'Loans', 'route' => 'jobs.index', 'active' => 'jobs.*', 'icon' => 'loans'],
-            ['label' => 'Loan Applications', 'route' => 'applications.index', 'active' => 'applications.*', 'icon' => 'applications'],
-            ['label' => 'Fundraising', 'route' => 'seeker.saved-jobs.index', 'active' => 'seeker.saved-jobs.*', 'icon' => 'fundraising'],
-            ['label' => 'Transactions', 'route' => 'seeker.notifications.index', 'active' => 'seeker.notifications.*', 'icon' => 'transactions'],
-            ['label' => 'Financial', 'route' => 'seeker.profile.edit', 'active' => 'seeker.profile.*', 'icon' => 'financial'],
-            ['label' => 'Projects', 'route' => 'seeker.profile.edit', 'active' => 'seeker.profile.*', 'icon' => 'projects'],
-            ['label' => 'Users', 'route' => 'seeker.profile.edit', 'active' => 'seeker.profile.*', 'icon' => 'users'],
-            ['label' => 'Settings', 'route' => 'seeker.profile.edit', 'active' => 'seeker.profile.*', 'icon' => 'settings'],
+            ['label' => 'Dashboard', 'route' => 'seeker.dashboard', 'active' => 'seeker.dashboard', 'icon' => 'dashboard'],
+            ['label' => 'Browse Jobs', 'route' => 'seeker.browse-jobs', 'active' => 'seeker.browse-jobs', 'icon' => 'members'],
+            ['label' => 'Applications', 'route' => 'seeker.applications', 'active' => 'seeker.applications', 'icon' => 'loans'],
+            ['label' => 'Saved Jobs', 'route' => 'seeker.saved-jobs', 'active' => 'seeker.saved-jobs', 'icon' => 'applications'],
+            ['label' => 'Resume', 'route' => 'seeker.resume', 'active' => 'seeker.resume', 'icon' => 'fundraising'],
+            ['label' => 'Interviews', 'route' => 'seeker.interviews', 'active' => 'seeker.interviews', 'icon' => 'transactions'],
+            ['label' => 'Messages', 'route' => 'seeker.messages', 'active' => 'seeker.messages', 'icon' => 'financial'],
+            ['label' => 'Notifications', 'route' => 'seeker.notifications', 'active' => 'seeker.notifications', 'icon' => 'projects'],
+            ['label' => 'Profile', 'route' => 'seeker.profile', 'active' => 'seeker.profile', 'icon' => 'users'],
+            ['label' => 'Settings', 'route' => 'seeker.settings', 'active' => 'seeker.settings', 'icon' => 'settings'],
         ];
     }
 @endphp

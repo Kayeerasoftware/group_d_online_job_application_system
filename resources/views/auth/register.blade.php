@@ -1,198 +1,258 @@
-@extends('layouts.auth-signup')
-
-@section('body-class', 'auth-shell auth-shell--signup register-form-page')
-
-@section('main-class', 'auth-main--top')
+@extends('layouts.auth-register')
 
 @section('title', old('role', $selectedRole ?? 'seeker') === 'employer' ? 'Employer Registration' : 'Job Seeker Registration')
+
+@section('body-class', 'auth-shell auth-shell--signup register-page-shell')
+
+@section('main-class', 'auth-main--top')
 
 @section('content')
     @php
         $selectedRole = old('role', $selectedRole ?? 'seeker');
         $isEmployer = $selectedRole === 'employer';
-        $roleTitle = $isEmployer ? 'EMPLOYER REGISTRATION' : 'JOB SEEKER REGISTRATION';
+        $roleTitle = $isEmployer ? 'Employer Account' : 'Job Seeker Account';
         $roleBar = $isEmployer ? 'Employer' : 'Job Seeker';
         $roleSubtitle = $isEmployer ? 'Create your employer account' : 'Create your job seeker account';
         $roleSupport = $isEmployer
-            ? 'Set up your employer profile so you can post jobs and manage applicants in one place.'
-            : 'Set up your profile so you can apply for jobs and manage your applications in one place.';
+            ? 'Set up your employer profile so you can post jobs, review applicants, and manage hiring in one place.'
+            : 'Set up your profile so you can apply for jobs, track applications, and keep your updates organised.';
         $nameLabel = $isEmployer ? 'Company Name' : 'Full Name';
         $namePlaceholder = $isEmployer ? 'Company Name *' : 'Full Name *';
         $submitLabel = $isEmployer ? 'Create Employer Account' : 'Create Seeker Account';
-        $fieldClass = 'register-input';
-        $errorClass = 'border-rose-300 focus:border-rose-400 focus:ring-rose-400/15';
-        $accountInputClass = 'register-input';
+        $benefits = $isEmployer
+            ? [
+                'Post job openings and review candidates from one dashboard',
+                'Keep hiring updates, shortlist decisions, and alerts together',
+                'Manage your employer profile once and return anytime',
+                'Switch between employer tasks without losing your place',
+            ]
+            : [
+                'Build a seeker profile and start applying faster',
+                'Track applications, alerts, and saved roles in one place',
+                'Return to your account anytime without redoing your progress',
+                'Keep your personal details ready for future opportunities',
+            ];
     @endphp
 
-    <div class="register-shell">
-        <h2 class="register-heading">{{ $roleTitle }}</h2>
-
-        <section class="register-card">
-            <div class="register-card__bar">{{ $roleBar }}</div>
-
-            <div class="register-card__body">
-                <form method="post" action="{{ route('register.store') }}" class="register-form">
-                    @csrf
-                    <input type="hidden" name="role" value="{{ $selectedRole }}">
-
-                    <h2 class="register-subtitle">{{ $roleSubtitle }}</h2>
-                    <p class="text-sm text-slate-600">
-                        {{ $roleSupport }}
-                    </p>
-
-                    <div class="register-grid">
-                        <div class="space-y-1.5">
-                            <label class="text-sm font-medium text-slate-700" for="name">{{ $nameLabel }}</label>
-                            <input
-                                class="{{ $fieldClass }} {{ $errors->has('name') ? $errorClass : '' }}"
-                                id="name"
-                                name="name"
-                                type="text"
-                                value="{{ old('name') }}"
-                                placeholder="{{ $namePlaceholder }}"
-                                required
-                                autocomplete="name"
-                            >
-                            @error('name')
-                                <p class="text-sm text-rose-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div class="space-y-1.5">
-                            <label class="text-sm font-medium text-slate-700" for="phone">Phone Number</label>
-                            <input
-                                class="{{ $fieldClass }} {{ $errors->has('phone') ? $errorClass : '' }}"
-                                id="phone"
-                                name="phone"
-                                type="tel"
-                                value="{{ old('phone') }}"
-                                placeholder="Phone Number"
-                                autocomplete="tel"
-                            >
-                            @error('phone')
-                                <p class="text-sm text-rose-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div class="space-y-1.5">
-                            <label class="text-sm font-medium text-slate-700" for="account_email">Email</label>
-                            <input
-                                class="{{ $accountInputClass }} {{ $errors->has('email') ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-400/15' : '' }}"
-                                id="account_email"
-                                name="email"
-                                type="email"
-                                value="{{ old('email') }}"
-                                placeholder="Email"
-                                required
-                                autocomplete="email"
-                            >
-                            @error('email')
-                                <p class="text-sm text-rose-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="register-password-stack">
-                        <div class="space-y-1">
-                            <p class="register-password-note">
-                                Use at least <span class="font-semibold text-rose-600">8 characters</span> with uppercase, lowercase, number, and special character.
-                            </p>
-                            <input
-                                class="{{ $accountInputClass }} {{ $errors->has('password') ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-400/15' : '' }}"
-                                id="password"
-                                name="password"
-                                type="password"
-                                required
-                                autocomplete="new-password"
-                                placeholder="Password"
-                                data-register-password
-                            >
-                            <div class="password-strength-meter">
-                                <div class="password-strength-track" aria-hidden="true">
-                                    <div class="password-strength-track__fill password-strength-bar" data-password-strength-bar></div>
-                                </div>
-                                <div class="password-strength-partitions" aria-hidden="true">
-                                    <span class="password-strength-partition" data-strength-step="0">Weak</span>
-                                    <span class="password-strength-partition" data-strength-step="1">Moderate</span>
-                                    <span class="password-strength-partition" data-strength-step="2">Decent</span>
-                                    <span class="password-strength-partition" data-strength-step="3">Strong</span>
-                                    <span class="password-strength-partition" data-strength-step="4">Very Strong</span>
-                                </div>
-                            </div>
-                            <p class="text-xs font-medium text-emerald-700" data-password-strength-label></p>
-                            <ul class="space-y-1 text-xs leading-5" data-password-rules>
-                                <li class="flex items-center gap-2 text-rose-600" data-rule="length">
-                                    <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-rose-400 text-[10px] leading-none text-rose-500" data-rule-bullet>&times;</span>
-                                    <span>At least 8 characters</span>
-                                </li>
-                                <li class="flex items-center gap-2 text-rose-600" data-rule="upper">
-                                    <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-rose-400 text-[10px] leading-none text-rose-500" data-rule-bullet>&times;</span>
-                                    <span>One uppercase letter (A-Z)</span>
-                                </li>
-                                <li class="flex items-center gap-2 text-rose-600" data-rule="lower">
-                                    <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-rose-400 text-[10px] leading-none text-rose-500" data-rule-bullet>&times;</span>
-                                    <span>One lowercase letter (a-z)</span>
-                                </li>
-                                <li class="flex items-center gap-2 text-rose-600" data-rule="number">
-                                    <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-rose-400 text-[10px] leading-none text-rose-500" data-rule-bullet>&times;</span>
-                                    <span>One number (0-9)</span>
-                                </li>
-                                <li class="flex items-center gap-2 text-rose-600" data-rule="special">
-                                    <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-rose-400 text-[10px] leading-none text-rose-500" data-rule-bullet>&times;</span>
-                                    <span>One special character (!@#$%^&*)</span>
-                                </li>
-                                <li class="flex items-center gap-2 text-rose-600" data-rule="common">
-                                    <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-rose-400 text-[10px] leading-none text-rose-500" data-rule-bullet>&times;</span>
-                                    <span>Not a common password</span>
-                                </li>
-                            </ul>
-                            @error('password')
-                                <p class="text-sm text-rose-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div class="space-y-1">
-                            <input
-                                class="{{ $accountInputClass }}"
-                                id="password_confirmation"
-                                name="password_confirmation"
-                                type="password"
-                                required
-                                autocomplete="new-password"
-                                placeholder="Confirm Password *"
-                                data-register-password-confirmation
-                            >
-                            <div class="flex items-center gap-2 text-xs font-medium text-rose-600" data-password-match-status>
-                                <span class="inline-flex h-4 w-4 items-center justify-center rounded-full border border-rose-400 text-[10px] leading-none text-rose-500">&times;</span>
-                                Mismatch
-                            </div>
-                        </div>
-
-                        <div class="register-password-row">
-                            <label class="inline-flex items-center gap-2 text-sm text-slate-700">
-                                <input class="h-4 w-4 rounded border-emerald-400/40 bg-white text-emerald-500 focus:ring-emerald-400/20" type="checkbox" data-show-passwords>
-                                Show passwords
-                            </label>
-
-                            <p class="register-password-row__note">
-                                You can edit, add, and change your profile after registration when logged in.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="register-footer">
-                        <button class="register-button" type="submit">
-                            {{ $submitLabel }}
-                        </button>
-
-                        <p class="text-center text-sm text-slate-600">
-                            Already have an account?
-                            <a class="register-link font-medium transition hover:text-[#bb0829]" href="{{ route('login') }}">Sign in</a>
-                        </p>
-                    </div>
-                </form>
-            </div>
+                <div
+                    class="login-page"
+                    style="width:100vw;max-width:none;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);padding-inline:0;"
+                >
+        <section class="login-banner" aria-labelledby="register-banner-title">
+            <h1 id="register-banner-title" class="login-banner__title">Create your account</h1>
         </section>
+
+        <div class="login-panels-wrap" style="width:100%;max-width:none;">
+            <div
+                class="login-grid"
+                style="width:100%;max-width:none;grid-template-columns:minmax(260px,320px) minmax(0,1fr);align-items:stretch;padding-inline:clamp(16px,2.5vw,40px);"
+            >
+                <div class="login-card-stack" data-register-invite style="max-width:320px;align-self:stretch;min-width:0;">
+                    <p class="login-card__eyebrow">Why register?</p>
+                    <section class="login-panel login-panel--invite" aria-labelledby="register-benefits-title">
+                        <div class="login-panel__bar">Account benefits</div>
+
+                        <div class="login-panel__body">
+                            <h2 id="register-benefits-title" class="login-panel__title">{{ $roleTitle }}</h2>
+                            <p class="login-panel__intro">
+                                {{ $roleSupport }}
+                            </p>
+
+                            <ul class="login-advantage-list">
+                                @foreach ($benefits as $benefit)
+                                    <li class="login-advantage-item">
+                                        <span class="login-check" aria-hidden="true">
+                                            <svg viewBox="0 0 12 12" class="login-check__icon" fill="none">
+                                                <path d="M1.4 5.8L4.6 9L10.6 2.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </span>
+                                        <span>{{ $benefit }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+
+                            <a class="login-button login-button--register" href="{{ route('login') }}">
+                                Back to sign in
+                            </a>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="login-card-stack" style="max-width:none;width:100%;align-self:stretch;align-items:stretch;min-width:0;">
+                    @include('partials.alerts', ['alertMode' => 'dialog'])
+                    <p class="login-card__eyebrow">Complete your details</p>
+                    <section class="login-panel login-panel--form" aria-labelledby="register-form-title">
+                        <div class="login-panel__bar">Register as {{ $roleBar }}</div>
+
+                        <div class="login-panel__body">
+                            <h2 id="register-form-title" class="login-panel__title">{{ $roleSubtitle }}</h2>
+
+                            <form method="post" action="{{ route('register.store') }}" class="register-form">
+                                @csrf
+                                <input type="hidden" name="role" value="{{ $selectedRole }}">
+
+                                <div class="register-grid">
+                                    <div class="login-field">
+                                        <label class="register-field__label" for="name">{{ $nameLabel }}</label>
+                                        <input
+                                            class="login-input {{ $errors->has('name') ? 'login-input--error' : '' }}"
+                                            id="name"
+                                            name="name"
+                                            type="text"
+                                            value="{{ old('name') }}"
+                                            placeholder="{{ $namePlaceholder }}"
+                                            required
+                                            autocomplete="name"
+                                        >
+                                        @error('name')
+                                            <p class="login-error">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <div class="login-field">
+                                        <label class="register-field__label" for="phone">Phone Number</label>
+                                        <input
+                                            class="login-input {{ $errors->has('phone') ? 'login-input--error' : '' }}"
+                                            id="phone"
+                                            name="phone"
+                                            type="tel"
+                                            value="{{ old('phone') }}"
+                                            placeholder="Phone Number"
+                                            autocomplete="tel"
+                                        >
+                                        @error('phone')
+                                            <p class="login-error">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <div class="login-field register-field--full">
+                                        <label class="register-field__label" for="account_email">Email</label>
+                                        <input
+                                            class="login-input {{ $errors->has('email') ? 'login-input--error' : '' }}"
+                                            id="account_email"
+                                            name="email"
+                                            type="email"
+                                            value="{{ old('email') }}"
+                                            placeholder="Email"
+                                            required
+                                            autocomplete="email"
+                                        >
+                                        @error('email')
+                                            <p class="login-error">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="register-password-stack">
+                                    <div class="login-field">
+                                        <label class="register-field__label" for="password">Password</label>
+                                        <p class="register-password-note">
+                                            Use at least <span class="font-semibold text-rose-600">8 characters</span> with uppercase, lowercase, number, and special character.
+                                        </p>
+                                        <input
+                                            class="login-input {{ $errors->has('password') ? 'login-input--error' : '' }}"
+                                            id="password"
+                                            name="password"
+                                            type="password"
+                                            required
+                                            autocomplete="new-password"
+                                            placeholder="Password"
+                                            data-register-password
+                                        >
+                                        <div class="password-strength-meter">
+                                            <div class="password-strength-track" aria-hidden="true">
+                                                <div class="password-strength-track__fill password-strength-bar" data-password-strength-bar></div>
+                                            </div>
+                                            <div class="password-strength-partitions" aria-hidden="true">
+                                                <span class="password-strength-partition" data-strength-step="0">Weak</span>
+                                                <span class="password-strength-partition" data-strength-step="1">Moderate</span>
+                                                <span class="password-strength-partition" data-strength-step="2">Decent</span>
+                                                <span class="password-strength-partition" data-strength-step="3">Strong</span>
+                                                <span class="password-strength-partition" data-strength-step="4">Very Strong</span>
+                                            </div>
+                                        </div>
+                                        <p class="text-xs font-medium text-emerald-700" data-password-strength-label></p>
+                                        <ul class="space-y-1 text-xs leading-5" data-password-rules>
+                                            <li class="flex items-center gap-2 text-rose-600" data-rule="length">
+                                                <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-rose-400 text-[10px] leading-none text-rose-500" data-rule-bullet>&times;</span>
+                                                <span>At least 8 characters</span>
+                                            </li>
+                                            <li class="flex items-center gap-2 text-rose-600" data-rule="upper">
+                                                <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-rose-400 text-[10px] leading-none text-rose-500" data-rule-bullet>&times;</span>
+                                                <span>One uppercase letter (A-Z)</span>
+                                            </li>
+                                            <li class="flex items-center gap-2 text-rose-600" data-rule="lower">
+                                                <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-rose-400 text-[10px] leading-none text-rose-500" data-rule-bullet>&times;</span>
+                                                <span>One lowercase letter (a-z)</span>
+                                            </li>
+                                            <li class="flex items-center gap-2 text-rose-600" data-rule="number">
+                                                <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-rose-400 text-[10px] leading-none text-rose-500" data-rule-bullet>&times;</span>
+                                                <span>One number (0-9)</span>
+                                            </li>
+                                            <li class="flex items-center gap-2 text-rose-600" data-rule="special">
+                                                <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-rose-400 text-[10px] leading-none text-rose-500" data-rule-bullet>&times;</span>
+                                                <span>One special character (!@#$%^&*)</span>
+                                            </li>
+                                            <li class="flex items-center gap-2 text-rose-600" data-rule="common">
+                                                <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-rose-400 text-[10px] leading-none text-rose-500" data-rule-bullet>&times;</span>
+                                                <span>Not a common password</span>
+                                            </li>
+                                        </ul>
+                                        @error('password')
+                                            <p class="login-error">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <div class="login-field">
+                                        <label class="register-field__label" for="password_confirmation">Confirm Password</label>
+                                        <input
+                                            class="login-input"
+                                            id="password_confirmation"
+                                            name="password_confirmation"
+                                            type="password"
+                                            required
+                                            autocomplete="new-password"
+                                            placeholder="Confirm Password *"
+                                            data-register-password-confirmation
+                                        >
+                                        <div class="flex items-center gap-2 text-xs font-medium text-rose-600" data-password-match-status>
+                                            <span class="inline-flex h-4 w-4 items-center justify-center rounded-full border border-rose-400 text-[10px] leading-none text-rose-500">&times;</span>
+                                            Mismatch
+                                        </div>
+                                    </div>
+
+                                    <div class="register-password-row">
+                                        <label class="inline-flex items-center gap-2 text-sm text-slate-700">
+                                            <input class="h-4 w-4 rounded border-emerald-400/40 bg-white text-emerald-500 focus:ring-emerald-400/20" type="checkbox" data-show-passwords>
+                                            Show passwords
+                                        </label>
+
+                                        <p class="register-password-row__note">
+                                            You can edit, add, and change your profile after registration when logged in.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="register-footer">
+                                    <button
+                                        class="login-button register-submit-button"
+                                        type="submit"
+                                        style="width:max-content;min-width:15rem;padding-inline:1.4rem;white-space:nowrap;"
+                                    >
+                                        {{ $submitLabel }}
+                                    </button>
+
+                                    <p class="text-center text-sm text-slate-600">
+                                        Already have an account?
+                                        <a class="register-link font-medium transition hover:text-[#bb0829]" href="{{ route('login') }}">Sign in</a>
+                                    </p>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -203,6 +263,16 @@
             const strengthBar = document.querySelector('[data-password-strength-bar]');
             const strengthLabel = document.querySelector('[data-password-strength-label]');
             const matchStatus = document.querySelector('[data-password-match-status]');
+            const inviteCard = document.querySelector('[data-register-invite]');
+
+            const updateInviteCard = () => {
+                if (!inviteCard) {
+                    return;
+                }
+
+                const compact = window.matchMedia('(max-width: 1024px)').matches;
+                inviteCard.hidden = compact;
+            };
 
             const tests = {
                 length: (value) => value.length >= 8,
@@ -258,7 +328,7 @@
                         activeStep === 2 ? 'text-amber-600' :
                         activeStep === 1 ? 'text-orange-600' :
                         activeStep === 0 ? 'text-rose-600' :
-                        'text-slate-400'
+                        'text-slate-500'
                     );
                 }
             };
@@ -301,10 +371,12 @@
 
             confirmation?.addEventListener('input', evaluateMatch);
             showPasswords?.addEventListener('change', togglePasswords);
+            window.addEventListener('resize', updateInviteCard, { passive: true });
 
             evaluatePassword();
             evaluateMatch();
             togglePasswords();
+            updateInviteCard();
         });
     </script>
 @endsection

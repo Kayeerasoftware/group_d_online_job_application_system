@@ -9,6 +9,13 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Employer\DashboardController as EmployerDashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Seeker\DashboardController as SeekerDashboardController;
+use App\Http\Controllers\Seeker\BrowseJobsController;
+use App\Http\Controllers\Seeker\ApplicationsController;
+use App\Http\Controllers\Seeker\SavedJobsController;
+use App\Http\Controllers\Seeker\InterviewsController;
+use App\Http\Controllers\Seeker\MessagesController;
+use App\Http\Controllers\Seeker\ResumeController;
+use App\Http\Controllers\Seeker\SettingsController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\SavedJobController;
 use App\Http\Controllers\JobSeekerProfileController;
@@ -66,13 +73,20 @@ Route::delete('/applications/{application}', [ApplicationController::class, 'des
 
 Route::prefix('seeker')->middleware(['auth', 'seeker'])->name('seeker.')->group(function (): void {
     Route::get('/dashboard', [SeekerDashboardController::class, 'index'])->name('dashboard');
-    Route::get('/profile', [JobSeekerProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile', [JobSeekerProfileController::class, 'show'])->name('profile');
+    Route::get('/profile/edit', [JobSeekerProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [JobSeekerProfileController::class, 'update'])->name('profile.update');
-    Route::get('/saved-jobs', [SavedJobController::class, 'index'])->name('saved-jobs.index');
+    Route::get('/browse-jobs', [BrowseJobsController::class, 'index'])->name('browse-jobs');
+    Route::get('/applications', [ApplicationsController::class, 'index'])->name('applications');
+    Route::get('/saved-jobs', [SavedJobsController::class, 'index'])->name('saved-jobs');
     Route::post('/saved-jobs/{job}', [SavedJobController::class, 'store'])->name('saved-jobs.store');
     Route::delete('/saved-jobs/{savedJob}', [SavedJobController::class, 'destroy'])->name('saved-jobs.destroy');
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/resume', [ResumeController::class, 'index'])->name('resume');
+    Route::get('/interviews', [InterviewsController::class, 'index'])->name('interviews');
+    Route::get('/messages', [MessagesController::class, 'index'])->name('messages');
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 });
 
 Route::prefix('employer')->middleware(['auth', 'employer'])->name('employer.')->group(function (): void {

@@ -32,11 +32,14 @@
             'variant' => 'outline',
         ];
     @endphp
+    @php
+        $alertMode = 'dialog';
+    @endphp
     <div class="auth-frame">
         @include('partials.auth-header', compact('headerVariant', 'navItems', 'roleItems', 'roleNavLabel', 'headerAction'))
 
         <main class="auth-main @yield('main-class', '')">
-            @include('partials.alerts')
+            @include('partials.alerts', ['alertMode' => $alertMode])
             @yield('content')
         </main>
     </div>

@@ -27,9 +27,9 @@ class JobSeekerProfileController extends Controller
         abort(404);
     }
 
-    public function show(JobSeekerProfile $jobSeekerProfile)
+    public function show(Request $request): View
     {
-        abort(404);
+        return view('jobseeker.profile');
     }
 
     public function edit(Request $request): View

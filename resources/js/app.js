@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalOpens = document.querySelectorAll('[data-modal-open]');
     const modalCloses = document.querySelectorAll('[data-modal-close]');
     const modals = document.querySelectorAll('dialog[data-modal]');
+    const alertDismissButtons = document.querySelectorAll('[data-alert-dismiss]');
 
     if (sidebar && backdrop) {
         const openSidebar = () => {
@@ -92,6 +93,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
+    });
+
+    alertDismissButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const alert = button.closest('[data-alert]');
+
+            if (alert) {
+                alert.remove();
+            }
+        });
     });
 
     passwordToggles.forEach((button) => {

@@ -19,6 +19,7 @@
                 'label' => 'Browse Jobs',
                 'href' => route('jobs.index'),
             ];
+            $alertMode = 'dialog';
         @endphp
 
         <main class="relative mx-auto flex min-h-screen w-full max-w-3xl items-center justify-center px-4 py-8 md:px-6">
@@ -36,7 +37,7 @@
                     </a>
                 </div>
 
-                @include('partials.alerts')
+                @include('partials.alerts', ['alertMode' => $alertMode])
                 @yield('content')
             </section>
         </main>

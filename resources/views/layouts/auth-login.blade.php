@@ -9,25 +9,21 @@
     @endif
 </head>
 <body class="@yield('body-class', 'auth-shell auth-shell--login') min-h-screen antialiased">
-    @php
-        $headerVariant = 'login';
-        $navItems = [
-            ['label' => 'Home', 'href' => route('home'), 'active' => request()->routeIs('home')],
-            ['label' => 'Browse Jobs', 'href' => route('jobs.index'), 'active' => request()->routeIs('jobs.index')],
-            ['label' => 'Sign Up', 'href' => route('register'), 'active' => request()->routeIs('register')],
-        ];
-        $headerAction = [
-            'label' => 'Create account',
-            'href' => route('register'),
-            'variant' => 'solid',
-        ];
-    @endphp
-
     <div class="auth-frame">
-        @include('partials.auth-header', compact('headerVariant', 'navItems', 'headerAction'))
+        @php
+            $headerVariant = 'login';
+            $headerLayout = 'full';
+            $headerCenterLabel = 'Online Job Application System';
+            $headerRightLines = [
+                'Sign in as seeker or employer',
+                'Seekers apply and track progress',
+                'Employers post roles and review candidates',
+            ];
+        @endphp
+
+        @include('partials.auth-header', compact('headerVariant', 'headerLayout', 'headerCenterLabel', 'headerRightLines'))
 
         <main class="auth-main @yield('main-class', '')">
-            @include('partials.alerts')
             @yield('content')
         </main>
     </div>

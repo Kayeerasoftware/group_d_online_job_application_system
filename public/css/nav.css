@@ -317,6 +317,20 @@
     pointer-events: auto;
     position: relative;
     z-index: 1;
+    border-left: 4px solid transparent;
+    color: #4b5563;
+}
+
+/* Active state for nav items */
+.nav-item.active {
+    background-color: #f0fdf4 !important;
+    color: #16a34a !important;
+    border-left-color: #16a34a !important;
+    font-weight: 700 !important;
+}
+
+.nav-item.active i {
+    color: #16a34a !important;
 }
 
 .nav-item i {

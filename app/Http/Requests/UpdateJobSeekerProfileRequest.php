@@ -15,14 +15,19 @@ class UpdateJobSeekerProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'location' => ['nullable', 'string', 'max:255'],
             'date_of_birth' => ['nullable', 'date'],
             'gender' => ['nullable', 'string', 'max:50'],
-            'location' => ['nullable', 'string', 'max:255'],
+            'job_title' => ['nullable', 'string', 'max:255'],
+            'years_experience' => ['nullable', 'integer', 'min:0', 'max:100'],
             'education_level' => ['nullable', 'string', 'max:255'],
-            'years_experience' => ['nullable', 'integer', 'min:0'],
-            'resume_path' => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:2048'],
             'skills' => ['nullable', 'string'],
-            'notification_preferences' => ['nullable', 'string'],
+            'bio' => ['nullable', 'string', 'max:1000'],
+            'profile_picture' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'cv' => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:5120'],
         ];
     }
 }

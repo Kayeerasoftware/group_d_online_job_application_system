@@ -18,8 +18,12 @@ class JobSeekerProfile extends Model
         'education_level',
         'years_experience',
         'resume_path',
+        'cv_path',
         'skills',
         'notification_preferences',
+        'job_title',
+        'bio',
+        'experience_level',
     ];
 
     protected function casts(): array

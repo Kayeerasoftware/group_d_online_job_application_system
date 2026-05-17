@@ -25,13 +25,7 @@
 
     <div class="login-page login-page--premium">
         <section class="login-banner login-banner--hero" aria-labelledby="login-banner-title">
-            <div class="login-banner__copy">
-                <span class="login-banner__eyebrow">Secure access</span>
-                <h1 id="login-banner-title" class="login-banner__title">Sign back in and keep moving</h1>
-                <p class="login-banner__text">
-                    Return to your applications, saved jobs, notifications, and employer tools without losing your flow.
-                </p>
-            </div>
+
 
             <div class="login-banner__highlights" aria-label="Login highlights">
                 @foreach ($highlights as $highlight)

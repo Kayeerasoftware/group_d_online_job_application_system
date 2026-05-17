@@ -5,168 +5,213 @@
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-3 md:p-6">
     <!-- Header Section -->
-    <div class="mb-4 md:mb-6">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4">
-            <div class="flex items-center gap-2 md:gap-4">
+    <div class="mb-6">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div class="flex items-center gap-4">
                 <div class="relative">
-                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl md:rounded-2xl blur-xl opacity-50"></div>
-                    <div class="relative bg-gradient-to-br from-blue-600 to-purple-600 p-2 md:p-4 rounded-xl md:rounded-2xl shadow-xl">
+                    <div class="absolute inset-0 bg-gradient-to-r from-teal-600 to-cyan-600 rounded-xl md:rounded-2xl blur-xl opacity-50"></div>
+                    <div class="relative bg-gradient-to-br from-teal-600 to-cyan-600 p-2 md:p-4 rounded-xl md:rounded-2xl shadow-xl">
                         <i class="fas fa-file-alt text-white text-xl md:text-3xl"></i>
                     </div>
                 </div>
                 <div>
-                    <h1 class="text-xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-1 md:mb-2">My Applications</h1>
-                    <p class="text-gray-600 text-xs md:text-sm font-medium">Track and manage your job applications</p>
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900">My Applications</h1>
+                    <p class="text-gray-600 text-sm font-medium">Track and manage your job applications</p>
                 </div>
             </div>
-            <div class="flex gap-1.5 md:gap-2 w-full md:w-auto">
-                <a href="{{ route('jobs.index') }}" class="flex-1 md:flex-none px-3 md:px-5 py-2 md:py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg md:rounded-xl hover:shadow-lg transition-all duration-300 text-xs md:text-sm font-bold flex items-center justify-center gap-1 md:gap-2 transform hover:scale-105">
-                    <i class="fas fa-search"></i><span class="hidden sm:inline">Browse Jobs</span>
-                </a>
-            </div>
+            <a href="{{ route('seeker.browse-jobs') }}" class="px-5 py-2.5 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 text-sm font-bold flex items-center justify-center gap-2">
+                <i class="fas fa-search"></i>Browse Jobs
+            </a>
         </div>
-    </div>
-
-    <!-- Animated Separator Line -->
-    <div class="relative h-2 bg-gray-200 rounded-full overflow-visible mb-4 md:mb-6">
-        <div class="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full animate-slide-right"></div>
-        <span class="absolute -top-6 text-2xl md:text-3xl text-green-600 font-bold animate-slide-text whitespace-nowrap z-10">Loading Applications...</span>
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-3 md:mb-4">
-        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-2 md:p-3 text-white shadow-lg transform hover:scale-105 transition-all duration-300">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-blue-100 text-[8px] md:text-[10px] font-medium mb-0.5">Total Applications</p>
-                    <h3 class="text-base md:text-xl font-bold">{{ $applications->count() }}</h3>
-                </div>
-                <div class="bg-white/20 p-1.5 md:p-2 rounded-lg backdrop-blur-sm">
-                    <i class="fas fa-file-alt text-sm md:text-lg"></i>
-                </div>
-            </div>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+        <div class="bg-white rounded-lg shadow p-4 border-l-4 border-teal-600">
+            <p class="text-xs text-gray-600 font-semibold uppercase">Total</p>
+            <p class="text-2xl font-bold text-gray-900 mt-1" id="totalCount">{{ $applications->count() }}</p>
         </div>
-        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-2 md:p-3 text-white shadow-lg transform hover:scale-105 transition-all duration-300">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-green-100 text-[8px] md:text-[10px] font-medium mb-0.5">Shortlisted</p>
-                    <h3 class="text-base md:text-xl font-bold">{{ $applications->where('status', 'shortlisted')->count() }}</h3>
-                </div>
-                <div class="bg-white/20 p-1.5 md:p-2 rounded-lg backdrop-blur-sm">
-                    <i class="fas fa-star text-sm md:text-lg"></i>
-                </div>
-            </div>
+        <div class="bg-white rounded-lg shadow p-4 border-l-4 border-yellow-500">
+            <p class="text-xs text-gray-600 font-semibold uppercase">Pending</p>
+            <p class="text-2xl font-bold text-yellow-600 mt-1" id="pendingCount">{{ $applications->filter(fn($a) => $a->status->value === 'pending')->count() }}</p>
         </div>
-        <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg p-2 md:p-3 text-white shadow-lg transform hover:scale-105 transition-all duration-300">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-orange-100 text-[8px] md:text-[10px] font-medium mb-0.5">Pending</p>
-                    <h3 class="text-base md:text-xl font-bold">{{ $applications->where('status', 'pending')->count() }}</h3>
-                </div>
-                <div class="bg-white/20 p-1.5 md:p-2 rounded-lg backdrop-blur-sm">
-                    <i class="fas fa-hourglass-half text-sm md:text-lg"></i>
-                </div>
-            </div>
+        <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500">
+            <p class="text-xs text-gray-600 font-semibold uppercase">Reviewed</p>
+            <p class="text-2xl font-bold text-blue-600 mt-1" id="reviewedCount">{{ $applications->filter(fn($a) => $a->status->value === 'reviewed')->count() }}</p>
         </div>
-        <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-lg p-2 md:p-3 text-white shadow-lg transform hover:scale-105 transition-all duration-300">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-red-100 text-[8px] md:text-[10px] font-medium mb-0.5">Rejected</p>
-                    <h3 class="text-base md:text-xl font-bold">{{ $applications->where('status', 'rejected')->count() }}</h3>
-                </div>
-                <div class="bg-white/20 p-1.5 md:p-2 rounded-lg backdrop-blur-sm">
-                    <i class="fas fa-times-circle text-sm md:text-lg"></i>
-                </div>
-            </div>
+        <div class="bg-white rounded-lg shadow p-4 border-l-4 border-green-500">
+            <p class="text-xs text-gray-600 font-semibold uppercase">Shortlisted</p>
+            <p class="text-2xl font-bold text-green-600 mt-1" id="shortlistedCount">{{ $applications->filter(fn($a) => $a->status->value === 'shortlisted')->count() }}</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4 border-l-4 border-red-500">
+            <p class="text-xs text-gray-600 font-semibold uppercase">Rejected</p>
+            <p class="text-2xl font-bold text-red-600 mt-1" id="rejectedCount">{{ $applications->filter(fn($a) => $a->status->value === 'rejected')->count() }}</p>
         </div>
     </div>
 
-    <!-- Search and Filters -->
-    <div class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 rounded-2xl shadow-lg border border-blue-100 overflow-hidden mb-4">
-        <form method="GET" action="{{ route('seeker.applications') }}" x-data="{ showAdvanced: false }">
-            <div class="bg-white/60 backdrop-blur-sm p-3">
-                <div class="bg-white/80 rounded-xl p-2.5 border border-blue-100">
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-2">
-                        <div class="md:col-span-4 relative">
-                            <i class="fas fa-search absolute left-2.5 top-1/2 transform -translate-y-1/2 text-blue-400 text-xs"></i>
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search applications..." class="w-full pl-8 pr-2 py-1.5 text-xs border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white">
-                        </div>
-                        <div class="md:col-span-3 relative">
-                            <i class="fas fa-filter absolute left-2.5 top-1/2 transform -translate-y-1/2 text-purple-400 text-xs"></i>
-                            <select name="status" class="w-full pl-8 pr-2 py-1.5 text-xs border border-purple-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all appearance-none bg-white">
-                                <option value="">All Status</option>
-                                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="reviewed" {{ request('status') == 'reviewed' ? 'selected' : '' }}>Reviewed</option>
-                                <option value="shortlisted" {{ request('status') == 'shortlisted' ? 'selected' : '' }}>Shortlisted</option>
-                                <option value="interview" {{ request('status') == 'interview' ? 'selected' : '' }}>Interview</option>
-                                <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+    <!-- Search & Filters -->
+    <div class="bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50 rounded-2xl shadow-lg border border-teal-100 overflow-hidden mb-6">
+        <div class="bg-white/60 backdrop-blur-sm p-3">
+            <div class="bg-white/80 rounded-xl p-2.5 border border-teal-100">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2">
+                    <div class="md:col-span-4 relative">
+                        <i class="fas fa-search absolute left-2.5 top-1/2 transform -translate-y-1/2 text-teal-400 text-xs"></i>
+                        <input type="text" id="searchInput" placeholder="Job title, keywords..." class="w-full pl-8 pr-2 py-1.5 text-xs border border-teal-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all bg-white">
+                    </div>
+                    <div class="md:col-span-3 relative">
+                        <i class="fas fa-map-marker-alt absolute left-2.5 top-1/2 transform -translate-y-1/2 text-cyan-400 text-xs"></i>
+                        <input type="text" id="locationInput" placeholder="Location..." class="w-full pl-8 pr-2 py-1.5 text-xs border border-cyan-200 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all bg-white">
+                    </div>
+                    <div class="md:col-span-2 relative">
+                        <i class="fas fa-filter absolute left-2.5 top-1/2 transform -translate-y-1/2 text-blue-400 text-xs"></i>
+                        <select id="statusFilter" class="w-full pl-8 pr-2 py-1.5 text-xs border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none bg-white">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="reviewed">Reviewed</option>
+                            <option value="shortlisted">Shortlisted</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-3 flex gap-1.5">
+                        <button onclick="filterApplications()" class="flex-1 px-2 py-1.5 text-xs bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-semibold">
+                            <i class="fas fa-search mr-1"></i>Search
+                        </button>
+                        <a href="{{ route('seeker.applications') }}" class="px-2 py-1.5 text-xs bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-lg hover:shadow-md transition-all duration-300 font-semibold">
+                            <i class="fas fa-redo"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="mt-2 flex justify-end">
+                    <div class="text-xs font-semibold text-teal-600">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <span>Sort By:</span>
+                            <select id="sortFilter" class="px-2 py-1 border border-teal-200 rounded-lg text-xs focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
                             </select>
-                        </div>
-                        <div class="md:col-span-2 relative">
-                            <i class="fas fa-calendar absolute left-2.5 top-1/2 transform -translate-y-1/2 text-pink-400 text-xs"></i>
-                            <select name="sort" class="w-full pl-8 pr-2 py-1.5 text-xs border border-pink-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all appearance-none bg-white">
-                                <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest First</option>
-                                <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest First</option>
-                            </select>
-                        </div>
-                        <div class="md:col-span-3 flex gap-1.5">
-                            <button type="submit" class="flex-1 px-2 py-1.5 text-xs bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-semibold">
-                                <i class="fas fa-search mr-1"></i>Search
-                            </button>
-                            <a href="{{ route('seeker.applications') }}" class="px-2 py-1.5 text-xs bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-lg hover:shadow-md transition-all duration-300 font-semibold">
-                                <i class="fas fa-redo"></i>
-                            </a>
-                        </div>
+                        </label>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 
-    <!-- Applications Table -->
-    <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-        <div class="overflow-x-auto">
+    <!-- Results Count & View Toggle -->
+    <div class="flex justify-between items-center mb-4">
+        <p class="text-gray-600 font-semibold text-sm">Showing <span class="text-teal-600" id="showingCount">{{ $applications->count() }}</span> applications</p>
+        <div class="flex gap-2">
+            <button onclick="switchView('grid')" id="gridViewBtn" class="px-4 py-2 bg-teal-600 text-white rounded-lg font-semibold transition-all duration-300">
+                <i class="fas fa-th mr-2"></i>Grid View
+            </button>
+            <button onclick="switchView('list')" id="listViewBtn" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg font-semibold transition-all duration-300 hover:bg-gray-400">
+                <i class="fas fa-list mr-2"></i>List View
+            </button>
+        </div>
+    </div>
+
+    <!-- Grid View -->
+    <div id="gridView" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        @forelse($applications as $application)
+        <div class="application-card bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border-l-4 border-teal-600 p-4 flex flex-col" data-status="{{ $application->status->value }}" data-created="{{ $application->created_at }}">
+            <!-- Status Badge -->
+            <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold
+                    @if($application->status->value === 'pending') bg-yellow-100 text-yellow-800
+                    @elseif($application->status->value === 'reviewed') bg-blue-100 text-blue-800
+                    @elseif($application->status->value === 'shortlisted') bg-green-100 text-green-800
+                    @elseif($application->status->value === 'rejected') bg-red-100 text-red-800
+                    @endif">
+                    <i class="fas fa-circle text-xs mr-1.5"></i>
+                    {{ ucfirst($application->status->value) }}
+                </span>
+            </div>
+
+            <!-- Job Title -->
+            <div class="mb-2">
+                <p class="text-xs text-gray-500 font-semibold uppercase tracking-wide">Job</p>
+                <h3 class="text-sm font-bold text-gray-900 line-clamp-2">{{ $application->job->title }}</h3>
+            </div>
+
+            <!-- Company -->
+            <div class="mb-2">
+                <p class="text-xs text-gray-500 font-semibold uppercase tracking-wide">Company</p>
+                <p class="text-sm text-gray-700 font-semibold line-clamp-1">{{ $application->job->employer?->employerProfile?->company_name ?? $application->job->employer?->name ?? 'N/A' }}</p>
+            </div>
+
+            <!-- Details -->
+            <div class="space-y-1 mb-3 pb-3 border-b border-gray-200 text-xs text-gray-600 flex-grow">
+                <p><i class="fas fa-map-marker-alt mr-1.5 text-teal-600 w-3"></i>{{ $application->job->location }}</p>
+                <p><i class="fas fa-calendar mr-1.5 text-teal-600 w-3"></i>Applied {{ $application->created_at->format('M d, Y') }}</p>
+                @if($application->job->job_type)
+                <p><i class="fas fa-briefcase mr-1.5 text-teal-600 w-3"></i>{{ ucfirst($application->job->job_type->value) }}</p>
+                @endif
+            </div>
+
+            <!-- Cover Letter Preview -->
+            @if($application->cover_letter)
+            <div class="mb-3 pb-3 border-b border-gray-200">
+                <p class="text-xs text-gray-600 font-semibold uppercase mb-1">Cover Letter</p>
+                <p class="text-xs text-gray-700 line-clamp-2">{{ $application->cover_letter }}</p>
+            </div>
+            @endif
+
+            <!-- Action Button -->
+            <a href="{{ route('seeker.applications.show', $application) }}" class="px-3 py-2 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-lg text-xs font-semibold hover:shadow-md transition text-center">
+                <i class="fas fa-eye mr-1"></i>View Details
+            </a>
+        </div>
+        @empty
+        <div class="col-span-full bg-white rounded-lg shadow-md p-12 text-center border border-gray-200">
+            <i class="fas fa-inbox text-5xl text-gray-300 mb-4 block"></i>
+            <p class="text-lg font-semibold text-gray-900 mb-2">No applications yet</p>
+            <p class="text-gray-600 mb-4">Start by browsing available jobs and submitting your applications</p>
+            <a href="{{ route('seeker.browse-jobs') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition">
+                <i class="fas fa-search"></i>Browse Jobs
+            </a>
+        </div>
+        @endforelse
+    </div>
+
+    <!-- List View -->
+    <div id="listView" class="hidden">
+        <div class="overflow-x-auto bg-white rounded-lg shadow-md border border-gray-200">
             <table class="w-full">
-                <thead class="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+                <thead class="bg-gradient-to-r from-teal-600 to-cyan-600 text-white">
                     <tr>
-                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">Job Title</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">Company</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">Applied</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">Status</th>
-                        <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-700">Actions</th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold">Job Title</th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold">Company</th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold">Applied</th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold">Status</th>
+                        <th class="px-6 py-3 text-center text-sm font-semibold">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200">
+                <tbody id="tableBody" class="divide-y divide-gray-200">
                     @forelse($applications as $application)
-                    <tr class="hover:bg-blue-50 transition">
-                        <td class="px-4 py-3 font-medium text-gray-900">{{ $application->job->title }}</td>
-                        <td class="px-4 py-3 text-sm text-gray-600">{{ $application->job->company_name }}</td>
-                        <td class="px-4 py-3 text-sm text-gray-600">{{ $application->created_at->format('M d, Y') }}</td>
-                        <td class="px-4 py-3">
-                            <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium
-                                @if($application->status === 'pending') bg-yellow-100 text-yellow-800
-                                @elseif($application->status === 'reviewed') bg-blue-100 text-blue-800
-                                @elseif($application->status === 'shortlisted') bg-green-100 text-green-800
-                                @elseif($application->status === 'interview') bg-purple-100 text-purple-800
-                                @elseif($application->status === 'rejected') bg-red-100 text-red-800
+                    <tr class="hover:bg-gray-50 transition-colors application-table-row" data-status="{{ $application->status->value }}" data-created="{{ $application->created_at }}">
+                        <td class="px-6 py-4 text-sm font-semibold text-gray-900">{{ $application->job->title }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700">{{ $application->job->employer?->employerProfile?->company_name ?? $application->job->employer?->name ?? 'N/A' }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700">{{ $application->created_at->format('M d, Y') }}</td>
+                        <td class="px-6 py-4 text-sm">
+                            <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold
+                                @if($application->status->value === 'pending') bg-yellow-100 text-yellow-800
+                                @elseif($application->status->value === 'reviewed') bg-blue-100 text-blue-800
+                                @elseif($application->status->value === 'shortlisted') bg-green-100 text-green-800
+                                @elseif($application->status->value === 'rejected') bg-red-100 text-red-800
                                 @endif">
-                                {{ ucfirst($application->status) }}
+                                {{ ucfirst($application->status->value) }}
                             </span>
                         </td>
-                        <td class="px-4 py-3 text-center">
-                            <a href="{{ route('seeker.applications') }}" class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition">
-                                <i class="fas fa-eye"></i>View
+                        <td class="px-6 py-4 text-center">
+                            <a href="{{ route('seeker.applications.show', $application) }}" class="px-3 py-1 bg-teal-600 text-white rounded text-xs font-semibold hover:bg-teal-700 transition">
+                                <i class="fas fa-eye mr-1"></i>View
                             </a>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="px-4 py-8 text-center text-gray-500">
-                            <div class="flex flex-col items-center justify-center">
-                                <i class="fas fa-inbox text-4xl text-gray-300 mb-3"></i>
-                                <p class="font-medium">No applications yet</p>
-                                <p class="text-sm">Start by <a href="{{ route('jobs.index') }}" class="text-blue-600 hover:underline">browsing available jobs</a></p>
-                            </div>
+                        <td colspan="5" class="px-6 py-12 text-center">
+                            <i class="fas fa-inbox text-4xl text-gray-300 mb-3 block"></i>
+                            <p class="text-gray-600">No applications yet</p>
                         </td>
                     </tr>
                     @endforelse
@@ -177,27 +222,107 @@
 
     <!-- Pagination -->
     @if($applications->hasPages())
-    <div class="mt-6 flex justify-center">
+    <div class="mt-8 flex justify-center">
         {{ $applications->links() }}
     </div>
     @endif
 </div>
 
-<style>
-@keyframes slide-right {
-    0% { width: 0%; }
-    100% { width: 100%; }
+<script>
+const allCards = document.querySelectorAll('.application-card');
+const allTableRows = document.querySelectorAll('.application-table-row');
+const searchInput = document.getElementById('searchInput');
+const locationInput = document.getElementById('locationInput');
+const statusFilter = document.getElementById('statusFilter');
+const sortFilter = document.getElementById('sortFilter');
+const gridViewBtn = document.getElementById('gridViewBtn');
+const listViewBtn = document.getElementById('listViewBtn');
+const gridView = document.getElementById('gridView');
+const listView = document.getElementById('listView');
+const showingCount = document.getElementById('showingCount');
+
+function filterApplications() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const locationTerm = locationInput.value.toLowerCase();
+    const status = statusFilter.value.toLowerCase();
+    const sort = sortFilter.value;
+    let visibleCards = [];
+    let visibleRows = [];
+
+    allCards.forEach(card => {
+        const cardStatus = card.dataset.status;
+        const jobTitle = card.textContent.toLowerCase();
+        const company = card.textContent.toLowerCase();
+        const location = card.textContent.toLowerCase();
+        
+        const matchesSearch = !searchTerm || jobTitle.includes(searchTerm) || company.includes(searchTerm);
+        const matchesLocation = !locationTerm || location.includes(locationTerm);
+        const matchesStatus = !status || cardStatus === status;
+        
+        if (matchesSearch && matchesLocation && matchesStatus) {
+            card.style.display = '';
+            visibleCards.push(card);
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    allTableRows.forEach(row => {
+        const rowStatus = row.dataset.status;
+        const rowText = row.textContent.toLowerCase();
+        
+        const matchesSearch = !searchTerm || rowText.includes(searchTerm);
+        const matchesLocation = !locationTerm || rowText.includes(locationTerm);
+        const matchesStatus = !status || rowStatus === status;
+        
+        if (matchesSearch && matchesLocation && matchesStatus) {
+            row.style.display = '';
+            visibleRows.push(row);
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    // Sort
+    if (sort === 'oldest') {
+        visibleCards.sort((a, b) => new Date(a.dataset.created) - new Date(b.dataset.created));
+        visibleRows.sort((a, b) => new Date(a.dataset.created) - new Date(b.dataset.created));
+    } else {
+        visibleCards.sort((a, b) => new Date(b.dataset.created) - new Date(a.dataset.created));
+        visibleRows.sort((a, b) => new Date(b.dataset.created) - new Date(a.dataset.created));
+    }
+
+    // Reorder DOM
+    visibleCards.forEach(card => gridView.appendChild(card));
+    visibleRows.forEach(row => document.getElementById('tableBody').appendChild(row));
+
+    showingCount.textContent = visibleCards.length;
 }
-.animate-slide-right {
-    animation: slide-right 5s ease-out forwards;
+
+function switchView(view) {
+    if (view === 'grid') {
+        gridView.classList.remove('hidden');
+        listView.classList.add('hidden');
+        gridViewBtn.classList.add('bg-teal-600', 'text-white');
+        gridViewBtn.classList.remove('bg-gray-300', 'text-gray-700');
+        listViewBtn.classList.remove('bg-teal-600', 'text-white');
+        listViewBtn.classList.add('bg-gray-300', 'text-gray-700');
+    } else {
+        listView.classList.remove('hidden');
+        gridView.classList.add('hidden');
+        listViewBtn.classList.add('bg-teal-600', 'text-white');
+        listViewBtn.classList.remove('bg-gray-300', 'text-gray-700');
+        gridViewBtn.classList.remove('bg-teal-600', 'text-white');
+        gridViewBtn.classList.add('bg-gray-300', 'text-gray-700');
+    }
 }
-@keyframes slide-text {
-    0% { left: 0%; opacity: 1; }
-    95% { opacity: 1; }
-    100% { left: 100%; opacity: 0; }
-}
-.animate-slide-text {
-    animation: slide-text 5s ease-out forwards;
-}
-</style>
+
+searchInput.addEventListener('input', filterApplications);
+locationInput.addEventListener('input', filterApplications);
+statusFilter.addEventListener('change', filterApplications);
+sortFilter.addEventListener('change', filterApplications);
+
+// Initial filter
+filterApplications();
+</script>
 @endsection

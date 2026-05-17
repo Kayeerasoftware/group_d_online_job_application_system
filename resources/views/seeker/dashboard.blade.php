@@ -87,31 +87,6 @@
     <!-- Main Content Grid -->
     <div class="grid gap-6 lg:grid-cols-3">
         <div class="lg:col-span-2 space-y-6">
-            <!-- Recent Applications -->
-            <div class="bg-white rounded-xl shadow-xl p-6 hover:shadow-2xl transition">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-gray-800 flex items-center">
-                        <i class="fas fa-file-alt text-blue-600 mr-2"></i>Recent Applications
-                    </h3>
-                    <a href="{{ route('seeker.applications') }}" class="text-blue-600 text-sm hover:underline font-semibold">View All →</a>
-                </div>
-                <div class="space-y-3">
-                    @forelse($recentApplications as $application)
-                    <div class="flex items-center justify-between p-3 hover:bg-blue-50 rounded-lg transition cursor-pointer border border-gray-100">
-                        <div class="flex-1">
-                            <p class="text-sm font-semibold text-gray-900">{{ $application->job->title }}</p>
-                            <p class="text-xs text-gray-500">{{ $application->job->company_name }} • {{ $application->created_at->format('M d') }}</p>
-                        </div>
-                        <span class="px-3 py-1 text-xs rounded-full font-semibold {{ $application->status == 'shortlisted' ? 'bg-green-100 text-green-800' : ($application->status == 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
-                            {{ ucfirst($application->status) }}
-                        </span>
-                    </div>
-                    @empty
-                    <p class="text-gray-500 text-sm text-center py-8">No applications yet. <a href="{{ route('jobs.index') }}" class="text-blue-600 hover:underline">Browse jobs</a></p>
-                    @endforelse
-                </div>
-            </div>
-
             <!-- Application Tracker -->
             @if($trackedApplication)
             <div class="bg-white rounded-xl shadow-xl p-6 hover:shadow-2xl transition">
@@ -152,6 +127,31 @@
                 @endif
             </div>
             @endif
+
+            <!-- Recent Applications -->
+            <div class="bg-white rounded-xl shadow-xl p-6 hover:shadow-2xl transition">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center">
+                        <i class="fas fa-file-alt text-blue-600 mr-2"></i>Recent Applications
+                    </h3>
+                    <a href="{{ route('seeker.applications') }}" class="text-blue-600 text-sm hover:underline font-semibold">View All →</a>
+                </div>
+                <div class="space-y-3">
+                    @forelse($recentApplications as $application)
+                    <div class="flex items-center justify-between p-3 hover:bg-blue-50 rounded-lg transition cursor-pointer border border-gray-100">
+                        <div class="flex-1">
+                            <p class="text-sm font-semibold text-gray-900">{{ $application->job->title }}</p>
+                            <p class="text-xs text-gray-500">{{ $application->job->company_name }} • {{ $application->created_at->format('M d') }}</p>
+                        </div>
+                        <span class="px-3 py-1 text-xs rounded-full font-semibold {{ $application->status->value == 'shortlisted' ? 'bg-green-100 text-green-800' : ($application->status->value == 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
+                            {{ ucfirst($application->status->value) }}
+                        </span>
+                    </div>
+                    @empty
+                    <p class="text-gray-500 text-sm text-center py-8">No applications yet. <a href="{{ route('jobs.index') }}" class="text-blue-600 hover:underline">Browse jobs</a></p>
+                    @endforelse
+                </div>
+            </div>
         </div>
 
         <!-- Sidebar -->

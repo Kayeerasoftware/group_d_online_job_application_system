@@ -18,7 +18,11 @@ class NotificationController extends Controller
             ->latest()
             ->paginate(15);
 
-        return view('jobseeker.notifications', compact('notifications'));
+        $unreadCount = $request->user()->notifications()->whereNull('read_at')->count();
+        $applicationNotifications = $request->user()->notifications()->where('type', 'application_status')->count();
+        $jobAlerts = $request->user()->notifications()->where('type', 'job_match')->count();
+
+        return view('seeker.notifications', compact('notifications', 'unreadCount', 'applicationNotifications', 'jobAlerts'));
     }
 
     public function create()
@@ -46,17 +50,28 @@ class NotificationController extends Controller
         abort(404);
     }
 
-    public function destroy(Notification $notification)
+    public function destroy(Notification $notification): RedirectResponse
     {
-        abort(404);
+        abort_unless($notification->user_id === auth()->id(), 403);
+
+        $notification->delete();
+
+        return back()->with('status', 'Notification deleted.');
     }
 
     public function markRead(Request $request, Notification $notification): RedirectResponse
     {
         abort_unless($notification->user_id === $request->user()->id, 403);
 
-        $notification->update(['is_read' => true]);
+        $notification->update(['read_at' => now()]);
 
         return back()->with('status', 'Notification marked as read.');
+    }
+
+    public function markAllRead(Request $request)
+    {
+        $request->user()->notifications()->whereNull('read_at')->update(['read_at' => now()]);
+
+        return response()->json(['success' => true]);
     }
 }

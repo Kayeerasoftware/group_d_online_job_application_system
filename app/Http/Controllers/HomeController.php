@@ -30,7 +30,6 @@ class HomeController extends Controller
         $admins = User::query()->where('role', UserRole::Admin->value)->count();
         $activeUsers = User::query()->where('is_active', true)->count();
         $savedJobs = SavedJob::count();
-        $reports = RegulatoryReport::count();
         $pendingReports = RegulatoryReport::query()->where('status', ReportStatus::Draft->value)->count();
 
         $monthWindows = collect(range(5, 0))->map(function (int $monthsAgo): CarbonImmutable {
@@ -76,27 +75,6 @@ class HomeController extends Controller
             $totalJobs
         );
 
-        $topLocations = Job::query()
-            ->selectRaw('location, COUNT(*) as total')
-            ->groupBy('location')
-            ->orderByDesc('total')
-            ->limit(5)
-            ->get()
-            ->map(function ($row): array {
-                return [
-                    'label' => (string) $row->location,
-                    'value' => (int) $row->total,
-                ];
-            })
-            ->all();
-
-        $topEmployers = User::query()
-            ->where('role', UserRole::Employer->value)
-            ->withCount(['jobs as active_jobs_count' => fn ($query) => $query->open()])
-            ->orderByDesc('active_jobs_count')
-            ->limit(3)
-            ->get();
-
         $featuredJobs = Job::query()
             ->with('employer')
             ->open()
@@ -139,11 +117,6 @@ class HomeController extends Controller
                     'value' => number_format($savedJobs),
                     'meta' => 'Bookmarked opportunities across the platform',
                 ],
-                [
-                    'label' => 'Compliance reports',
-                    'value' => number_format($reports),
-                    'meta' => $pendingReports > 0 ? number_format($pendingReports) . ' waiting for review' : 'No draft reports waiting',
-                ],
             ],
             'heroStats' => [
                 [
@@ -183,8 +156,6 @@ class HomeController extends Controller
             'jobTypeBreakdown' => $jobTypeBreakdown,
             'jobStatusBreakdown' => $jobStatusBreakdown,
             'monthlyActivity' => $monthlyActivity,
-            'topLocations' => $topLocations,
-            'topEmployers' => $topEmployers,
             'openJobs' => $openJobs,
             'employers' => $employers,
             'savedJobs' => $savedJobs,

@@ -22,15 +22,19 @@ class SavedJobsController extends Controller
             ->with('job')
             ->get();
 
-        $metrics = [
-            'fullTime' => $allSavedJobs->filter(fn($s) => $s->job->job_type === 'full-time')->count(),
-            'partTime' => $allSavedJobs->filter(fn($s) => $s->job->job_type === 'part-time')->count(),
-            'remote' => $allSavedJobs->filter(fn($s) => strtolower($s->job->location) === 'remote')->count(),
-        ];
+        $closingSoon = $allSavedJobs->filter(function($s) {
+            $daysLeft = now()->diffInDays($s->job->deadline, false);
+            return $daysLeft > 0 && $daysLeft <= 7;
+        })->count();
 
-        return view('jobseeker.saved-jobs', [
+        $activeJobs = $allSavedJobs->filter(function($s) {
+            return now()->diffInDays($s->job->deadline, false) > 7;
+        })->count();
+
+        return view('seeker.saved-jobs', [
             'savedJobs' => $savedJobs,
-            'metrics' => $metrics,
+            'closingSoon' => $closingSoon,
+            'activeJobs' => $activeJobs,
         ]);
     }
 }

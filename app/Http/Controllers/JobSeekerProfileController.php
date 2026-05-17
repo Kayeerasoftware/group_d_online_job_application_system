@@ -29,23 +29,55 @@ class JobSeekerProfileController extends Controller
 
     public function show(Request $request): View
     {
-        return view('jobseeker.profile');
+        $user = $request->user();
+        $profile = $user->seekerProfile;
+
+        $profileCompletion = $this->calculateProfileCompletion($user, $profile);
+
+        $applicationCount = $user->applications()->count();
+        $shortlistedCount = $user->applications()->whereIn('status', ['shortlisted', 'hired'])->count();
+        $interviewCount = $user->applications()->where('status', 'reviewed')->count();
+        $skills = $profile?->skills ?? [];
+
+        return view('seeker.profile', compact('profileCompletion', 'applicationCount', 'shortlistedCount', 'interviewCount', 'skills'));
     }
 
     public function edit(Request $request): View
     {
         $profile = $request->user()->seekerProfile()->firstOrCreate(['user_id' => $request->user()->id]);
 
-        return view('jobseeker.profile-edit', compact('profile'));
+        return view('seeker.profile-edit', compact('profile'));
     }
 
     public function update(UpdateJobSeekerProfileRequest $request): RedirectResponse
     {
-        $profile = $request->user()->seekerProfile()->firstOrCreate(['user_id' => $request->user()->id]);
+        $user = $request->user();
+        $profile = $user->seekerProfile()->firstOrCreate(['user_id' => $user->id]);
 
         $data = $request->validated();
 
-        if (isset($data['skills'])) {
+        $userData = [
+            'name' => $data['name'] ?? $user->name,
+            'email' => $data['email'] ?? $user->email,
+            'phone' => $data['phone'] ?? $user->phone,
+        ];
+
+        // Handle profile picture upload
+        if ($request->hasFile('profile_picture') && $request->file('profile_picture')->isValid()) {
+            if ($user->profile_picture) {
+                @unlink(public_path('uploads/profile-pictures/' . basename($user->profile_picture)));
+            }
+            $file = $request->file('profile_picture');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/profile-pictures'), $filename);
+            $userData['profile_picture'] = 'uploads/profile-pictures/' . $filename;
+        }
+
+        $user->update($userData);
+
+        unset($data['profile_picture'], $data['name'], $data['email'], $data['phone']);
+
+        if (isset($data['skills']) && !empty($data['skills'])) {
             $data['skills'] = collect(explode(',', $data['skills']))
                 ->map(fn ($skill) => trim($skill))
                 ->filter()
@@ -53,12 +85,14 @@ class JobSeekerProfileController extends Controller
                 ->all();
         }
 
-        if (isset($data['notification_preferences'])) {
-            $data['notification_preferences'] = $data['notification_preferences'];
-        }
-
-        if ($request->hasFile('resume_path')) {
-            $data['resume_path'] = $request->file('resume_path')->store('resumes', 'public');
+        if ($request->hasFile('cv') && $request->file('cv')->isValid()) {
+            if ($profile->cv_path) {
+                @unlink(public_path($profile->cv_path));
+            }
+            $file = $request->file('cv');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/cvs'), $filename);
+            $data['cv_path'] = 'uploads/cvs/' . $filename;
         }
 
         $profile->update($data);
@@ -69,5 +103,23 @@ class JobSeekerProfileController extends Controller
     public function destroy(JobSeekerProfile $jobSeekerProfile)
     {
         abort(404);
+    }
+
+    private function calculateProfileCompletion($user, $profile): int
+    {
+        $fields = [
+            $user->name,
+            $user->email,
+            $user->phone,
+            $profile?->location,
+            $profile?->job_title,
+            $profile?->years_experience,
+            $profile?->skills,
+            $profile?->bio,
+            $profile?->cv_path,
+        ];
+        
+        $completed = count(array_filter($fields));
+        return (int) (($completed / count($fields)) * 100);
     }
 }

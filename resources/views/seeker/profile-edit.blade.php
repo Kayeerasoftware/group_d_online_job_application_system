@@ -22,59 +22,22 @@
         </div>
     </div>
 
-    <!-- Animated Separator Line -->
-    <div class="relative h-2 bg-gray-200 rounded-full overflow-visible mb-4 md:mb-6">
-        <div class="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full animate-slide-right"></div>
-        <span class="absolute -top-6 text-2xl md:text-3xl text-green-600 font-bold animate-slide-text whitespace-nowrap z-10">Loading Profile...</span>
-    </div>
+    @if ($errors->any())
+        <div class="mb-4 rounded-lg bg-red-50 border border-red-200 p-4">
+            <p class="text-sm font-medium text-red-800 mb-2">Please fix the following errors:</p>
+            <ul class="list-disc list-inside text-sm text-red-700">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-3 md:mb-4">
-        <div class="bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg p-2 md:p-3 text-white shadow-lg transform hover:scale-105 transition-all duration-300">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-teal-100 text-[8px] md:text-[10px] font-medium mb-0.5">Profile Views</p>
-                    <h3 class="text-base md:text-xl font-bold">{{ $profileViews ?? 156 }}</h3>
-                </div>
-                <div class="bg-white/20 p-1.5 md:p-2 rounded-lg backdrop-blur-sm">
-                    <i class="fas fa-eye text-sm md:text-lg"></i>
-                </div>
-            </div>
+    @if (session('status'))
+        <div class="mb-4 rounded-lg bg-green-50 border border-green-200 p-4">
+            <p class="text-sm font-medium text-green-800">{{ session('status') }}</p>
         </div>
-        <div class="bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-lg p-2 md:p-3 text-white shadow-lg transform hover:scale-105 transition-all duration-300">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-cyan-100 text-[8px] md:text-[10px] font-medium mb-0.5">Profile Completion</p>
-                    <h3 class="text-base md:text-xl font-bold">{{ $profileCompletion ?? 75 }}%</h3>
-                </div>
-                <div class="bg-white/20 p-1.5 md:p-2 rounded-lg backdrop-blur-sm">
-                    <i class="fas fa-chart-pie text-sm md:text-lg"></i>
-                </div>
-            </div>
-        </div>
-        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-2 md:p-3 text-white shadow-lg transform hover:scale-105 transition-all duration-300">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-blue-100 text-[8px] md:text-[10px] font-medium mb-0.5">Job Matches</p>
-                    <h3 class="text-base md:text-xl font-bold">{{ $jobMatches ?? 42 }}</h3>
-                </div>
-                <div class="bg-white/20 p-1.5 md:p-2 rounded-lg backdrop-blur-sm">
-                    <i class="fas fa-briefcase text-sm md:text-lg"></i>
-                </div>
-            </div>
-        </div>
-        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-2 md:p-3 text-white shadow-lg transform hover:scale-105 transition-all duration-300">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-green-100 text-[8px] md:text-[10px] font-medium mb-0.5">Last Updated</p>
-                    <h3 class="text-base md:text-xl font-bold">{{ $lastUpdated ?? 'Today' }}</h3>
-                </div>
-                <div class="bg-white/20 p-1.5 md:p-2 rounded-lg backdrop-blur-sm">
-                    <i class="fas fa-calendar text-sm md:text-lg"></i>
-                </div>
-            </div>
-        </div>
-    </div>
+    @endif
 
     <!-- Main Content -->
     <div class="grid gap-6 lg:grid-cols-3">
@@ -82,6 +45,44 @@
             <form action="{{ route('seeker.profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
                 @method('PUT')
+
+                <!-- Profile Picture Upload -->
+                <div class="bg-white rounded-xl shadow-xl p-6 border border-gray-100">
+                    <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-image text-teal-600 mr-2"></i>Profile Picture
+                    </h2>
+                    
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <!-- Current Picture -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-32 h-32 rounded-full bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center overflow-hidden shadow-lg ring-4 ring-teal-100 mb-3">
+                                @if(auth()->user()->profile_picture_url)
+                                    <img src="{{ auth()->user()->profile_picture_url }}" alt="Profile" class="w-full h-full object-cover">
+                                @else
+                                    <i class="fas fa-user text-white text-5xl"></i>
+                                @endif
+                            </div>
+                            <p class="text-xs text-gray-600 text-center">Current Picture</p>
+                        </div>
+
+                        <!-- Upload Area -->
+                        <div class="flex-1 flex flex-col justify-center">
+                            <div class="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-8 text-center transition hover:border-teal-500 hover:bg-teal-50 cursor-pointer">
+                                <input type="file" name="profile_picture" id="profile_picture" accept="image/*" class="hidden" onchange="previewProfilePicture(this)">
+                                <label for="profile_picture" class="cursor-pointer">
+                                    <div class="text-4xl mb-3">📸</div>
+                                    <p class="text-sm font-medium text-gray-900">Click to upload or drag and drop</p>
+                                    <p class="mt-1 text-xs text-gray-600">PNG, JPG, GIF (max 2MB)</p>
+                                </label>
+                            </div>
+                            <div id="preview-container" class="mt-4 hidden">
+                                <img id="preview-image" src="" alt="Preview" class="w-full h-auto rounded-lg shadow-md">
+                                <button type="button" onclick="clearPreview()" class="mt-2 w-full text-xs text-red-600 hover:text-red-700 font-medium">Clear Preview</button>
+                            </div>
+                            @error('profile_picture')<p class="mt-2 text-xs text-red-600">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Personal Information -->
                 <div class="bg-white rounded-xl shadow-xl p-6 border border-gray-100">
@@ -91,20 +92,20 @@
                     
                     <div class="grid gap-4 md:grid-cols-2">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
                             <input type="text" name="name" value="{{ old('name', auth()->user()->name) }}" required class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition">
                             @error('name')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
                             <input type="email" name="email" value="{{ old('email', auth()->user()->email) }}" required class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition">
                             @error('email')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                            <input type="tel" name="phone" value="{{ old('phone', $profile->phone ?? '') }}" class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition">
+                            <input type="tel" name="phone" value="{{ old('phone', auth()->user()->phone ?? '') }}" class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition">
                             @error('phone')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                         </div>
 
@@ -112,6 +113,23 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
                             <input type="text" name="location" value="{{ old('location', $profile->location ?? '') }}" placeholder="e.g., Kampala, Uganda" class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition">
                             @error('location')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+                            <input type="date" name="date_of_birth" value="{{ old('date_of_birth', $profile->date_of_birth?->format('Y-m-d') ?? '') }}" class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition">
+                            @error('date_of_birth')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+                            <select name="gender" class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition">
+                                <option value="">Select gender</option>
+                                @foreach(['Male', 'Female', 'Other'] as $gender)
+                                    <option value="{{ $gender }}" {{ old('gender', $profile->gender ?? '') == $gender ? 'selected' : '' }}>{{ $gender }}</option>
+                                @endforeach
+                            </select>
+                            @error('gender')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                         </div>
                     </div>
                 </div>
@@ -132,14 +150,14 @@
                         <div class="grid gap-4 md:grid-cols-2">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Years of Experience</label>
-                                <select name="experience_years" class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition">
+                                <select name="years_experience" class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition">
                                     <option value="">Select experience</option>
                                     @for($i = 0; $i <= 20; $i++)
-                                    <option value="{{ $i }}" {{ old('experience_years', $profile->experience_years ?? '') == $i ? 'selected' : '' }}>{{ $i }} {{ $i == 1 ? 'year' : 'years' }}</option>
+                                        <option value="{{ $i }}" {{ old('years_experience', $profile->years_experience ?? '') == $i ? 'selected' : '' }}>{{ $i }} {{ $i == 1 ? 'year' : 'years' }}</option>
                                     @endfor
-                                    <option value="20+" {{ old('experience_years', $profile->experience_years ?? '') == '20+' ? 'selected' : '' }}>20+ years</option>
+                                    <option value="20+" {{ old('years_experience', $profile->years_experience ?? '') == '20+' ? 'selected' : '' }}>20+ years</option>
                                 </select>
-                                @error('experience_years')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+                                @error('years_experience')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                             </div>
 
                             <div>
@@ -147,7 +165,7 @@
                                 <select name="education_level" class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition">
                                     <option value="">Select level</option>
                                     @foreach(['High School', 'Certificate', 'Diploma', 'Bachelor\'s Degree', 'Master\'s Degree', 'PhD'] as $level)
-                                    <option value="{{ $level }}" {{ old('education_level', $profile->education_level ?? '') == $level ? 'selected' : '' }}>{{ $level }}</option>
+                                        <option value="{{ $level }}" {{ old('education_level', $profile->education_level ?? '') == $level ? 'selected' : '' }}>{{ $level }}</option>
                                     @endforeach
                                 </select>
                                 @error('education_level')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
@@ -156,7 +174,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Skills (comma-separated)</label>
-                            <input type="text" name="skills" value="{{ old('skills', $profile->skills ?? '') }}" placeholder="e.g., Laravel, Vue.js, MySQL, Project Management" class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition">
+                            <input type="text" name="skills" value="{{ old('skills', is_array($profile->skills ?? null) ? implode(', ', $profile->skills) : ($profile->skills ?? '')) }}" placeholder="e.g., Laravel, Vue.js, MySQL, Project Management" class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition">
                             @error('skills')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                         </div>
 
@@ -198,7 +216,7 @@
 
                 <!-- Action Buttons -->
                 <div class="flex items-center justify-between gap-4">
-                    <a href="{{ route('seeker.dashboard') }}" class="rounded-lg border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition">Cancel</a>
+                    <a href="{{ route('seeker.profile') }}" class="rounded-lg border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition">Cancel</a>
                     <button type="submit" class="rounded-lg bg-gradient-to-r from-teal-600 to-cyan-600 px-6 py-3 text-sm font-medium text-white hover:shadow-lg transition">Save Changes</button>
                 </div>
             </form>
@@ -206,6 +224,21 @@
 
         <!-- Sidebar -->
         <div class="space-y-6">
+            <!-- Profile Picture Preview -->
+            <div class="bg-white rounded-xl shadow-xl p-6 border border-gray-100">
+                <h3 class="font-bold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-user-circle text-teal-600 mr-2"></i>Profile Picture
+                </h3>
+                <div class="w-full rounded-lg bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center overflow-hidden shadow-lg ring-4 ring-teal-100 aspect-square">
+                    @if(auth()->user()->profile_picture_url)
+                        <img src="{{ auth()->user()->profile_picture_url }}" alt="Profile" class="w-full h-full object-cover">
+                    @else
+                        <i class="fas fa-user text-white text-6xl"></i>
+                    @endif
+                </div>
+                <p class="text-xs text-gray-600 text-center mt-3">This picture will appear on your profile and in search results</p>
+            </div>
+
             <!-- Profile Completion -->
             <div class="bg-white rounded-xl shadow-xl p-6 border border-gray-100">
                 <h3 class="font-bold text-gray-900 mb-4 flex items-center">
@@ -214,12 +247,13 @@
                 <div class="space-y-3">
                     @php
                         $completionItems = [
+                            ['label' => 'Profile picture', 'completed' => auth()->user()->profile_picture],
                             ['label' => 'Personal info', 'completed' => auth()->user()->name && auth()->user()->email],
-                            ['label' => 'Contact details', 'completed' => $profile && $profile->phone && $profile->location],
-                            ['label' => 'Professional details', 'completed' => $profile && $profile->job_title && $profile->experience_years],
-                            ['label' => 'Skills', 'completed' => $profile && $profile->skills],
-                            ['label' => 'Bio', 'completed' => $profile && $profile->bio],
-                            ['label' => 'CV uploaded', 'completed' => $profile && $profile->cv_path],
+                            ['label' => 'Contact details', 'completed' => auth()->user()->phone && $profile->location],
+                            ['label' => 'Professional details', 'completed' => $profile->job_title && $profile->years_experience],
+                            ['label' => 'Skills', 'completed' => $profile->skills],
+                            ['label' => 'Bio', 'completed' => $profile->bio],
+                            ['label' => 'CV uploaded', 'completed' => $profile->cv_path],
                         ];
                     @endphp
                     @foreach($completionItems as $item)
@@ -241,19 +275,19 @@
                 <ul class="space-y-2 text-sm text-gray-600">
                     <li class="flex items-start gap-2">
                         <span class="text-teal-600 font-bold">•</span>
-                        <span>Complete profiles get 3x more views from employers</span>
+                        <span>Use a professional profile picture</span>
                     </li>
                     <li class="flex items-start gap-2">
                         <span class="text-teal-600 font-bold">•</span>
-                        <span>Keep your CV updated with recent experience</span>
+                        <span>Complete profiles get 3x more views</span>
                     </li>
                     <li class="flex items-start gap-2">
                         <span class="text-teal-600 font-bold">•</span>
-                        <span>List specific skills relevant to your target roles</span>
+                        <span>Keep your CV updated</span>
                     </li>
                     <li class="flex items-start gap-2">
                         <span class="text-teal-600 font-bold">•</span>
-                        <span>Write a clear bio highlighting your strengths</span>
+                        <span>List specific relevant skills</span>
                     </li>
                 </ul>
             </div>
@@ -261,21 +295,22 @@
     </div>
 </div>
 
-<style>
-@keyframes slide-right {
-    0% { width: 0%; }
-    100% { width: 100%; }
+<script>
+function previewProfilePicture(input) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview-image').src = e.target.result;
+            document.getElementById('preview-container').classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+    }
 }
-.animate-slide-right {
-    animation: slide-right 5s ease-out forwards;
+
+function clearPreview() {
+    document.getElementById('profile_picture').value = '';
+    document.getElementById('preview-container').classList.add('hidden');
 }
-@keyframes slide-text {
-    0% { left: 0%; opacity: 1; }
-    95% { opacity: 1; }
-    100% { left: 100%; opacity: 0; }
-}
-.animate-slide-text {
-    animation: slide-text 5s ease-out forwards;
-}
-</style>
+</script>
 @endsection

@@ -24,6 +24,8 @@ class User extends Authenticatable
         'is_active',
     ];
 
+    protected $appends = ['profile_picture_url'];
+
     protected $hidden = [
         'password',
         'remember_token',
@@ -97,5 +99,10 @@ class User extends Authenticatable
     public function roleValue(): string
     {
         return $this->role instanceof UserRole ? $this->role->value : (string) $this->role;
+    }
+
+    public function getProfilePictureUrlAttribute(): ?string
+    {
+        return $this->profile_picture ? asset($this->profile_picture) : null;
     }
 }

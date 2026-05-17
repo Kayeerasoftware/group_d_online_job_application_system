@@ -14,7 +14,7 @@ class ProfileController extends Controller
 {
     public function edit(Request $request): View
     {
-        $profile = $request->user()->jobSeekerProfile;
+        $profile = $request->user()->seekerProfile;
         
         return view('seeker.profile-edit', compact('profile'));
     }
@@ -22,12 +22,22 @@ class ProfileController extends Controller
     public function update(UpdateJobSeekerProfileRequest $request): RedirectResponse
     {
         $user = $request->user();
-        $profile = $user->jobSeekerProfile;
+        $profile = $user->seekerProfile;
         
-        $user->update([
+        $userData = [
             'name' => $request->name,
             'email' => $request->email,
-        ]);
+        ];
+        
+        // Handle profile picture upload
+        if ($request->hasFile('profile_picture')) {
+            if ($user->profile_picture) {
+                Storage::disk('public')->delete($user->profile_picture);
+            }
+            $userData['profile_picture'] = $request->file('profile_picture')->store('profile-pictures', 'public');
+        }
+        
+        $user->update($userData);
         
         $data = $request->validated();
         
@@ -41,7 +51,7 @@ class ProfileController extends Controller
         if ($profile) {
             $profile->update($data);
         } else {
-            $user->jobSeekerProfile()->create($data);
+            $user->seekerProfile()->create($data);
         }
         
         return redirect()->route('seeker.profile.edit')

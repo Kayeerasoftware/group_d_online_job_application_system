@@ -95,6 +95,7 @@
                     <a href="{{ route('admin.reports.create') }}" class="hidden items-center gap-2 rounded-full bg-emerald-400 px-4 py-2 text-sm font-semibold text-[#1a1714] transition hover:bg-emerald-300 lg:inline-flex">
                         <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" />
                         </svg>
                         Generate Report
                     </a>

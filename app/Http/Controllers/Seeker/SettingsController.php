@@ -12,8 +12,12 @@ class SettingsController extends Controller
     {
         $user = $request->user();
 
-        return view('jobseeker.settings', [
+        return view('seeker.settings', [
             'user' => $user,
+            'twoFAEnabled' => false,
+            'notificationsEnabled' => true,
+            'activeSessions' => 1,
+            'lastLogin' => 'Today',
         ]);
     }
 }

@@ -15,7 +15,7 @@ class DashboardController extends Controller
     public function index(Request $request): View
     {
         $user = $request->user();
-        $profile = $user->jobSeekerProfile;
+        $profile = $user->seekerProfile;
         
         $stats = [
             'applications' => Application::where('job_seeker_id', $user->id)->count(),
@@ -136,10 +136,10 @@ class DashboardController extends Controller
         $fields = [
             $user->name,
             $user->email,
-            $profile?->phone,
+            $profile?->phone ?? $user->phone,
             $profile?->location,
             $profile?->job_title,
-            $profile?->experience_years,
+            $profile?->years_experience,
             $profile?->skills,
             $profile?->bio,
             $profile?->cv_path,

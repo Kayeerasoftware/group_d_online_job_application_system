@@ -25,12 +25,6 @@
         </div>
     </div>
 
-    <!-- Animated Separator Line -->
-    <div class="relative h-2 bg-gray-200 rounded-full overflow-visible mb-4 md:mb-6">
-        <div class="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full animate-slide-right"></div>
-        <span class="absolute -top-6 text-2xl md:text-3xl text-green-600 font-bold animate-slide-text whitespace-nowrap z-10">Loading Profile...</span>
-    </div>
-
     <!-- Profile Header Card -->
     <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 mb-6">
         <div class="h-32 bg-gradient-to-r from-teal-500 to-cyan-500"></div>
@@ -41,8 +35,8 @@
                 </div>
                 <div class="flex-1">
                     <h2 class="text-2xl md:text-3xl font-bold text-gray-900">{{ auth()->user()->name }}</h2>
-                    <p class="text-lg text-gray-600 mt-1">{{ auth()->user()->jobSeekerProfile->job_title ?? 'Job Seeker' }}</p>
-                    <p class="text-sm text-gray-500 mt-1">{{ auth()->user()->jobSeekerProfile->location ?? 'Location not set' }}</p>
+                    <p class="text-lg text-gray-600 mt-1">{{ auth()->user()->seekerProfile?->job_title ?? 'Job Seeker' }}</p>
+                    <p class="text-sm text-gray-500 mt-1">{{ auth()->user()->seekerProfile?->location ?? 'Location not set' }}</p>
                 </div>
             </div>
 
@@ -75,11 +69,11 @@
                     </div>
                     <div>
                         <p class="text-sm text-gray-600 font-medium">Phone</p>
-                        <p class="text-gray-900 mt-1">{{ auth()->user()->jobSeekerProfile->phone ?? 'Not provided' }}</p>
+                        <p class="text-gray-900 mt-1">{{ auth()->user()->phone ?? 'Not provided' }}</p>
                     </div>
                     <div>
                         <p class="text-sm text-gray-600 font-medium">Location</p>
-                        <p class="text-gray-900 mt-1">{{ auth()->user()->jobSeekerProfile->location ?? 'Not provided' }}</p>
+                        <p class="text-gray-900 mt-1">{{ auth()->user()->seekerProfile?->location ?? 'Not provided' }}</p>
                     </div>
                 </div>
             </div>
@@ -92,15 +86,19 @@
                 <div class="space-y-4">
                     <div>
                         <p class="text-sm text-gray-600 font-medium">Job Title</p>
-                        <p class="text-gray-900 mt-1">{{ auth()->user()->jobSeekerProfile->job_title ?? 'Not provided' }}</p>
+                        <p class="text-gray-900 mt-1">{{ auth()->user()->seekerProfile?->job_title ?? 'Not provided' }}</p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-600 font-medium">Experience Level</p>
-                        <p class="text-gray-900 mt-1">{{ auth()->user()->jobSeekerProfile->experience_level ?? 'Not provided' }}</p>
+                        <p class="text-sm text-gray-600 font-medium">Years of Experience</p>
+                        <p class="text-gray-900 mt-1">{{ auth()->user()->seekerProfile?->years_experience ?? 'Not provided' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 font-medium">Education Level</p>
+                        <p class="text-gray-900 mt-1">{{ auth()->user()->seekerProfile?->education_level ?? 'Not provided' }}</p>
                     </div>
                     <div>
                         <p class="text-sm text-gray-600 font-medium">Bio</p>
-                        <p class="text-gray-900 mt-1">{{ auth()->user()->jobSeekerProfile->bio ?? 'Not provided' }}</p>
+                        <p class="text-gray-900 mt-1">{{ auth()->user()->seekerProfile?->bio ?? 'Not provided' }}</p>
                     </div>
                 </div>
             </div>
@@ -179,33 +177,12 @@
                     <a href="{{ route('seeker.profile.edit') }}" class="block w-full px-4 py-2 text-center bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-semibold text-sm">
                         <i class="fas fa-edit mr-1"></i>Edit Profile
                     </a>
-                    <a href="{{ route('seeker.resume') }}" class="block w-full px-4 py-2 text-center bg-white text-teal-600 border border-teal-200 rounded-lg hover:bg-teal-50 transition-all duration-300 font-semibold text-sm">
-                        <i class="fas fa-file-pdf mr-1"></i>Manage Resume
-                    </a>
-                    <a href="{{ route('seeker.settings') }}" class="block w-full px-4 py-2 text-center bg-white text-teal-600 border border-teal-200 rounded-lg hover:bg-teal-50 transition-all duration-300 font-semibold text-sm">
-                        <i class="fas fa-sliders-h mr-1"></i>Settings
+                    <a href="{{ route('seeker.dashboard') }}" class="block w-full px-4 py-2 text-center bg-white text-teal-600 border border-teal-200 rounded-lg hover:bg-teal-50 transition-all duration-300 font-semibold text-sm">
+                        <i class="fas fa-home mr-1"></i>Dashboard
                     </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-@keyframes slide-right {
-    0% { width: 0%; }
-    100% { width: 100%; }
-}
-.animate-slide-right {
-    animation: slide-right 5s ease-out forwards;
-}
-@keyframes slide-text {
-    0% { left: 0%; opacity: 1; }
-    95% { opacity: 1; }
-    100% { left: 100%; opacity: 0; }
-}
-.animate-slide-text {
-    animation: slide-text 5s ease-out forwards;
-}
-</style>
 @endsection

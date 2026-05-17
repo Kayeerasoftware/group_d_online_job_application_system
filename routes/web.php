@@ -1,6 +1,13 @@
 <?php
 
-use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\Employer\AllEmployersController;
+use App\Http\Controllers\Employer\ApplicationController as EmployerApplicationController;
+use App\Http\Controllers\Employer\InterviewsController as EmployerInterviewsController;
+use App\Http\Controllers\Employer\MessagesController as EmployerMessagesController;
+use App\Http\Controllers\Employer\NotificationsController as EmployerNotificationsController;
+use App\Http\Controllers\Employer\SettingsController as EmployerSettingsController;
+use App\Http\Controllers\Employer\ProfileController as EmployerProfileController;
+use App\Http\Controllers\Employer\BrowseJobsController as EmployerBrowseJobsController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
@@ -12,6 +19,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Seeker\DashboardController as SeekerDashboardController;
 use App\Http\Controllers\Seeker\BrowseJobsController;
 use App\Http\Controllers\Seeker\ApplicationsController;
+use App\Http\Controllers\Seeker\ApplicationController;
 use App\Http\Controllers\Seeker\SavedJobsController;
 use App\Http\Controllers\Seeker\InterviewsController;
 use App\Http\Controllers\Seeker\MessagesController;
@@ -20,7 +28,6 @@ use App\Http\Controllers\Seeker\SettingsController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\SavedJobController;
 use App\Http\Controllers\JobSeekerProfileController;
-use App\Http\Controllers\EmployerProfileController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\ComplianceReportController;
@@ -67,27 +74,50 @@ Route::prefix('seeker')->middleware(['auth', 'seeker'])->name('seeker.')->group(
     Route::get('/profile/edit', [JobSeekerProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [JobSeekerProfileController::class, 'update'])->name('profile.update');
     Route::get('/browse-jobs', [BrowseJobsController::class, 'index'])->name('browse-jobs');
+    Route::get('/browse-jobs/{job}', [BrowseJobsController::class, 'show'])->name('jobs.show');
     Route::get('/applications', [ApplicationsController::class, 'index'])->name('applications');
     Route::get('/applications/create', [ApplicationController::class, 'create'])->name('applications.create');
     Route::post('/applications', [ApplicationController::class, 'store'])->name('applications.store');
+    Route::get('/applications/{application}', [ApplicationController::class, 'show'])->name('applications.show');
     Route::get('/saved-jobs', [SavedJobsController::class, 'index'])->name('saved-jobs');
     Route::post('/saved-jobs/{job}', [SavedJobController::class, 'store'])->name('saved-jobs.store');
     Route::delete('/saved-jobs/{savedJob}', [SavedJobController::class, 'destroy'])->name('saved-jobs.destroy');
     Route::get('/resume', [ResumeController::class, 'index'])->name('resume');
+    Route::post('/resume', [ResumeController::class, 'store'])->name('resume.store');
     Route::get('/interviews', [InterviewsController::class, 'index'])->name('interviews');
+    Route::get('/interviews/{application}', [InterviewsController::class, 'show'])->name('interviews.show');
+    Route::post('/interviews/{application}/message', [InterviewsController::class, 'sendMessage'])->name('interviews.message');
     Route::get('/messages', [MessagesController::class, 'index'])->name('messages');
+    Route::get('/messages/{user}', [MessagesController::class, 'getConversation'])->name('messages.conversation');
+    Route::post('/messages/{user}', [MessagesController::class, 'sendMessage'])->name('messages.send');
+    Route::patch('/messages/{message}/read', [MessagesController::class, 'markAsRead'])->name('messages.read');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.mark-all-read');
+    Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 });
 
 Route::prefix('employer')->middleware(['auth', 'employer'])->name('employer.')->group(function (): void {
     Route::get('/dashboard', [EmployerDashboardController::class, 'index'])->name('dashboard');
-    Route::get('/profile', [EmployerProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/all-employers', [AllEmployersController::class, 'index'])->name('all-employers');
+    Route::get('/browse-jobs', [EmployerBrowseJobsController::class, 'index'])->name('browse-jobs');
+    Route::get('/profile', [EmployerProfileController::class, 'show'])->name('profile');
+    Route::get('/profile/edit', [EmployerProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [EmployerProfileController::class, 'update'])->name('profile.update');
-    Route::get('/jobs/{job}/applications', [ApplicationController::class, 'index'])->name('applications.index');
-    Route::get('/jobs/{job}/applications/export', [ApplicationController::class, 'export'])->name('applications.export');
-    Route::patch('/applications/{application}/status', [ApplicationController::class, 'update'])->name('applications.status');
+    Route::get('/applications', [EmployerApplicationController::class, 'index'])->name('applications');
+    Route::get('/applications/{application}', [EmployerApplicationController::class, 'show'])->name('applications.show');
+    Route::patch('/applications/{application}/status', [EmployerApplicationController::class, 'update'])->name('applications.status');
+    Route::get('/interviews', [EmployerInterviewsController::class, 'index'])->name('interviews');
+    Route::get('/interviews/{application}', [EmployerInterviewsController::class, 'show'])->name('interviews.show');
+    Route::post('/interviews/{application}/schedule', [EmployerInterviewsController::class, 'schedule'])->name('interviews.schedule');
+    Route::post('/interviews/{application}/outcome', [EmployerInterviewsController::class, 'setOutcome'])->name('interviews.outcome');
+    Route::get('/messages', [EmployerMessagesController::class, 'index'])->name('messages');
+    Route::get('/notifications', [EmployerNotificationsController::class, 'index'])->name('notifications');
+    Route::patch('/notifications/{notification}/read', [EmployerNotificationsController::class, 'markRead'])->name('notifications.read');
+    Route::post('/notifications/mark-all-read', [EmployerNotificationsController::class, 'markAllRead'])->name('notifications.mark-all-read');
+    Route::delete('/notifications/{notification}', [EmployerNotificationsController::class, 'destroy'])->name('notifications.destroy');
+    Route::get('/settings', [EmployerSettingsController::class, 'index'])->name('settings');
 });
 
 Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function (): void {

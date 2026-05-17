@@ -16,13 +16,16 @@ class Notification extends Model
         'user_id',
         'type',
         'subject',
+        'title',
         'message',
         'is_read',
+        'read_at',
         'sent_at',
         'delivery_status',
         'delivery_attempts',
         'last_attempt_at',
         'delivery_error',
+        'action_url',
     ];
 
     protected function casts(): array
@@ -30,6 +33,7 @@ class Notification extends Model
         return [
             'type' => NotificationChannel::class,
             'is_read' => 'boolean',
+            'read_at' => 'datetime',
             'sent_at' => 'datetime',
             'delivery_status' => DeliveryStatus::class,
             'delivery_attempts' => 'integer',

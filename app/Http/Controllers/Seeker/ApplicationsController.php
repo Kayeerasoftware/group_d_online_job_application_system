@@ -28,7 +28,7 @@ class ApplicationsController extends Controller
             'interview' => Application::where('job_seeker_id', $request->user()->id)->where('status', 'interview')->count(),
         ];
 
-        return view('jobseeker.applications', [
+        return view('seeker.applications', [
             'applications' => $applications,
             'stats' => $stats,
         ]);

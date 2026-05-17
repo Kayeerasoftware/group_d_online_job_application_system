@@ -116,6 +116,11 @@ class User extends Authenticatable
         return $this->roleValue() === UserRole::Admin->value;
     }
 
+    public function isRegulator(): bool
+    {
+        return $this->roleValue() === UserRole::Regulator->value;
+    }
+
     public function roleValue(): string
     {
         return $this->role instanceof UserRole ? $this->role->value : (string) $this->role;

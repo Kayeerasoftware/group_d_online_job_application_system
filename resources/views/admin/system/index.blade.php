@@ -1,121 +1,198 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
-@section('title', 'System Health')
+@section('title', 'System Health & Settings')
 
 @section('content')
-    <x-ui.page-header
-        eyebrow="System console"
-        title="Health, integrations, and monitoring"
-        description="Review uptime, recent errors, and third-party delivery settings from one operational dashboard."
-    >
-        <x-slot:actions>
-            <div class="rounded-[28px] border border-cyan-400/20 bg-cyan-400/10 px-5 py-4 text-cyan-100">
-                <p class="text-xs font-semibold uppercase tracking-[0.35em] text-cyan-200/70">Uptime estimate</p>
-                <p class="mt-2 text-4xl font-semibold">{{ $health['uptime_estimate'] }}%</p>
-            </div>
-        </x-slot:actions>
-    </x-ui.page-header>
-
-    <div class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        @foreach([
-            'database_healthy' => ['Database', $health['database_healthy'] ? 'Connected' : 'Offline'],
-            'storage_healthy' => ['Storage', $health['storage_healthy'] ? 'Writable' : 'Blocked'],
-            'email_configured' => ['Email', $health['email_configured'] ? 'Configured' : 'Disabled'],
-            'sms_configured' => ['SMS', $health['sms_configured'] ? 'Configured' : 'Disabled'],
-        ] as $key => [$label, $value])
-            <div class="rounded-[28px] border border-white/10 bg-slate-950/60 p-5 shadow-lg shadow-slate-950/20">
-                <p class="text-xs uppercase tracking-[0.35em] text-slate-500">{{ $label }}</p>
-                <p class="mt-2 text-lg font-semibold {{ $health[$key] ? 'text-emerald-300' : 'text-rose-300' }}">{{ $value }}</p>
-            </div>
-        @endforeach
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-3 md:p-6">
+    <!-- Page Header -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">System Health & Settings</h1>
+        <p class="text-gray-600">Monitor system status, integrations, and configuration settings</p>
     </div>
 
-    <div class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        @foreach($health['metrics'] as $label => $value)
-            <div class="rounded-[28px] border border-white/10 bg-slate-950/60 p-5">
-                <p class="text-xs uppercase tracking-[0.35em] text-slate-500">{{ str_replace('_', ' ', $label) }}</p>
-                <p class="mt-2 text-3xl font-semibold text-white">{{ number_format($value) }}</p>
-            </div>
-        @endforeach
-    </div>
-
-    <div class="mt-8 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-        <x-ui.panel tone="inset" class="p-5 md:p-6">
-            <p class="text-xs font-semibold uppercase tracking-[0.35em] text-cyan-300/70">Provider settings</p>
-            <div class="mt-5 space-y-5">
-                @foreach($settings as $channel => $setting)
-                    <form class="rounded-[24px] border border-white/10 bg-white/5 p-5" method="post" action="{{ route('admin.system.update', $setting) }}">
-                        @csrf
-                        @method('put')
-                        <div class="flex items-start justify-between gap-4">
-                            <div>
-                                <h2 class="text-lg font-semibold text-white">{{ ucfirst($channel) }} integration</h2>
-                                <p class="text-sm text-slate-400">Update provider credentials and delivery metadata.</p>
-                            </div>
-                            <label class="inline-flex items-center gap-2 text-sm text-slate-300">
-                                <input type="checkbox" name="enabled" value="1" @checked(old('enabled', $setting->enabled)) class="h-4 w-4 rounded border-white/20 bg-slate-950 text-cyan-400 focus:ring-cyan-400/20">
-                                Enabled
-                            </label>
-                        </div>
-
-                        <div class="mt-4 grid gap-4 md:grid-cols-2">
-                            <label class="space-y-2 text-sm text-slate-300">
-                                <span class="block text-xs uppercase tracking-[0.3em] text-slate-500">Provider</span>
-                                <input class="w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20" name="provider" value="{{ old('provider', $setting->provider) }}">
-                            </label>
-                            <label class="space-y-2 text-sm text-slate-300">
-                                <span class="block text-xs uppercase tracking-[0.3em] text-slate-500">API Key</span>
-                                <input class="w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20" name="api_key" value="{{ old('api_key', $setting->api_key) }}">
-                            </label>
-                            <label class="space-y-2 text-sm text-slate-300">
-                                <span class="block text-xs uppercase tracking-[0.3em] text-slate-500">API Secret</span>
-                                <input class="w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20" name="api_secret" value="{{ old('api_secret', $setting->api_secret) }}">
-                            </label>
-                            <label class="space-y-2 text-sm text-slate-300">
-                                <span class="block text-xs uppercase tracking-[0.3em] text-slate-500">From Name</span>
-                                <input class="w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20" name="from_name" value="{{ old('from_name', $setting->from_name) }}">
-                            </label>
-                            <label class="space-y-2 text-sm text-slate-300">
-                                <span class="block text-xs uppercase tracking-[0.3em] text-slate-500">From Address</span>
-                                <input class="w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20" name="from_address" value="{{ old('from_address', $setting->from_address) }}">
-                            </label>
-                            <label class="space-y-2 text-sm text-slate-300">
-                                <span class="block text-xs uppercase tracking-[0.3em] text-slate-500">Sender ID</span>
-                                <input class="w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20" name="sender_id" value="{{ old('sender_id', $setting->sender_id) }}">
-                            </label>
-                        </div>
-
-                        <label class="mt-4 block space-y-2 text-sm text-slate-300">
-                            <span class="block text-xs uppercase tracking-[0.3em] text-slate-500">Notes</span>
-                            <textarea class="min-h-28 w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20" name="notes">{{ old('notes', $setting->notes) }}</textarea>
-                        </label>
-
-                        <div class="mt-4 flex justify-end">
-                            <button class="inline-flex items-center justify-center rounded-2xl bg-cyan-400 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300" type="submit">
-                                Save changes
-                            </button>
-                        </div>
-                    </form>
-                @endforeach
-            </div>
-        </x-ui.panel>
-
-        <div class="space-y-6">
-            <x-ui.panel tone="inset" class="p-5 md:p-6">
-                <p class="text-xs font-semibold uppercase tracking-[0.35em] text-cyan-300/70">Recent errors</p>
-                <div class="mt-4 space-y-3">
-                    @forelse($health['recent_errors'] as $error)
-                        <div class="rounded-2xl border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-100">{{ $error }}</div>
-                    @empty
-                        <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-400">No recent critical errors were detected.</div>
-                    @endforelse
+    <!-- System Status Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm font-semibold">Database</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-2">
+                        @if($health['database_healthy'])
+                            <span class="text-green-600">Connected</span>
+                        @else
+                            <span class="text-red-600">Offline</span>
+                        @endif
+                    </p>
                 </div>
-            </x-ui.panel>
+                <i class="fas fa-database text-3xl {{ $health['database_healthy'] ? 'text-green-500' : 'text-red-500' }}"></i>
+            </div>
+        </div>
 
-            <x-ui.panel tone="inset" class="p-5 md:p-6">
-                <p class="text-xs font-semibold uppercase tracking-[0.35em] text-cyan-300/70">Generated at</p>
-                <p class="mt-3 text-lg font-semibold text-white">{{ $health['generated_at'] }}</p>
-            </x-ui.panel>
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm font-semibold">Storage</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-2">
+                        @if($health['storage_healthy'])
+                            <span class="text-green-600">Writable</span>
+                        @else
+                            <span class="text-red-600">Blocked</span>
+                        @endif
+                    </p>
+                </div>
+                <i class="fas fa-hdd text-3xl {{ $health['storage_healthy'] ? 'text-green-500' : 'text-red-500' }}"></i>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm font-semibold">Email</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-2">
+                        @if($health['email_configured'])
+                            <span class="text-green-600">Configured</span>
+                        @else
+                            <span class="text-yellow-600">Disabled</span>
+                        @endif
+                    </p>
+                </div>
+                <i class="fas fa-envelope text-3xl {{ $health['email_configured'] ? 'text-green-500' : 'text-yellow-500' }}"></i>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm font-semibold">Uptime</p>
+                    <p class="text-2xl font-bold text-green-600 mt-2">{{ $health['uptime_estimate'] }}%</p>
+                </div>
+                <i class="fas fa-heartbeat text-3xl text-green-500"></i>
+            </div>
         </div>
     </div>
+
+    <!-- Metrics Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        @foreach($health['metrics'] as $label => $value)
+        <div class="bg-white rounded-lg shadow p-4">
+            <p class="text-gray-600 text-xs font-semibold uppercase">{{ str_replace('_', ' ', $label) }}</p>
+            <p class="text-2xl font-bold text-gray-900 mt-2">{{ number_format($value) }}</p>
+        </div>
+        @endforeach
+    </div>
+
+    <!-- Settings Section -->
+    <div class="grid gap-6 lg:grid-cols-3">
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Provider Settings -->
+            @foreach($settings as $channel => $setting)
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <form method="post" action="{{ route('admin.system.update', $setting) }}" class="space-y-4">
+                    @csrf
+                    @method('put')
+                    
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">{{ ucfirst($channel) }} Integration</h3>
+                            <p class="text-sm text-gray-600">Update provider credentials and settings</p>
+                        </div>
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" name="enabled" value="1" @checked(old('enabled', $setting->enabled ?? false)) class="w-4 h-4 rounded border-gray-300 text-red-600 focus:ring-red-500">
+                            <span class="text-sm font-semibold text-gray-700">Enabled</span>
+                        </label>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Provider</label>
+                            <input type="text" name="provider" value="{{ old('provider', $setting->provider ?? '') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">API Key</label>
+                            <input type="password" name="api_key" placeholder="Leave blank to keep current" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                            <p class="text-xs text-gray-500 mt-1">Leave blank to keep current value</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">API Secret</label>
+                            <input type="password" name="api_secret" placeholder="Leave blank to keep current" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                            <p class="text-xs text-gray-500 mt-1">Leave blank to keep current value</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">From Name</label>
+                            <input type="text" name="from_name" value="{{ old('from_name', $setting->from_name ?? '') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">From Address</label>
+                            <input type="email" name="from_address" value="{{ old('from_address', $setting->from_address ?? '') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Sender ID</label>
+                            <input type="text" name="sender_id" value="{{ old('sender_id', $setting->sender_id ?? '') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Notes</label>
+                        <textarea name="notes" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">{{ old('notes', $setting->notes ?? '') }}</textarea>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button type="submit" class="px-6 py-2 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-lg hover:shadow-lg transition font-semibold">
+                            <i class="fas fa-save mr-2"></i>Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+            @endforeach
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Recent Errors -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Recent Errors</h3>
+                <div class="space-y-2">
+                    @forelse($health['recent_errors'] as $error)
+                        <div class="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+                            {{ $error }}
+                        </div>
+                    @empty
+                        <div class="p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800">
+                            <i class="fas fa-check-circle mr-2"></i>No recent errors detected
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+
+            <!-- System Info -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">System Information</h3>
+                <div class="space-y-3">
+                    <div>
+                        <p class="text-xs text-gray-600 font-semibold uppercase">Generated At</p>
+                        <p class="text-gray-900 font-semibold mt-1">{{ $health['generated_at'] ?? now()->format('Y-m-d H:i:s') }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-600 font-semibold uppercase">PHP Version</p>
+                        <p class="text-gray-900 font-semibold mt-1">{{ phpversion() }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-600 font-semibold uppercase">Laravel Version</p>
+                        <p class="text-gray-900 font-semibold mt-1">{{ app()->version() }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help Card -->
+            <div class="bg-blue-50 rounded-xl border border-blue-200 p-6">
+                <h3 class="text-lg font-bold text-blue-900 mb-3">
+                    <i class="fas fa-info-circle mr-2"></i>Important
+                </h3>
+                <p class="text-sm text-blue-800">
+                    Leave API Key and API Secret fields blank to keep their current values. Only fill them in if you want to update them.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

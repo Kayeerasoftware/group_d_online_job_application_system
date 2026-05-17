@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\IntegrationSetting;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class IntegrationSettingSeeder extends Seeder
 {
@@ -12,7 +12,7 @@ class IntegrationSettingSeeder extends Seeder
     {
         $admin = User::query()->where('email', 'admin@example.com')->first();
 
-        IntegrationSetting::query()->updateOrCreate(
+        DB::table('integration_settings')->updateOrInsert(
             ['channel' => 'email'],
             [
                 'provider' => 'mailgun',
@@ -20,13 +20,16 @@ class IntegrationSettingSeeder extends Seeder
                 'api_secret' => 'demo-mailgun-secret',
                 'from_name' => 'Online Job Application System',
                 'from_address' => 'no-reply@example.com',
+                'sender_id' => null,
                 'enabled' => true,
                 'notes' => 'Demo email provider used for exam presentation.',
                 'updated_by' => $admin?->id,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]
         );
 
-        IntegrationSetting::query()->updateOrCreate(
+        DB::table('integration_settings')->updateOrInsert(
             ['channel' => 'sms'],
             [
                 'provider' => 'twilio',
@@ -36,6 +39,8 @@ class IntegrationSettingSeeder extends Seeder
                 'enabled' => true,
                 'notes' => 'Demo SMS provider used for exam presentation.',
                 'updated_by' => $admin?->id,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]
         );
     }

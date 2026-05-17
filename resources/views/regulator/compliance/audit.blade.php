@@ -1,128 +1,114 @@
-@extends('layouts.admin')
+@extends('layouts.regulator')
 
 @section('title', 'Audit Logs')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-3 md:p-6">
-    <!-- Header Section -->
-    <div class="mb-4 md:mb-6">
-        <div class="bg-gradient-to-br from-purple-50 via-pink-50 to-red-50 rounded-2xl shadow-lg border border-purple-100 p-6 md:p-8">
-            <div class="flex items-center gap-2 md:gap-4">
-                <div class="relative">
-                    <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl md:rounded-2xl blur-xl opacity-50"></div>
-                    <div class="relative bg-gradient-to-br from-purple-600 to-pink-600 p-2 md:p-4 rounded-xl md:rounded-2xl shadow-xl">
-                        <i class="fas fa-history text-white text-xl md:text-3xl"></i>
-                    </div>
-                </div>
-                <div>
-                    <h1 class="text-xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 bg-clip-text text-transparent mb-1 md:mb-2">Audit Logs</h1>
-                    <p class="text-gray-600 text-xs md:text-sm font-medium">Monitor admin actions, moderation events, and system changes</p>
-                </div>
-            </div>
-        </div>
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Audit Logs</h1>
+        <p class="text-gray-600 mt-2">Monitor system activity and compliance events</p>
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3 mb-3 md:mb-4">
-        <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-2 md:p-3 text-white shadow-lg transform hover:scale-105 transition-all duration-300">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl shadow-lg p-4 border border-purple-200 hover:shadow-xl transition">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-purple-100 text-[8px] md:text-[10px] font-medium mb-0.5">Total Logs</p>
-                    <h3 class="text-base md:text-xl font-bold" id="totalCount">0</h3>
+                    <p class="text-gray-600 text-sm font-medium">Total Logs</p>
+                    <h3 class="text-2xl font-bold text-gray-900 mt-1" id="totalCount">{{ $auditLogs->total() }}</h3>
                 </div>
-                <div class="bg-white/20 p-1.5 md:p-2 rounded-lg backdrop-blur-sm">
-                    <i class="fas fa-history text-sm md:text-lg"></i>
+                <div class="bg-purple-500 rounded-full p-3 shadow-lg">
+                    <i class="fas fa-history text-white text-lg"></i>
                 </div>
             </div>
         </div>
-        <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-lg p-2 md:p-3 text-white shadow-lg transform hover:scale-105 transition-all duration-300">
+        <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-xl shadow-lg p-4 border border-red-200 hover:shadow-xl transition">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-red-100 text-[8px] md:text-[10px] font-medium mb-0.5">Deletions</p>
-                    <h3 class="text-base md:text-xl font-bold" id="deleteCount">0</h3>
+                    <p class="text-gray-600 text-sm font-medium">Deletions</p>
+                    <h3 class="text-2xl font-bold text-gray-900 mt-1" id="deleteCount">0</h3>
                 </div>
-                <div class="bg-white/20 p-1.5 md:p-2 rounded-lg backdrop-blur-sm">
-                    <i class="fas fa-trash text-sm md:text-lg"></i>
+                <div class="bg-red-500 rounded-full p-3 shadow-lg">
+                    <i class="fas fa-trash text-white text-lg"></i>
                 </div>
             </div>
         </div>
-        <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg p-2 md:p-3 text-white shadow-lg transform hover:scale-105 transition-all duration-300">
+        <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl shadow-lg p-4 border border-orange-200 hover:shadow-xl transition">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-orange-100 text-[8px] md:text-[10px] font-medium mb-0.5">Suspensions</p>
-                    <h3 class="text-base md:text-xl font-bold" id="suspendCount">0</h3>
+                    <p class="text-gray-600 text-sm font-medium">Suspensions</p>
+                    <h3 class="text-2xl font-bold text-gray-900 mt-1" id="suspendCount">0</h3>
                 </div>
-                <div class="bg-white/20 p-1.5 md:p-2 rounded-lg backdrop-blur-sm">
-                    <i class="fas fa-ban text-sm md:text-lg"></i>
+                <div class="bg-orange-500 rounded-full p-3 shadow-lg">
+                    <i class="fas fa-ban text-white text-lg"></i>
                 </div>
             </div>
         </div>
-        <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg p-2 md:p-3 text-white shadow-lg transform hover:scale-105 transition-all duration-300">
+        <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl shadow-lg p-4 border border-yellow-200 hover:shadow-xl transition">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-yellow-100 text-[8px] md:text-[10px] font-medium mb-0.5">Flags</p>
-                    <h3 class="text-base md:text-xl font-bold" id="flagCount">0</h3>
+                    <p class="text-gray-600 text-sm font-medium">Flags</p>
+                    <h3 class="text-2xl font-bold text-gray-900 mt-1" id="flagCount">0</h3>
                 </div>
-                <div class="bg-white/20 p-1.5 md:p-2 rounded-lg backdrop-blur-sm">
-                    <i class="fas fa-flag text-sm md:text-lg"></i>
+                <div class="bg-yellow-500 rounded-full p-3 shadow-lg">
+                    <i class="fas fa-flag text-white text-lg"></i>
                 </div>
             </div>
         </div>
-        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-2 md:p-3 text-white shadow-lg transform hover:scale-105 transition-all duration-300">
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-lg p-4 border border-blue-200 hover:shadow-xl transition">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-blue-100 text-[8px] md:text-[10px] font-medium mb-0.5">Updates</p>
-                    <h3 class="text-base md:text-xl font-bold" id="updateCount">0</h3>
+                    <p class="text-gray-600 text-sm font-medium">Updates</p>
+                    <h3 class="text-2xl font-bold text-gray-900 mt-1" id="updateCount">0</h3>
                 </div>
-                <div class="bg-white/20 p-1.5 md:p-2 rounded-lg backdrop-blur-sm">
-                    <i class="fas fa-edit text-sm md:text-lg"></i>
+                <div class="bg-blue-500 rounded-full p-3 shadow-lg">
+                    <i class="fas fa-edit text-white text-lg"></i>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Search & Filters -->
-    <div class="bg-gradient-to-br from-purple-50 via-pink-50 to-red-50 rounded-2xl shadow-lg border border-purple-100 overflow-hidden mb-4">
-        <div class="bg-white/60 backdrop-blur-sm p-3">
-            <div class="bg-white/80 rounded-xl p-2.5 border border-purple-100">
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-2">
-                    <div class="md:col-span-4 relative">
-                        <i class="fas fa-search absolute left-2.5 top-1/2 transform -translate-y-1/2 text-purple-400 text-xs"></i>
-                        <input type="text" id="searchInput" placeholder="Action, admin, reason..." class="w-full pl-8 pr-2 py-1.5 text-xs border border-purple-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all bg-white">
-                    </div>
-                    <div class="md:col-span-4 relative">
-                        <i class="fas fa-filter absolute left-2.5 top-1/2 transform -translate-y-1/2 text-pink-400 text-xs"></i>
-                        <select id="actionInput" class="w-full pl-8 pr-2 py-1.5 text-xs border border-pink-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all appearance-none bg-white">
-                            <option value="">All Actions</option>
-                            <option value="delete">Delete</option>
-                            <option value="suspend">Suspend</option>
-                            <option value="flag">Flag</option>
-                            <option value="update">Update</option>
-                        </select>
-                    </div>
-                    <div class="md:col-span-4 flex gap-1.5">
-                        <button onclick="resetFilters()" class="flex-1 px-2 py-1.5 text-xs bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-semibold">
-                            <i class="fas fa-search mr-1"></i>Clear
-                        </button>
-                        <a href="{{ route('admin.audit-logs.index') }}" class="px-2 py-1.5 text-xs bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-lg hover:shadow-md transition-all duration-300 font-semibold">
-                            <i class="fas fa-redo"></i>
-                        </a>
-                    </div>
-                </div>
+    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200 hover:shadow-xl transition">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div class="md:col-span-4 relative">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                <i class="fas fa-search absolute left-3 top-10 text-gray-400 text-sm"></i>
+                <input type="text" id="searchInput" placeholder="Action, admin, reason..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all">
+            </div>
+            <div class="md:col-span-4 relative">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Filter by Action</label>
+                <i class="fas fa-filter absolute left-3 top-10 text-gray-400 text-sm"></i>
+                <select id="actionInput" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all appearance-none bg-white">
+                    <option value="">All Actions</option>
+                    <option value="delete">Delete</option>
+                    <option value="suspend">Suspend</option>
+                    <option value="flag">Flag</option>
+                    <option value="update">Update</option>
+                </select>
+            </div>
+            <div class="md:col-span-4 flex items-end gap-2">
+                <button onclick="resetFilters()" class="flex-1 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-lg font-medium transition shadow-md hover:shadow-lg">
+                    <i class="fas fa-search mr-2"></i>Clear
+                </button>
+                <a href="{{ route('regulator.audit-logs') }}" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium transition">
+                    <i class="fas fa-redo"></i>
+                </a>
             </div>
         </div>
     </div>
 
     <!-- Results Count -->
-    <div class="flex justify-between items-center mb-4">
-        <p class="text-gray-600 font-semibold text-sm">Showing <span class="text-purple-600" id="showingCount">0</span> logs</p>
+    <div class="flex justify-between items-center">
+        <p class="text-gray-600 font-semibold">Showing <span class="text-amber-600" id="showingCount">{{ $auditLogs->count() }}</span> logs</p>
     </div>
 
     <!-- Audit Logs Table -->
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition">
         <div class="overflow-x-auto">
             <table class="w-full">
-                <thead class="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+                <thead class="bg-gradient-to-r from-amber-500 to-orange-600 text-white">
                     <tr>
                         <th class="px-6 py-4 text-left text-xs font-semibold">Action</th>
                         <th class="px-6 py-4 text-left text-xs font-semibold">Target</th>
@@ -133,7 +119,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200" id="logsBody">
-                    @forelse($logs as $log)
+                    @forelse($auditLogs as $log)
                         <tr class="hover:bg-gray-50 transition log-row" data-action="{{ strtolower($log->action ?? '') }}" data-admin="{{ strtolower($log->admin?->name ?? '') }}">
                             <td class="px-6 py-4">
                                 <span class="px-3 py-1 text-xs font-semibold rounded-full
@@ -154,7 +140,7 @@
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex-shrink-0 overflow-hidden border border-purple-200">
+                                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 flex-shrink-0 overflow-hidden border border-amber-200">
                                         @if($log->admin?->profile_picture_url)
                                             <img src="{{ $log->admin->profile_picture_url }}" alt="{{ $log->admin->name }}" class="w-full h-full object-cover">
                                         @else
@@ -186,9 +172,9 @@
                         <tr>
                             <td colspan="6" class="px-6 py-12 text-center">
                                 <div class="flex flex-col items-center justify-center">
-                                    <i class="fas fa-history text-gray-300 text-4xl mb-3"></i>
+                                    <i class="fas fa-inbox text-gray-300 text-4xl mb-3"></i>
                                     <p class="text-gray-600 font-semibold">No audit logs found</p>
-                                    <p class="text-gray-500 text-sm">Admin actions and moderation events will appear here</p>
+                                    <p class="text-gray-500 text-sm">System activity and compliance events will appear here</p>
                                 </div>
                             </td>
                         </tr>
@@ -200,7 +186,7 @@
 
     <!-- Pagination -->
     <div class="mt-6">
-        {{ $logs->links() }}
+        {{ $auditLogs->links() }}
     </div>
 </div>
 

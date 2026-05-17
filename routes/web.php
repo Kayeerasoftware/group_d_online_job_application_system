@@ -16,6 +16,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Employer\DashboardController as EmployerDashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Seeker\DashboardController as SeekerDashboardController;
 use App\Http\Controllers\Seeker\BrowseJobsController;
 use App\Http\Controllers\Seeker\ApplicationsController;
@@ -33,6 +34,12 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\ComplianceReportController;
 use App\Http\Controllers\Admin\SystemController as AdminSystemController;
 use App\Http\Controllers\Admin\JobModerationController as AdminJobModerationController;
+use App\Http\Controllers\Admin\ApplicationManagementController as AdminApplicationManagementController;
+use App\Http\Controllers\Admin\EmployerManagementController as AdminEmployerManagementController;
+use App\Http\Controllers\Regulator\DashboardController as RegulatorDashboardController;
+use App\Http\Controllers\Regulator\ComplianceController as RegulatorComplianceController;
+use App\Http\Controllers\Regulator\SystemMonitoringController as RegulatorSystemMonitoringController;
+use App\Http\Controllers\Regulator\ProfileController as RegulatorProfileController;
 use App\Http\Controllers\AuditLogController;
 use Illuminate\Support\Facades\Route;
 
@@ -133,6 +140,10 @@ Route::prefix('employer')->middleware(['auth', 'employer'])->name('employer.')->
 
 Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function (): void {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/profile', [AdminProfileController::class, 'show'])->name('profile');
+    Route::get('/profile/edit', [AdminProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [AdminProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [AdminProfileController::class, 'updatePassword'])->name('profile.password');
     Route::get('/system', [AdminSystemController::class, 'index'])->name('system.index');
     Route::put('/system/{integrationSetting}', [AdminSystemController::class, 'update'])->name('system.update');
     Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
@@ -141,11 +152,39 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::patch('/users/{user}/role', [UserManagementController::class, 'updateRole'])->name('users.role');
     Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
     Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
+    Route::get('/jobs', [AdminJobModerationController::class, 'index'])->name('jobs.index');
+    Route::get('/jobs/{job}', [AdminJobModerationController::class, 'show'])->name('jobs.show');
     Route::post('/jobs/{job}/flag', [AdminJobModerationController::class, 'flag'])->name('jobs.flag');
+    Route::post('/jobs/{job}/unflag', [AdminJobModerationController::class, 'unflag'])->name('jobs.unflag');
+    Route::post('/jobs/{job}/approve', [AdminJobModerationController::class, 'approve'])->name('jobs.approve');
+    Route::post('/jobs/{job}/reject', [AdminJobModerationController::class, 'reject'])->name('jobs.reject');
+    Route::delete('/jobs/{job}', [AdminJobModerationController::class, 'delete'])->name('jobs.delete');
+    Route::get('/applications', [AdminApplicationManagementController::class, 'index'])->name('applications.index');
+    Route::get('/applications/{application}', [AdminApplicationManagementController::class, 'show'])->name('applications.show');
+    Route::get('/applications/filter', [AdminApplicationManagementController::class, 'filter'])->name('applications.filter');
+    Route::delete('/applications/{application}', [AdminApplicationManagementController::class, 'delete'])->name('applications.delete');
+    Route::get('/employers', [AdminEmployerManagementController::class, 'index'])->name('employers.index');
+    Route::get('/employers/{user}', [AdminEmployerManagementController::class, 'show'])->name('employers.show');
+    Route::post('/employers/{user}/suspend', [AdminEmployerManagementController::class, 'suspend'])->name('employers.suspend');
+    Route::post('/employers/{user}/activate', [AdminEmployerManagementController::class, 'activate'])->name('employers.activate');
+    Route::delete('/employers/{user}', [AdminEmployerManagementController::class, 'delete'])->name('employers.delete');
     Route::get('/reports', [ComplianceReportController::class, 'index'])->name('reports.index');
     Route::get('/reports/create', [ComplianceReportController::class, 'create'])->name('reports.create');
     Route::post('/reports', [ComplianceReportController::class, 'store'])->name('reports.store');
     Route::get('/reports/{regulatoryReport}', [ComplianceReportController::class, 'show'])->name('reports.show');
     Route::get('/reports/{regulatoryReport}/download', [ComplianceReportController::class, 'download'])->name('reports.download');
     Route::patch('/reports/{regulatoryReport}/submit', [ComplianceReportController::class, 'submit'])->name('reports.submit');
+});
+
+Route::prefix('regulator')->middleware(['auth', 'regulator'])->name('regulator.')->group(function (): void {
+    Route::get('/dashboard', [RegulatorDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/profile', [RegulatorProfileController::class, 'show'])->name('profile');
+    Route::get('/profile/edit', [RegulatorProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [RegulatorProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [RegulatorProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::get('/compliance', [RegulatorComplianceController::class, 'index'])->name('compliance.index');
+    Route::get('/compliance/filter', [RegulatorComplianceController::class, 'filter'])->name('compliance.filter');
+    Route::get('/compliance/{regulatoryReport}', [RegulatorComplianceController::class, 'show'])->name('compliance.show');
+    Route::get('/audit-logs', [RegulatorComplianceController::class, 'audit'])->name('audit-logs');
+    Route::get('/system-monitoring', [RegulatorSystemMonitoringController::class, 'index'])->name('system-monitoring');
 });

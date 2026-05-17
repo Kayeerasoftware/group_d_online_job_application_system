@@ -17,6 +17,7 @@ class DashboardController extends Controller
 
         return match (true) {
             $user->isAdmin() => redirect()->route('admin.dashboard'),
+            $user->isRegulator() => redirect()->route('regulator.dashboard'),
             $user->isEmployer() => redirect()->route('employer.dashboard'),
             default => redirect()->route('seeker.dashboard'),
         };

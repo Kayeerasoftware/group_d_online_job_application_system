@@ -3,6 +3,7 @@
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsEmployer;
 use App\Http\Middleware\IsSeeker;
+use App\Http\Middleware\IsRegulator;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Foundation\Application;
@@ -23,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => IsAdmin::class,
             'employer' => IsEmployer::class,
             'seeker' => IsSeeker::class,
+            'regulator' => IsRegulator::class,
         ]);
         $middleware->validateCsrfTokens(except: []);
     })

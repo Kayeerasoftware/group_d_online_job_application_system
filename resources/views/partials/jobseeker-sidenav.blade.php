@@ -7,15 +7,15 @@
         <div class="p-3 border-b border-blue-200 dark:border-gray-600 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg shadow-md">
             <div class="flex flex-col items-center py-2">
                 <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center mb-2 overflow-hidden cursor-pointer shadow-lg ring-2 ring-white ring-offset-2 ring-offset-blue-500 hover:scale-105 transition-transform" @click="showProfileModal = true">
-                    @if(auth()->user()->profile_picture_url)
-                        <img src="{{ auth()->user()->profile_picture_url }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
+                    @if(auth()->user()?->profile_picture_url)
+                        <img src="{{ auth()->user()?->profile_picture_url }}" alt="{{ auth()->user()?->name }}" class="w-full h-full object-cover">
                     @else
                         <div class="w-full h-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
                             <i class="fas fa-user text-white text-xl"></i>
                         </div>
                     @endif
                 </div>
-                <p class="text-xs font-bold text-white text-center truncate" x-text="seekerProfile.name">{{ auth()->user()->name }}</p>
+                <p class="text-xs font-bold text-white text-center truncate" x-text="seekerProfile.name">{{ auth()->user()?->name }}</p>
                 <p class="text-[10px] text-blue-100">Job Seeker</p>
             </div>
         </div>

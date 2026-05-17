@@ -163,8 +163,8 @@ class JobController extends Controller
             ? $request->user()->applications()->pluck('job_id')->toArray()
             : [];
 
-        if ($request->user()?->isSeeker()) {
-            return view('seeker.job-detail', compact('job', 'saved', 'applied', 'appliedJobIds'));
+        if ($request->user()?->isSeeker() || !$request->user()) {
+            return view('jobs.view', compact('job', 'saved', 'applied', 'appliedJobIds'));
         }
 
         return view('jobs.show', compact('job', 'saved', 'applied'));

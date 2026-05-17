@@ -14,38 +14,32 @@
 @endphp
 
 <header class="auth-header auth-header--{{ $headerVariant }} {{ $headerLayout === 'full' ? 'auth-header--full' : '' }} {{ $headerClass }}">
-    <div class="auth-header__inner">
+    <div class="auth-header__inner py-2">
         @if ($headerLayout === 'full')
-            <a href="{{ route('home') }}" class="auth-header__brand auth-header__brand--icon-only" aria-label="Go to home page">
+            <a href="{{ route('home') }}" class="flex items-center gap-3">
                 <img
                     src="{{ asset(rawurlencode('MAK-JOBLINK log.png')) }}"
-                    alt="MAK-JOBLINK logo"
+                    alt="MAK-JOBLINK"
+                    class="h-10 w-auto object-contain"
                     loading="eager"
-                    decoding="async"
-                    class="auth-header__logo auth-header__logo--large"
                 >
-                <span class="auth-header__mobile-name">MAK-JOBLINK</span>
+                <div class="hidden sm:block">
+                    <span class="block text-white font-bold text-lg leading-tight">MAK-JOBLINK</span>
+                    <span class="block text-white/70 text-sm leading-tight">Online Job Application</span>
+                    <span class="block text-white/70 text-sm leading-tight">System</span>
+                    <span class="block text-white font-bold text-lg leading-tight">MAK-JOBLINK</span>
+                </div>
             </a>
 
             <div class="auth-header__center auth-header__center--title">
                 <span class="auth-header__center-stack">
-                    <span class="auth-header__center-eyebrow">{{ $headerCenterLabel }}</span>
-                    <span class="auth-header__center-title">MAK-JOBLINK</span>
+                    <span class="auth-header__center-eyebrow text-3xl font-bold">{{ $headerCenterLabel }}</span>
                 </span>
             </div>
 
-            <div class="auth-header__aside">
-                @if (count($headerRightLines))
-                    <div class="auth-header__right-stack" aria-label="Platform highlights">
-                        @foreach ($headerRightLines as $line)
-                            <span class="auth-header__right-line">{{ $line }}</span>
-                        @endforeach
-                    </div>
-                @elseif ($headerActionHref && $headerActionLabel)
-                    <a href="{{ $headerActionHref }}" class="auth-header__action auth-header__action--{{ $headerActionVariant }}">
-                        {{ $headerActionLabel }}
-                    </a>
-                @endif
+            <div class="flex gap-4">
+                <a href="{{ route('login') }}" class="text-white text-lg hover:text-white/80 transition font-semibold">Login</a>
+                <a href="#welcome-card" class="text-white text-lg hover:text-white/80 transition font-semibold" onclick="document.getElementById('welcome-card')?.scrollIntoView({behavior: 'smooth', block: 'start'}); return false;">Browse Jobs</a>
             </div>
         @else
             <a href="{{ route('home') }}" class="auth-brand-link" aria-label="Go to home page">

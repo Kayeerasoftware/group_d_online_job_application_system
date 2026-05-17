@@ -1,23 +1,9 @@
 @php
     $user = safe_auth_user();
-    $pageTitle = trim($__env->yieldContent('title', 'Dashboard'));
 @endphp
 
-<header class="app-chrome sticky top-0 z-30 border-b border-white/10 bg-[#1a1714] backdrop-blur-xl {{ safe_auth_check() ? 'md:pl-72 xl:pl-80' : '' }}">
+<header class="sticky top-0 z-30 border-b border-white/10 bg-[#1a1714] backdrop-blur-xl">
     <div class="mx-auto flex max-w-7xl items-center gap-4 px-4 py-4 md:px-6">
-        @if (safe_auth_check())
-            <button
-                type="button"
-                class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-[#f9f7f3] transition hover:bg-white/10 md:hidden"
-                data-sidebar-toggle
-                aria-label="Open navigation menu"
-            >
-                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-        @endif
-
         <a href="{{ safe_auth_check() ? route('dashboard') : route('home') }}" class="flex min-w-0 items-center gap-3">
             <img
                 src="{{ asset(rawurlencode('MAK-JOBLINK log.png')) }}"
@@ -31,27 +17,9 @@
             </span>
         </a>
 
-        <div class="hidden flex-1 justify-center xl:flex">
-            <form method="get" action="{{ route('jobs.index') }}" class="w-full max-w-lg">
-                <label class="relative block">
-                    <span class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-white/35">
-                        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.3-4.3m1.8-5.2a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" />
-                        </svg>
-                    </span>
-                    <input
-                        name="search"
-                        value="{{ request('search') }}"
-                        placeholder="Search jobs, companies, locations"
-                        class="w-full rounded-full border border-white/10 bg-white/5 py-3 pl-11 pr-4 text-sm text-white placeholder:text-white/35 outline-none transition focus:border-emerald-300/50 focus:ring-2 focus:ring-emerald-300/15"
-                    >
-                </label>
-            </form>
-        </div>
-
         <div class="ml-auto flex items-center gap-3">
             @if (! safe_auth_check())
-                <a href="{{ route('jobs.index') }}" class="hidden rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white/85 transition hover:bg-white/10 md:inline-flex">
+                <a href="{{ route('home') }}" class="hidden rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white/85 transition hover:bg-white/10 md:inline-flex">
                     Browse Jobs
                 </a>
                 <a href="{{ route('login') }}" class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white/85 transition hover:bg-white/10">

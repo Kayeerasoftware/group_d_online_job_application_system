@@ -52,13 +52,13 @@
         unread: 0
     },
     seekerProfile: {
-        id: {{ Js::from($currentUser->id) }},
-        name: {{ Js::from($currentUser->name ?? 'Job Seeker') }},
+        id: {{ Js::from($currentUser?->id) }},
+        name: {{ Js::from($currentUser?->name ?? 'Job Seeker') }},
         role: 'Job Seeker',
-        email: {{ Js::from($currentUser->email ?? 'seeker@example.com') }},
-        phone: {{ Js::from($currentUser->phone ?? '+256 700 000 000') }}
+        email: {{ Js::from($currentUser?->email ?? 'seeker@example.com') }},
+        phone: {{ Js::from($currentUser?->phone ?? '+256 700 000 000') }}
     },
-    profilePicture: {{ Js::from($currentUser->profile_picture_url ?? null) }}
+    profilePicture: {{ Js::from($currentUser?->profile_picture_url ?? null) }}
 }">
     @include('partials.jobseeker-topnav')
     @include('partials.jobseeker-sidenav')

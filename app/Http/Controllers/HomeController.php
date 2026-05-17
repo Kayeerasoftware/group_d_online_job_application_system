@@ -21,146 +21,98 @@ class HomeController extends Controller
 {
     public function index(): View
     {
+        // Get dashboard data for the welcome page
         $totalJobs = Job::count();
         $openJobs = Job::query()->open()->count();
         $applications = Application::count();
-        $pendingApplications = Application::query()->where('status', ApplicationStatus::Pending->value)->count();
         $employers = User::query()->where('role', UserRole::Employer->value)->count();
         $seekers = User::query()->where('role', UserRole::Seeker->value)->count();
-        $admins = User::query()->where('role', UserRole::Admin->value)->count();
-        $activeUsers = User::query()->where('is_active', true)->count();
         $savedJobs = SavedJob::count();
-        $pendingReports = RegulatoryReport::query()->where('status', ReportStatus::Draft->value)->count();
+        $activeUsers = User::query()->where('is_active', true)->count();
+        $newJobsThisWeek = Job::query()->where('created_at', '>=', now()->subWeek())->count();
 
-        $monthWindows = collect(range(5, 0))->map(function (int $monthsAgo): CarbonImmutable {
-            return CarbonImmutable::now()->subMonths($monthsAgo)->startOfMonth();
-        });
-
-        $jobMonthlySeries = $this->buildMonthlySeries(Job::class, $monthWindows);
-        $applicationMonthlySeries = $this->buildMonthlySeries(Application::class, $monthWindows);
-        $monthlyActivity = $this->buildMonthlyActivity($monthWindows, $jobMonthlySeries, $applicationMonthlySeries);
-
-        $applicationBreakdown = $this->buildStatusBreakdown(
-            ApplicationStatus::cases(),
-            Application::query()->selectRaw('status, COUNT(*) as total')->groupBy('status')->pluck('total', 'status')->all(),
-            [
-                ApplicationStatus::Pending->value => '#6b7280',
-                ApplicationStatus::Reviewed->value => '#1f8a62',
-                ApplicationStatus::Shortlisted->value => '#0f766e',
-                ApplicationStatus::Rejected->value => '#d97706',
-                ApplicationStatus::Hired->value => '#2563eb',
-            ],
-            $applications
-        );
-
-        $jobTypeBreakdown = $this->buildStatusBreakdown(
-            JobType::cases(),
-            Job::query()->selectRaw('job_type, COUNT(*) as total')->groupBy('job_type')->pluck('total', 'job_type')->all(),
-            [
-                JobType::FullTime->value => '#1e6b4f',
-                JobType::PartTime->value => '#0f766e',
-                JobType::Contract->value => '#d97706',
-                JobType::Internship->value => '#2563eb',
-            ],
-            $totalJobs
-        );
-
-        $jobStatusBreakdown = $this->buildStatusBreakdown(
-            JobStatus::cases(),
-            Job::query()->selectRaw('status, COUNT(*) as total')->groupBy('status')->pluck('total', 'status')->all(),
-            [
-                JobStatus::Open->value => '#1e6b4f',
-                JobStatus::Closed->value => '#d97706',
-            ],
-            $totalJobs
-        );
-
-        $featuredJobs = Job::query()
-            ->with('employer')
-            ->open()
+        // Get jobs for the grid/list view
+        $jobs = Job::query()
+            ->with(['employer.employerProfile'])
             ->latest()
-            ->limit(4)
-            ->get();
+            ->paginate(20);
 
-        if ($featuredJobs->isEmpty()) {
-            $featuredJobs = Job::query()
-                ->with('employer')
-                ->latest()
-                ->limit(4)
-                ->get();
+        $savedJobIds = [];
+        $appliedJobIds = [];
+
+        if (auth()->check() && auth()->user()->isSeeker()) {
+            $savedJobIds = SavedJob::query()
+                ->where('user_id', auth()->id())
+                ->pluck('job_id')
+                ->toArray();
+
+            $appliedJobIds = Application::query()
+                ->where('user_id', auth()->id())
+                ->pluck('job_id')
+                ->toArray();
         }
 
-        return view('welcome', [
-            'overviewCards' => [
-                [
-                    'label' => 'Active jobs',
-                    'value' => number_format($totalJobs),
-                    'meta' => $openJobs > 0 ? number_format($openJobs) . ' currently open' : 'No active roles yet',
-                ],
-                [
-                    'label' => 'Applications',
-                    'value' => number_format($applications),
-                    'meta' => $pendingApplications > 0 ? number_format($pendingApplications) . ' still pending' : 'All applications reviewed',
-                ],
-                [
-                    'label' => 'Employers',
-                    'value' => number_format($employers),
-                    'meta' => number_format($admins) . ' admins supporting the platform',
-                ],
-                [
-                    'label' => 'Job seekers',
-                    'value' => number_format($seekers),
-                    'meta' => number_format($activeUsers) . ' active accounts overall',
-                ],
-                [
-                    'label' => 'Saved jobs',
-                    'value' => number_format($savedJobs),
-                    'meta' => 'Bookmarked opportunities across the platform',
-                ],
-            ],
-            'heroStats' => [
-                [
-                    'value' => number_format($openJobs),
-                    'label' => 'Open roles',
-                ],
-                [
-                    'value' => number_format($applications),
-                    'label' => 'Applications',
-                ],
-                [
-                    'value' => number_format($employers),
-                    'label' => 'Employers',
-                ],
-            ],
-            'heroMetric' => [
-                'value' => number_format($totalJobs),
-                'label' => 'jobs tracked across the live database',
-            ],
-            'heroSnapshot' => [
-                [
-                    'title' => 'Verified employers',
-                    'copy' => number_format($employers) . ' companies are registered and ready to post.',
-                ],
-                [
-                    'title' => 'Fast applications',
-                    'copy' => number_format($applications) . ' applications have already moved through the system.',
-                ],
-                [
-                    'title' => 'Compliance status',
-                    'copy' => number_format($pendingReports) . ' draft reports are waiting in the review queue.',
-                ],
-            ],
-            'applicationBreakdown' => $applicationBreakdown,
-            'applicationTotal' => $applications,
-            'applicationRingStyle' => $this->buildRingStyle($applicationBreakdown),
-            'jobTypeBreakdown' => $jobTypeBreakdown,
-            'jobStatusBreakdown' => $jobStatusBreakdown,
-            'monthlyActivity' => $monthlyActivity,
-            'openJobs' => $openJobs,
-            'employers' => $employers,
-            'savedJobs' => $savedJobs,
-            'featuredJobs' => $this->formatFeaturedJobs($featuredJobs),
-        ]);
+        return view('welcome', compact(
+            'totalJobs',
+            'openJobs', 
+            'applications',
+            'employers',
+            'seekers',
+            'savedJobs',
+            'activeUsers',
+            'newJobsThisWeek',
+            'jobs',
+            'savedJobIds',
+            'appliedJobIds'
+        ));
+    }
+
+    public function landing(): View
+    {
+        // Get dashboard data for the landing page
+        $totalJobs = Job::count();
+        $openJobs = Job::query()->open()->count();
+        $applications = Application::count();
+        $employers = User::query()->where('role', UserRole::Employer->value)->count();
+        $seekers = User::query()->where('role', UserRole::Seeker->value)->count();
+        $savedJobs = SavedJob::count();
+        $activeUsers = User::query()->where('is_active', true)->count();
+        $newJobsThisWeek = Job::query()->where('created_at', '>=', now()->subWeek())->count();
+
+        // Get jobs for the grid/list view
+        $jobs = Job::query()
+            ->with(['employer.employerProfile'])
+            ->latest()
+            ->paginate(20);
+
+        $savedJobIds = [];
+        $appliedJobIds = [];
+
+        if (auth()->check() && auth()->user()->isSeeker()) {
+            $savedJobIds = SavedJob::query()
+                ->where('user_id', auth()->id())
+                ->pluck('job_id')
+                ->toArray();
+
+            $appliedJobIds = Application::query()
+                ->where('user_id', auth()->id())
+                ->pluck('job_id')
+                ->toArray();
+        }
+
+        return view('landing', compact(
+            'totalJobs',
+            'openJobs', 
+            'applications',
+            'employers',
+            'seekers',
+            'savedJobs',
+            'activeUsers',
+            'newJobsThisWeek',
+            'jobs',
+            'savedJobIds',
+            'appliedJobIds'
+        ));
     }
 
     /**

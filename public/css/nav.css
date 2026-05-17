@@ -261,7 +261,7 @@
         transform: translateX(-100%);
     }
     
-    .sidebar:not(.collapsed) {
+    .sidebar.translate-x-0 {
         transform: translateX(0);
     }
 }
@@ -305,41 +305,87 @@
 }
 
 .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    transition: all 0.2s ease;
-    font-size: 0.75rem;
-    text-decoration: none;
-    cursor: pointer;
-    pointer-events: auto;
-    position: relative;
-    z-index: 1;
-    border-left: 4px solid transparent;
-    color: #4b5563;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    padding: 0.5rem !important;
+    border-radius: 0.5rem !important;
+    transition: all 0.2s ease !important;
+    font-size: 0.75rem !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 1 !important;
+    border-left: 4px solid transparent !important;
+    color: #4b5563 !important;
 }
 
-/* Active state for nav items */
-.nav-item.active {
+/* Active state for nav items - Employer purple */
+.sidebar:not(.seeker-sidebar) .nav-item.active {
+    background-color: #f3e8ff !important;
+    color: #a855f7 !important;
+    border-left-color: #a855f7 !important;
+    font-weight: 700 !important;
+}
+
+.sidebar:not(.seeker-sidebar) .nav-item.active i {
+    color: #a855f7 !important;
+}
+
+.sidebar:not(.seeker-sidebar) .nav-item.active span {
+    color: #a855f7 !important;
+}
+
+/* Override Tailwind text colors when active - Employer */
+.sidebar:not(.seeker-sidebar) .nav-item.active.text-gray-700 {
+    color: #a855f7 !important;
+}
+
+.sidebar:not(.seeker-sidebar) .nav-item.active.text-gray-700 i {
+    color: #a855f7 !important;
+}
+
+.sidebar:not(.seeker-sidebar) .nav-item.active.text-gray-700 span {
+    color: #a855f7 !important;
+}
+
+/* Active state for nav items - Seeker green */
+.sidebar.seeker-sidebar .nav-item.active {
     background-color: #f0fdf4 !important;
     color: #16a34a !important;
     border-left-color: #16a34a !important;
     font-weight: 700 !important;
 }
 
-.nav-item.active i {
+.sidebar.seeker-sidebar .nav-item.active i {
+    color: #16a34a !important;
+}
+
+.sidebar.seeker-sidebar .nav-item.active span {
+    color: #16a34a !important;
+}
+
+/* Override Tailwind text colors when active - Seeker */
+.sidebar.seeker-sidebar .nav-item.active.text-gray-700 {
+    color: #16a34a !important;
+}
+
+.sidebar.seeker-sidebar .nav-item.active.text-gray-700 i {
+    color: #16a34a !important;
+}
+
+.sidebar.seeker-sidebar .nav-item.active.text-gray-700 span {
     color: #16a34a !important;
 }
 
 .nav-item i {
-    width: 0.75rem;
-    font-size: 0.75rem;
+    width: 0.75rem !important;
+    font-size: 0.75rem !important;
 }
 
 .nav-item span {
-    white-space: nowrap;
+    white-space: nowrap !important;
 }
 
 .sidebar.collapsed .nav-item span,
@@ -349,6 +395,7 @@
 
 .sidebar.collapsed .nav-item {
     justify-content: center;
+    padding: 0.5rem;
 }
 
 .nav-badge {
@@ -402,14 +449,30 @@
     display: none;
 }
 
-.sidebar.collapsed .profile-section .w-16 {
+.sidebar.collapsed .profile-section .w-16,
+.sidebar.collapsed .profile-section .w-14 {
     width: 2.5rem;
     height: 2.5rem;
 }
 
-.sidebar.collapsed .profile-section .py-3 {
+.sidebar.collapsed .profile-section .py-3,
+.sidebar.collapsed .profile-section .py-2 {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
+}
+
+.sidebar.collapsed .search-item {
+    justify-content: center;
+    padding: 0.5rem;
+}
+
+.sidebar.collapsed .search-item i {
+    margin: 0;
+}
+
+.sidebar.collapsed .search-item input,
+.sidebar.collapsed .search-item button {
+    display: none;
 }
 
 .sidebar-toggle {

@@ -24,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'employer' => IsEmployer::class,
             'seeker' => IsSeeker::class,
         ]);
+        $middleware->validateCsrfTokens(except: []);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

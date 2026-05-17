@@ -134,6 +134,15 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-4">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-full {{ $application->status->value === 'rejected' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-600' }} font-bold text-sm flex-shrink-0">
+                            <i class="fas fa-{{ $application->status->value === 'rejected' ? 'times' : 'times-circle' }}"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-900">Rejected</p>
+                            <p class="text-sm text-gray-600">{{ $application->status->value === 'rejected' ? 'Completed' : 'Pending' }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
                         <div class="flex h-10 w-10 items-center justify-center rounded-full {{ $application->status->value === 'hired' ? 'bg-teal-600 text-white' : 'bg-gray-200 text-gray-600' }} font-bold text-sm flex-shrink-0">
                             <i class="fas fa-{{ $application->status->value === 'hired' ? 'check' : 'handshake' }}"></i>
                         </div>
@@ -308,6 +317,13 @@
                     <a href="{{ route('seeker.browse-jobs') }}" class="block w-full px-4 py-2 text-center bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-300 transition flex items-center justify-center gap-2">
                         <i class="fas fa-search"></i>Browse More Jobs
                     </a>
+                    <form action="{{ route('seeker.applications.destroy', $application) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this application?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="block w-full px-4 py-2 text-center bg-red-100 text-red-700 rounded-lg text-sm font-semibold hover:bg-red-200 transition flex items-center justify-center gap-2">
+                            <i class="fas fa-trash"></i>Delete Application
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

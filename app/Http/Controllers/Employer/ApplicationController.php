@@ -15,37 +15,39 @@ class ApplicationController extends Controller
     {
         $user = $request->user();
         
-        $applications = Application::whereHas('job', fn($q) => $q->where('employer_id', $user->id))
-            ->with(['seeker', 'job'])
-            ->when($request->search, fn($q) => $q->whereHas('seeker', fn($sq) => $sq->where('name', 'like', '%' . $request->search . '%')))
-            ->when($request->status, fn($q) => $q->where('status', $request->status))
-            ->when($request->job_id, fn($q) => $q->where('job_id', $request->job_id))
-            ->latest()
-            ->paginate(15);
-
-        $jobs = $user->jobs()->get();
+        $validated = $request->validate([
+            'search' => 'nullable|string|max:255',
+            'status' => 'nullable|in:pending,reviewed,shortlisted,interview,rejected,hired',
+            'job_id' => 'nullable|integer|exists:jobs,id',
+        ]);
         
-        $totalApplications = Application::whereHas('job', fn($q) => $q->where('employer_id', $user->id))->count();
-        $pendingApplications = Application::whereHas('job', fn($q) => $q->where('employer_id', $user->id))->where('status', 'pending')->count();
-        $shortlistedApplications = Application::whereHas('job', fn($q) => $q->where('employer_id', $user->id))->where('status', 'shortlisted')->count();
-        $rejectedApplications = Application::whereHas('job', fn($q) => $q->where('employer_id', $user->id))->where('status', 'rejected')->count();
+        $query = Application::whereHas('job', fn($q) => $q->where('employer_id', $user->id))
+            ->with(['seeker', 'job', 'seeker.seekerProfile']);
         
-        // Application status distribution for chart
-        $applicationStatusData = Application::query()
-            ->whereHas('job', fn ($builder) => $builder->where('employer_id', $user->id))
-            ->selectRaw('status, COUNT(*) as count')
-            ->groupBy('status')
-            ->pluck('count', 'status')
-            ->toArray();
-
+        if ($validated['search'] ?? null) {
+            $query->whereHas('seeker', fn($q) => $q->where('name', 'like', '%' . $validated['search'] . '%'));
+        }
+        
+        if ($validated['status'] ?? null) {
+            $query->where('status', $validated['status']);
+        }
+        
+        if ($validated['job_id'] ?? null) {
+            $query->where('job_id', $validated['job_id']);
+        }
+        
+        $applications = $query->latest()->paginate(15);
+        $jobs = $user->jobs()->select('id', 'title')->get();
+        
+        $baseQuery = Application::whereHas('job', fn($q) => $q->where('employer_id', $user->id));
+        
         return view('employer.applications', [
             'applications' => $applications,
             'jobs' => $jobs,
-            'totalApplications' => $totalApplications,
-            'pendingApplications' => $pendingApplications,
-            'shortlistedApplications' => $shortlistedApplications,
-            'rejectedApplications' => $rejectedApplications,
-            'applicationStatusData' => $applicationStatusData,
+            'totalApplications' => $baseQuery->count(),
+            'pendingApplications' => $baseQuery->where('status', 'pending')->count(),
+            'shortlistedApplications' => $baseQuery->where('status', 'shortlisted')->count(),
+            'rejectedApplications' => $baseQuery->where('status', 'rejected')->count(),
         ]);
     }
 
@@ -53,7 +55,6 @@ class ApplicationController extends Controller
     {
         $user = $request->user();
         
-        // Check if the application belongs to one of the employer's jobs
         if ($application->job->employer_id !== $user->id) {
             abort(403, 'Unauthorized');
         }
@@ -67,7 +68,6 @@ class ApplicationController extends Controller
     {
         $user = $request->user();
         
-        // Check if the application belongs to one of the employer's jobs
         if ($application->job->employer_id !== $user->id) {
             abort(403, 'Unauthorized');
         }
@@ -79,6 +79,6 @@ class ApplicationController extends Controller
 
         $application->update($validated);
 
-        return redirect()->back()->with('success', 'Application status updated successfully');
+        return redirect()->back()->with('success', 'Application updated successfully');
     }
 }

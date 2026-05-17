@@ -85,8 +85,8 @@
     </div>
 
     <!-- Main Content Grid -->
-    <div class="grid gap-6 lg:grid-cols-3">
-        <div class="lg:col-span-2 space-y-6">
+    <div class="grid gap-6 lg:grid-cols-3" x-data="{ sidebarOpen: false }">
+        <div class="lg:col-span-2 space-y-6 min-w-0">
             <!-- Saved Jobs -->
             <div class="bg-white rounded-xl shadow-xl p-6 hover:shadow-2xl transition">
                 <div class="flex justify-between items-center mb-4">
@@ -144,20 +144,37 @@
             </div>
         </div>
 
+        <!-- Sidebar Toggle Button (Mobile) -->
+        <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden fixed bottom-6 right-6 z-40 w-14 h-14 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all flex items-center justify-center">
+            <i class="fas fa-bars text-xl"></i>
+        </button>
+
+        <!-- Sidebar Backdrop (Mobile) -->
+        <div @click="sidebarOpen = false" :class="sidebarOpen ? 'opacity-100 visible' : 'opacity-0 invisible'" class="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-30 transition-all duration-300"></div>
+
         <!-- Sidebar -->
-        <div class="space-y-6">
+        <div :class="sidebarOpen ? 'translate-x-0' : 'translate-x-full'" class="fixed lg:static right-0 top-0 h-screen lg:h-auto w-80 lg:w-auto bg-white lg:bg-transparent z-40 lg:z-auto overflow-y-auto lg:overflow-visible transition-transform duration-300 lg:translate-x-0 space-y-6 p-4 lg:p-0">
+            <!-- Close Button (Mobile) -->
+            <button @click="sidebarOpen = false" class="lg:hidden absolute top-4 right-4 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition">
+                <i class="fas fa-times text-gray-600"></i>
+            </button>
+
             <!-- Profile Card -->
-            <div class="bg-white rounded-xl shadow-xl p-6 hover:shadow-2xl transition text-center">
-                <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 font-serif text-2xl text-white shadow-lg">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+            <div class="bg-white rounded-xl shadow-xl p-4 md:p-6 hover:shadow-2xl transition text-center mt-12 lg:mt-0">
+                <div class="mx-auto h-16 w-16 rounded-full overflow-hidden shadow-lg flex-shrink-0 bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+                    @if(auth()->user()->profile_picture_url)
+                        <img src="{{ auth()->user()->profile_picture_url }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
+                    @else
+                        <span class="text-white font-serif text-2xl">{{ strtoupper(substr(auth()->user()->name, 0, 2)) }}</span>
+                    @endif
                 </div>
                 <h3 class="mt-3 font-semibold text-gray-800">{{ auth()->user()->name }}</h3>
-                <p class="text-sm text-gray-600">Job Seeker Account</p>
+                <p class="text-sm text-gray-600">Job Seeker · Uganda</p>
                 <div class="mt-3">
                     <div class="h-1.5 w-full overflow-hidden rounded-full bg-gray-200">
-                        <div class="h-full rounded-full bg-gradient-to-r from-emerald-600 to-teal-600" style="width: 60%"></div>
+                        <div class="h-full rounded-full bg-gradient-to-r from-emerald-600 to-teal-600" style="width: 88%"></div>
                     </div>
-                    <p class="mt-1 text-xs text-gray-600 font-medium">Profile 60% complete</p>
+                    <p class="mt-1 text-xs text-gray-600 font-medium">Profile 88% complete</p>
                 </div>
                 <a href="{{ route('seeker.profile.edit') }}" class="mt-4 block w-full px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-semibold text-sm">
                     <i class="fas fa-edit mr-2"></i>Edit Profile
@@ -165,7 +182,7 @@
             </div>
 
             <!-- Quick Actions -->
-            <div class="bg-white rounded-xl shadow-xl p-6 hover:shadow-2xl transition">
+            <div class="bg-white rounded-xl shadow-xl p-4 md:p-6 hover:shadow-2xl transition" @click="sidebarOpen = false">
                 <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
                     <i class="fas fa-lightning-bolt text-emerald-600 mr-2"></i>Quick Actions
                 </h3>
@@ -201,7 +218,7 @@
             </div>
 
             <!-- Application Status Summary -->
-            <div class="bg-white rounded-xl shadow-xl p-6 hover:shadow-2xl transition">
+            <div class="bg-white rounded-xl shadow-xl p-4 md:p-6 hover:shadow-2xl transition" @click="sidebarOpen = false">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-bold text-gray-800 flex items-center">
                         <i class="fas fa-chart-pie text-orange-600 mr-2"></i>Status Summary
@@ -234,6 +251,23 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Close sidebar when clicking on links
+    document.addEventListener('DOMContentLoaded', () => {
+        const sidebarLinks = document.querySelectorAll('[x-data] a');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                const sidebarDiv = link.closest('[x-data]');
+                if (sidebarDiv) {
+                    // Trigger Alpine.js update
+                    const event = new CustomEvent('click');
+                    sidebarDiv.dispatchEvent(event);
+                }
+            });
+        });
+    });
+</script>
 
 <style>
 @keyframes slide-right {

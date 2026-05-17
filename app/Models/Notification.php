@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\DeliveryStatus;
-use App\Enums\NotificationChannel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,13 +29,13 @@ class Notification extends Model
     protected function casts(): array
     {
         return [
-            'type' => NotificationChannel::class,
             'is_read' => 'boolean',
             'read_at' => 'datetime',
             'sent_at' => 'datetime',
-            'delivery_status' => DeliveryStatus::class,
             'delivery_attempts' => 'integer',
             'last_attempt_at' => 'datetime',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
         ];
     }
 

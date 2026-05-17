@@ -79,6 +79,7 @@ Route::prefix('seeker')->middleware(['auth', 'seeker'])->name('seeker.')->group(
     Route::get('/applications/create', [ApplicationController::class, 'create'])->name('applications.create');
     Route::post('/applications', [ApplicationController::class, 'store'])->name('applications.store');
     Route::get('/applications/{application}', [ApplicationController::class, 'show'])->name('applications.show');
+    Route::delete('/applications/{application}', [ApplicationController::class, 'destroy'])->name('applications.destroy');
     Route::get('/saved-jobs', [SavedJobsController::class, 'index'])->name('saved-jobs');
     Route::post('/saved-jobs/{job}', [SavedJobController::class, 'store'])->name('saved-jobs.store');
     Route::delete('/saved-jobs/{savedJob}', [SavedJobController::class, 'destroy'])->name('saved-jobs.destroy');
@@ -88,14 +89,21 @@ Route::prefix('seeker')->middleware(['auth', 'seeker'])->name('seeker.')->group(
     Route::get('/interviews/{application}', [InterviewsController::class, 'show'])->name('interviews.show');
     Route::post('/interviews/{application}/message', [InterviewsController::class, 'sendMessage'])->name('interviews.message');
     Route::get('/messages', [MessagesController::class, 'index'])->name('messages');
+    Route::get('/messages/search', [MessagesController::class, 'search'])->name('messages.search');
     Route::get('/messages/{user}', [MessagesController::class, 'getConversation'])->name('messages.conversation');
     Route::post('/messages/{user}', [MessagesController::class, 'sendMessage'])->name('messages.send');
     Route::patch('/messages/{message}/read', [MessagesController::class, 'markAsRead'])->name('messages.read');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
-    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
+    Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.mark-all-read');
     Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+    Route::post('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password');
+    Route::post('/settings/notifications', [SettingsController::class, 'updateNotifications'])->name('settings.notifications');
+    Route::post('/settings/privacy', [SettingsController::class, 'updatePrivacy'])->name('settings.privacy');
+    Route::post('/settings/appearance', [SettingsController::class, 'updateAppearance'])->name('settings.appearance');
+    Route::post('/settings/two-factor/enable', [SettingsController::class, 'enableTwoFactor'])->name('settings.two-factor.enable');
+    Route::post('/settings/two-factor/disable', [SettingsController::class, 'disableTwoFactor'])->name('settings.two-factor.disable');
 });
 
 Route::prefix('employer')->middleware(['auth', 'employer'])->name('employer.')->group(function (): void {
@@ -113,8 +121,11 @@ Route::prefix('employer')->middleware(['auth', 'employer'])->name('employer.')->
     Route::post('/interviews/{application}/schedule', [EmployerInterviewsController::class, 'schedule'])->name('interviews.schedule');
     Route::post('/interviews/{application}/outcome', [EmployerInterviewsController::class, 'setOutcome'])->name('interviews.outcome');
     Route::get('/messages', [EmployerMessagesController::class, 'index'])->name('messages');
+    Route::get('/messages/{user}', [EmployerMessagesController::class, 'getConversation'])->name('messages.conversation');
+    Route::post('/messages/{user}', [EmployerMessagesController::class, 'sendMessage'])->name('messages.send');
+    Route::patch('/messages/{message}/read', [EmployerMessagesController::class, 'markAsRead'])->name('messages.read');
     Route::get('/notifications', [EmployerNotificationsController::class, 'index'])->name('notifications');
-    Route::patch('/notifications/{notification}/read', [EmployerNotificationsController::class, 'markRead'])->name('notifications.read');
+    Route::post('/notifications/{notification}/read', [EmployerNotificationsController::class, 'markRead'])->name('notifications.read');
     Route::post('/notifications/mark-all-read', [EmployerNotificationsController::class, 'markAllRead'])->name('notifications.mark-all-read');
     Route::delete('/notifications/{notification}', [EmployerNotificationsController::class, 'destroy'])->name('notifications.destroy');
     Route::get('/settings', [EmployerSettingsController::class, 'index'])->name('settings');

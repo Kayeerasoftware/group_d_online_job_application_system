@@ -1,4 +1,8 @@
 import './bootstrap';
+import Alpine from 'alpinejs';
+
+window.Alpine = Alpine;
+Alpine.start();
 
 document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.querySelector('[data-sidebar]');
@@ -29,6 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
         openButtons.forEach((button) => button.addEventListener('click', openSidebar));
         closeButtons.forEach((button) => button.addEventListener('click', closeSidebar));
         backdrop.addEventListener('click', closeSidebar);
+
+        // Close sidebar when clicking on navigation links
+        const navLinks = sidebar.querySelectorAll('nav a');
+        navLinks.forEach((link) => {
+            link.addEventListener('click', closeSidebar);
+        });
 
         window.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') {

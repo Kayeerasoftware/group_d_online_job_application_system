@@ -79,4 +79,16 @@ class ApplicationController extends Controller
         return redirect()->route('seeker.applications')
             ->with('success', 'Application submitted successfully!');
     }
+
+    public function destroy(Request $request, Application $application)
+    {
+        if ($application->job_seeker_id !== $request->user()->id) {
+            abort(403, 'Unauthorized');
+        }
+
+        $application->delete();
+
+        return redirect()->route('seeker.applications')
+            ->with('success', 'Application deleted successfully!');
+    }
 }

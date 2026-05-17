@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('interview_communications', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('application_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('application_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('sender_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('receiver_id')->constrained('users')->cascadeOnDelete();
             $table->text('message');

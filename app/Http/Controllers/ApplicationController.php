@@ -158,6 +158,10 @@ class ApplicationController extends Controller
         $this->authorizeViewer($request, $application);
         $application->delete();
 
+        if ($request->user()->isSeeker()) {
+            return redirect()->route('seeker.applications')->with('status', 'Application deleted successfully.');
+        }
+
         return redirect()->route('applications.index')->with('status', 'Application removed.');
     }
 

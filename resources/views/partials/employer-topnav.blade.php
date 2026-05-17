@@ -8,7 +8,7 @@
                 <img src="{{ asset('MAK-JOBLINK log.png') }}" alt="JobLink Logo" class="logo-img h-10 w-auto object-contain drop-shadow-md transition-all duration-300 cursor-pointer hover:scale-105">
             </a>
             <div class="flex items-center px-3 py-1.5 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg border border-emerald-200 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:border-emerald-300" @click="showLogoModal = !showLogoModal" :class="showLogoModal ? 'ring-2 ring-emerald-400' : ''">
-                <h2 class="m-0 bg-gradient-to-br from-emerald-600 to-teal-600 bg-clip-text text-transparent text-xs font-bold hidden md:block cursor-pointer">EMPLOYER DASHBOARD</h2>
+                <h2 class="m-0 bg-gradient-to-br from-emerald-600 to-teal-600 bg-clip-text text-transparent text-xs font-bold hidden md:block cursor-pointer">ONLINE JOB APPLICATION SYSTEM</h2>
             </div>
         </div>
 
@@ -96,7 +96,7 @@
 <!-- Profile Dropdown -->
 <div x-show="showProfileDropdown" @click.away="showProfileDropdown = false" x-transition class="fixed top-14 right-6 w-44 bg-white rounded-xl shadow-2xl z-40 border border-emerald-100 overflow-hidden" style="display: none;">
     <div class="absolute -top-2 right-6 w-4 h-4 bg-gradient-to-br from-emerald-500 to-teal-600 border-l border-t border-emerald-100 transform rotate-45"></div>
-    
+
     <div class="pt-6 pb-3 px-3 text-center bg-gradient-to-br from-emerald-500 to-teal-600 relative">
         <div class="absolute inset-0 bg-black/5"></div>
         <div class="relative">
@@ -107,7 +107,7 @@
             <p class="text-xs text-emerald-100">Employer Account</p>
         </div>
     </div>
-    
+
     <div class="py-1.5">
         @if(Route::has('employer.profile'))
         <a href="{{ route('employer.profile') }}" @click="showProfileDropdown = false" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-emerald-50 transition group">
@@ -138,7 +138,7 @@
             </button>
         </div>
     </div>
-    
+
     <div class="border-t border-gray-100 p-1.5">
         <form action="{{ route('logout') }}" method="POST" class="m-0">
             @csrf

@@ -16,7 +16,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl md:text-3xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-1 md:mb-2">Messages</h1>
-                    <p class="text-gray-600 text-xs md:text-sm font-medium">Communicate with employers and recruiters</p>
+                    <p class="text-gray-600 text-xs md:text-sm font-medium">Communicate with anyone in the system</p>
                 </div>
             </div>
         </div>
@@ -45,7 +45,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-purple-100 text-[8px] md:text-[10px] font-medium mb-0.5">Conversations</p>
-                    <h3 class="text-base md:text-xl font-bold">{{ $conversations->count() }}</h3>
+                    <h3 class="text-base md:text-xl font-bold">{{ count($conversations) }}</h3>
                 </div>
                 <div class="bg-white/20 p-1.5 md:p-2 rounded-lg backdrop-blur-sm">
                     <i class="fas fa-comments text-sm md:text-lg"></i>
@@ -81,10 +81,12 @@
         <!-- Conversations List -->
         <div class="lg:col-span-1 bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100">
             <div class="p-4 border-b border-gray-200 bg-gradient-to-r from-indigo-50 to-purple-50">
-                <h2 class="text-lg font-bold text-gray-800 flex items-center">
+                <h2 class="text-lg font-bold text-gray-800 flex items-center mb-3">
                     <i class="fas fa-list mr-2 text-indigo-600"></i>Conversations
                 </h2>
+                <input type="text" id="userSearch" placeholder="Search users..." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600">
             </div>
+            <div id="searchResults" class="hidden divide-y divide-gray-200 max-h-96 overflow-y-auto"></div>
             <div class="divide-y divide-gray-200 max-h-96 overflow-y-auto" id="conversationsList">
                 @forelse($conversations as $conversationId => $conversation)
                     <div class="conversation-item p-4 hover:bg-indigo-50 cursor-pointer transition border-l-4 {{ $loop->first ? 'border-indigo-600 bg-indigo-50' : 'border-transparent' }}" 
@@ -105,6 +107,7 @@
                     <div class="p-8 text-center">
                         <i class="fas fa-inbox text-2xl mb-2 block opacity-50 text-gray-400"></i>
                         <p class="text-gray-600 text-sm">No conversations yet</p>
+                        <p class="text-gray-500 text-xs mt-2">Search for users above to start messaging</p>
                     </div>
                 @endforelse
             </div>
@@ -112,9 +115,9 @@
 
         <!-- Chat Area -->
         <div class="lg:col-span-2 bg-white rounded-xl shadow-xl overflow-hidden flex flex-col border border-gray-100">
-            @if($conversations->count() > 0)
+            @if(count($conversations) > 0)
                 @php
-                    $firstConversation = $conversations->first();
+                    $firstConversation = reset($conversations);
                     $otherUser = $firstConversation['user'];
                     $messages = $firstConversation['messages'];
                 @endphp
@@ -168,16 +171,34 @@
 
                 <!-- Message Input -->
                 <div class="p-4 border-t border-gray-200 bg-gray-50">
+                    <!-- Error Alert -->
+                    <div id="errorAlert" class="hidden mb-3 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm flex items-center gap-2">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span id="errorMessage"></span>
+                    </div>
+
                     <form id="messageForm" onsubmit="sendMessage(event, {{ $otherUser->id }})">
                         @csrf
-                        <div class="flex gap-2">
-                            <button type="button" class="p-2 hover:bg-gray-200 rounded-lg transition text-gray-600" title="Attach file">
+                        <div class="flex gap-2 items-end">
+                            <button type="button" class="p-2 hover:bg-gray-200 rounded-lg transition text-gray-600 flex-shrink-0" title="Attach file">
                                 <i class="fas fa-paperclip"></i>
                             </button>
-                            <input type="text" id="messageInput" name="message" placeholder="Type your message..." 
-                                   class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent"
-                                   required>
-                            <button type="submit" class="px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition font-semibold">
+                            
+                            <div class="flex-1 relative">
+                                <textarea 
+                                    id="messageInput" 
+                                    name="message" 
+                                    placeholder="Type your message... (Shift+Enter for new line)" 
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent resize-none"
+                                    rows="1"
+                                    maxlength="1000"
+                                    required></textarea>
+                                <div class="absolute bottom-2 right-2 text-xs text-gray-500">
+                                    <span id="charCount">0</span>/1000
+                                </div>
+                            </div>
+                            
+                            <button type="submit" id="sendBtn" class="px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition font-semibold flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed" title="Send message (Enter)">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                         </div>
@@ -188,7 +209,7 @@
                     <div class="text-center">
                         <i class="fas fa-inbox text-4xl mb-4 block opacity-50 text-gray-400"></i>
                         <p class="text-gray-600 text-lg font-semibold">No messages yet</p>
-                        <p class="text-gray-500 text-sm mt-2">Start a conversation with employers</p>
+                        <p class="text-gray-500 text-sm mt-2">Search for users on the left to start a conversation</p>
                     </div>
                 </div>
             @endif
@@ -212,14 +233,32 @@
 .animate-slide-text {
     animation: slide-text 5s ease-out forwards;
 }
+
+#messageInput {
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.message-sending {
+    opacity: 0.7;
+    pointer-events: none;
+}
 </style>
 
 <script>
+const getConversationUrl = '{{ route("seeker.messages.conversation", ":id") }}';
+const sendMessageUrl = '{{ route("seeker.messages.send", ":id") }}';
+let currentUserId = null;
+let isSending = false;
+
 function loadConversation(userId, userName) {
     const form = document.getElementById('messageForm');
     if (!form) return;
 
-    fetch(`{{ route('seeker.messages.conversation', '') }}/${userId}`)
+    currentUserId = userId;
+    const url = getConversationUrl.replace(':id', userId);
+
+    fetch(url)
         .then(response => response.json())
         .then(data => {
             const container = document.getElementById('messagesContainer');
@@ -243,7 +282,7 @@ function loadConversation(userId, userName) {
                 const timeStr = time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
                 
                 messageContent.innerHTML = `
-                    <p class="${isOwn ? 'text-white' : 'text-gray-800'}">${message.message}</p>
+                    <p class="${isOwn ? 'text-white' : 'text-gray-800'}">${escapeHtml(message.message)}</p>
                     <p class="text-xs ${isOwn ? 'text-indigo-100' : 'text-gray-500'} mt-1">${timeStr}</p>
                 `;
                 
@@ -261,40 +300,78 @@ function loadConversation(userId, userName) {
                 item.classList.remove('border-indigo-600', 'bg-indigo-50');
                 item.classList.add('border-transparent');
             });
-            document.querySelector(`[data-user-id="${userId}"]`).classList.add('border-indigo-600', 'bg-indigo-50');
+            const activeItem = document.querySelector(`[data-user-id="${userId}"]`);
+            if (activeItem) {
+                activeItem.classList.add('border-indigo-600', 'bg-indigo-50');
+            }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error:', error);
+            showError('Failed to load conversation');
+        });
 }
 
 function sendMessage(event, userId) {
     event.preventDefault();
     
+    if (isSending) return;
+    
     const input = document.getElementById('messageInput');
     const message = input.value.trim();
+    const sendBtn = document.getElementById('sendBtn');
     
-    if (!message) return;
+    if (!message) {
+        showError('Message cannot be empty');
+        return;
+    }
 
-    fetch(`{{ route('seeker.messages.send', '') }}/${userId}`, {
+    if (message.length > 1000) {
+        showError('Message is too long (max 1000 characters)');
+        return;
+    }
+
+    isSending = true;
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || 
+                      document.querySelector('input[name="_token"]')?.value || 
+                      '{{ csrf_token() }}';
+
+    const sendUrl = sendMessageUrl.replace(':id', userId);
+    
+    fetch(sendUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}'
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
         },
         body: JSON.stringify({ message })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.status === 200 || response.status === 201) {
+            return response.json();
+        } else if (response.status === 422) {
+            return response.json().then(data => {
+                throw new Error(data.message || 'Validation error');
+            });
+        } else {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+    })
     .then(data => {
         if (data.success) {
             const container = document.getElementById('messagesContainer');
             const messageDiv = document.createElement('div');
-            messageDiv.className = 'flex justify-end';
+            messageDiv.className = 'flex justify-end animate-fade-in';
             
             const time = new Date(data.message.created_at);
             const timeStr = time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
             
             messageDiv.innerHTML = `
                 <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg p-3 max-w-xs shadow-sm">
-                    <p>${data.message.message}</p>
+                    <p>${escapeHtml(data.message.message)}</p>
                     <p class="text-xs text-indigo-100 mt-1">${timeStr}</p>
                 </div>
             `;
@@ -302,9 +379,120 @@ function sendMessage(event, userId) {
             container.appendChild(messageDiv);
             container.scrollTop = container.scrollHeight;
             input.value = '';
+            input.style.height = 'auto';
+            document.getElementById('charCount').textContent = '0';
+            hideError();
+        } else {
+            showError(data.message || 'Failed to send message');
         }
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        console.error('Error:', error);
+        showError(error.message || 'Failed to send message. Please try again.');
+    })
+    .finally(() => {
+        isSending = false;
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+        input.focus();
+    });
+}
+
+function showError(message) {
+    const errorAlert = document.getElementById('errorAlert');
+    const errorMessage = document.getElementById('errorMessage');
+    errorMessage.textContent = message;
+    errorAlert.classList.remove('hidden');
+    setTimeout(() => hideError(), 5000);
+}
+
+function hideError() {
+    const errorAlert = document.getElementById('errorAlert');
+    errorAlert.classList.add('hidden');
+}
+
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
+}
+
+// User search functionality
+const userSearch = document.getElementById('userSearch');
+if (userSearch) {
+    userSearch.addEventListener('input', function() {
+        const query = this.value.trim();
+        const searchResults = document.getElementById('searchResults');
+        const conversationsList = document.getElementById('conversationsList');
+        
+        if (query.length < 2) {
+            searchResults.classList.add('hidden');
+            conversationsList.classList.remove('hidden');
+            return;
+        }
+        
+        fetch(`/seeker/messages/search?q=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                searchResults.innerHTML = '';
+                if (data.users && data.users.length > 0) {
+                    data.users.forEach(user => {
+                        const div = document.createElement('div');
+                        div.className = 'p-4 hover:bg-indigo-50 cursor-pointer transition border-l-4 border-transparent';
+                        div.innerHTML = `
+                            <div class="flex items-center justify-between">
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="font-semibold text-gray-900 truncate">${escapeHtml(user.name)}</h3>
+                                    <p class="text-sm text-gray-600 truncate">${escapeHtml(user.role)}</p>
+                                </div>
+                            </div>
+                        `;
+                        div.onclick = () => startConversation(user.id, user.name);
+                        searchResults.appendChild(div);
+                    });
+                    searchResults.classList.remove('hidden');
+                    conversationsList.classList.add('hidden');
+                } else {
+                    searchResults.innerHTML = '<div class="p-8 text-center"><p class="text-gray-600 text-sm">No users found</p></div>';
+                    searchResults.classList.remove('hidden');
+                    conversationsList.classList.add('hidden');
+                }
+            })
+            .catch(error => {
+                console.error('Search error:', error);
+                searchResults.innerHTML = '<div class="p-8 text-center"><p class="text-red-600 text-sm">Search failed</p></div>';
+                searchResults.classList.remove('hidden');
+            });
+    });
+}
+
+function startConversation(userId, userName) {
+    document.getElementById('userSearch').value = '';
+    document.getElementById('searchResults').classList.add('hidden');
+    document.getElementById('conversationsList').classList.remove('hidden');
+    loadConversation(userId, userName);
+}
+
+// Auto-expand textarea
+const messageInput = document.getElementById('messageInput');
+if (messageInput) {
+    messageInput.addEventListener('input', function() {
+        document.getElementById('charCount').textContent = this.value.length;
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+
+    messageInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            document.getElementById('messageForm').dispatchEvent(new Event('submit'));
+        }
+    });
 }
 
 // Auto-scroll to bottom on page load
@@ -314,5 +502,24 @@ document.addEventListener('DOMContentLoaded', function() {
         container.scrollTop = container.scrollHeight;
     }
 });
+
+// Add fade-in animation
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .animate-fade-in {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+`;
+document.head.appendChild(style);
 </script>
 @endsection

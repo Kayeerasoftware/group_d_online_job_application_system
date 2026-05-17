@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Employer;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateEmployerProfileRequest;
 use App\Models\EmployerProfile;
 use App\Models\Application;
 use Illuminate\Http\Request;
@@ -15,12 +16,14 @@ class ProfileController extends Controller
     {
         $user = $request->user();
         $profile = $user->employerProfile;
-        
+
+        $profileCompletion = $this->calculateProfileCompletion($user, $profile);
+
         $activeJobs = $user->jobs()->where('status', 'open')->count();
         $closedJobs = $user->jobs()->where('status', 'closed')->count();
-        
+
         $totalApplications = Application::whereHas('job', fn($q) => $q->where('employer_id', $user->id))->count();
-        
+
         $shortlistedCount = Application::whereHas('job', fn($q) => $q->where('employer_id', $user->id))
             ->where('status', 'shortlisted')
             ->count();
@@ -33,97 +36,81 @@ class ProfileController extends Controller
             ->where('status', 'pending')
             ->count();
 
-        $profileCompletion = $this->calculateProfileCompletion($user);
-
-        return view('employer.profile', [
-            'profile' => $profile,
-            'profileCompletion' => $profileCompletion,
-            'activeJobs' => $activeJobs,
-            'closedJobs' => $closedJobs,
-            'totalApplications' => $totalApplications,
-            'shortlistedCount' => $shortlistedCount,
-            'rejectedCount' => $rejectedCount,
-            'pendingCount' => $pendingCount,
-        ]);
+        return view('employer.profile', compact(
+            'profile',
+            'profileCompletion',
+            'activeJobs',
+            'closedJobs',
+            'totalApplications',
+            'shortlistedCount',
+            'rejectedCount',
+            'pendingCount'
+        ));
     }
 
     public function edit(Request $request): View
     {
-        $user = $request->user();
-        $profile = $user->employerProfile ?? new EmployerProfile();
+        $profile = $request->user()->employerProfile ?? new EmployerProfile();
 
-        return view('employer.profile-edit', [
-            'profile' => $profile,
-        ]);
+        return view('employer.profile-edit', compact('profile'));
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(UpdateEmployerProfileRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'company_name' => 'required|string|max:255',
-            'industry' => 'required|string',
-            'company_size' => 'required|string',
-            'location' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:20',
-            'website' => 'nullable|url',
-            'company_description' => 'nullable|string|max:2000',
-            'logo_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
-        ]);
-
         $user = $request->user();
-        
-        if ($request->hasFile('logo_path')) {
-            $path = $request->file('logo_path')->store('logos', 'public');
-            $validated['logo_path'] = $path;
+        $profile = $user->employerProfile;
+
+        $data = $request->validated();
+
+        // Handle company logo upload
+        if ($request->hasFile('company_logo') && $request->file('company_logo')->isValid()) {
+            if ($profile && $profile->company_logo) {
+                @unlink(public_path($profile->company_logo));
+            }
+            $file = $request->file('company_logo');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/logos'), $filename);
+            $data['company_logo'] = 'uploads/logos/' . $filename;
         }
 
-        $user->employerProfile()->updateOrCreate(
-            ['user_id' => $user->id],
-            $validated
-        );
+        // Update user email and phone
+        $user->update([
+            'email' => $data['email'],
+            'phone' => $data['phone'] ?? $user->phone,
+        ]);
 
-        return redirect()->route('employer.profile')->with('success', 'Profile updated successfully');
+        // Remove email and phone from profile data
+        unset($data['email'], $data['phone']);
+
+        // Update or create profile
+        if ($profile) {
+            $profile->update($data);
+        } else {
+            $data['user_id'] = $user->id;
+            EmployerProfile::create($data);
+        }
+
+        return redirect()->route('employer.profile')
+            ->with('success', 'Profile updated successfully!');
     }
 
     /**
      * Calculate profile completion percentage based on employer profile data
      */
-    private function calculateProfileCompletion($user): int
+    private function calculateProfileCompletion($user, $profile): int
     {
-        $completionPercentage = 0;
-        $totalFields = 0;
-
-        $profile = $user->employerProfile;
-
-        if (!$profile) {
-            return 0;
-        }
-
-        // Check basic user fields
-        $totalFields += 2;
-        if (!empty($user->name)) $completionPercentage += 1;
-        if (!empty($user->email)) $completionPercentage += 1;
-
-        // Check employer profile fields
-        $profileFields = [
-            'company_name',
-            'company_description',
-            'location',
-            'website',
-            'phone',
-            'industry',
-            'company_size',
-            'logo_path',
+        $fields = [
+            $user->name,
+            $user->email,
+            $profile?->company_name,
+            $profile?->industry,
+            $profile?->company_website,
+            $profile?->company_description,
+            $profile?->company_logo,
+            $profile?->tax_id,
         ];
 
-        $totalFields += count($profileFields);
-
-        foreach ($profileFields as $field) {
-            if (!empty($profile->$field)) {
-                $completionPercentage += 1;
-            }
-        }
-
-        return $totalFields > 0 ? round(($completionPercentage / $totalFields) * 100) : 0;
+        $completed = count(array_filter($fields));
+        return (int) (($completed / count($fields)) * 100);
     }
 }

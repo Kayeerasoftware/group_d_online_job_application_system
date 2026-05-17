@@ -63,7 +63,9 @@ class NotificationsController extends Controller
 
     public function markRead(Request $request, Notification $notification): RedirectResponse
     {
-        $this->authorize('update', $notification);
+        if ($notification->user_id !== $request->user()->id) {
+            abort(403, 'Unauthorized');
+        }
 
         $notification->update(['read_at' => now()]);
 
@@ -83,7 +85,9 @@ class NotificationsController extends Controller
 
     public function destroy(Request $request, Notification $notification): RedirectResponse
     {
-        $this->authorize('delete', $notification);
+        if ($notification->user_id !== $request->user()->id) {
+            abort(403, 'Unauthorized');
+        }
 
         $notification->delete();
 

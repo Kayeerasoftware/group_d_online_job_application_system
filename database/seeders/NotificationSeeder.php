@@ -2,101 +2,80 @@
 
 namespace Database\Seeders;
 
-use App\Enums\DeliveryStatus;
-use App\Enums\NotificationChannel;
 use App\Models\Notification;
 use App\Models\User;
-use Illuminate\Database\Seeder;
+use Illuminate\Database\Seeker;
 
 class NotificationSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $demoSeeker = User::query()->where('email', 'seeker@example.com')->first();
-        $amina = User::query()->where('email', 'seeker.amina@example.com')->first();
-        $brian = User::query()->where('email', 'seeker.brian@example.com')->first();
-        $demoEmployer = User::query()->where('email', 'employer@example.com')->first();
-        $techForge = User::query()->where('email', 'employer@techforge.co.ug')->first();
-        $admin = User::query()->where('email', 'admin@example.com')->first();
+        $seekers = User::where('role', 'seeker')->limit(3)->get();
 
-        $targets = array_filter([$demoSeeker, $amina, $brian, $demoEmployer, $techForge, $admin]);
-
-        if (count($targets) === 0) {
+        if ($seekers->isEmpty()) {
             return;
         }
 
         $notifications = [
             [
-                'user' => $demoSeeker,
-                'subject' => 'Welcome to the platform',
-                'message' => 'Your seeker profile is ready. Browse jobs and start saving opportunities.',
-                'type' => NotificationChannel::App,
-                'delivery_status' => DeliveryStatus::Sent,
-                'is_read' => false,
+                'type' => 'application_status',
+                'title' => 'Application Status Update',
+                'subject' => 'Your application has been reviewed',
+                'message' => 'Your application for Laravel Developer has been shortlisted. Check your email for more details.',
+                'action_url' => '/seeker/applications',
             ],
             [
-                'user' => $demoSeeker,
-                'subject' => 'Application shortlisted',
-                'message' => 'Your application for Laravel Developer has moved to shortlist review.',
-                'type' => NotificationChannel::Email,
-                'delivery_status' => DeliveryStatus::Sent,
-                'is_read' => false,
+                'type' => 'job_match',
+                'title' => 'New Job Match',
+                'subject' => 'Perfect job match found',
+                'message' => 'A new Senior PHP Developer position matches your profile perfectly.',
+                'action_url' => '/seeker/browse-jobs',
             ],
             [
-                'user' => $amina,
-                'subject' => 'New match found',
-                'message' => 'A new DevOps Intern opening matches your profile and saved search behavior.',
-                'type' => NotificationChannel::App,
-                'delivery_status' => DeliveryStatus::Sent,
-                'is_read' => true,
+                'type' => 'job_closing',
+                'title' => 'Job Closing Soon',
+                'subject' => 'Application deadline approaching',
+                'message' => 'The DevOps Engineer position you saved closes in 2 days. Apply now!',
+                'action_url' => '/seeker/saved-jobs',
             ],
             [
-                'user' => $brian,
+                'type' => 'system',
+                'title' => 'System Notification',
                 'subject' => 'Profile update reminder',
-                'message' => 'Add more technical skills to your profile to improve matching accuracy.',
-                'type' => NotificationChannel::Sms,
-                'delivery_status' => DeliveryStatus::Pending,
-                'is_read' => false,
+                'message' => 'Update your profile to improve job matching accuracy.',
+                'action_url' => '/seeker/profile/edit',
             ],
             [
-                'user' => $demoEmployer,
-                'subject' => 'New application received',
-                'message' => 'You have a fresh application for the Laravel Developer role.',
-                'type' => NotificationChannel::Email,
-                'delivery_status' => DeliveryStatus::Sent,
-                'is_read' => false,
+                'type' => 'application_status',
+                'title' => 'Interview Scheduled',
+                'subject' => 'Interview invitation',
+                'message' => 'You have been invited for an interview. Check your messages for details.',
+                'action_url' => '/seeker/interviews',
             ],
             [
-                'user' => $admin,
-                'subject' => 'Compliance check due',
-                'message' => 'A new monthly compliance report is ready for review.',
-                'type' => NotificationChannel::App,
-                'delivery_status' => DeliveryStatus::Sent,
-                'is_read' => false,
+                'type' => 'job_match',
+                'title' => 'New Opportunity',
+                'subject' => 'Matching job opportunity',
+                'message' => 'A new Frontend Developer role is available and matches your skills.',
+                'action_url' => '/seeker/browse-jobs',
             ],
         ];
 
-        foreach ($notifications as $notificationData) {
-            if (! $notificationData['user']) {
-                continue;
-            }
-
-            Notification::query()->updateOrCreate(
-                [
-                    'user_id' => $notificationData['user']->id,
-                    'subject' => $notificationData['subject'],
-                ],
-                [
+        foreach ($seekers as $seeker) {
+            foreach ($notifications as $index => $notificationData) {
+                Notification::create([
+                    'user_id' => $seeker->id,
                     'type' => $notificationData['type'],
+                    'title' => $notificationData['title'],
+                    'subject' => $notificationData['subject'],
                     'message' => $notificationData['message'],
-                    'is_read' => $notificationData['is_read'],
+                    'action_url' => $notificationData['action_url'],
+                    'is_read' => $index % 2 === 0,
+                    'read_at' => $index % 2 === 0 ? now()->subHours(random_int(1, 24)) : null,
                     'sent_at' => now()->subHours(random_int(1, 48)),
-                    'delivery_status' => $notificationData['delivery_status'],
-                ]
-            );
+                    'delivery_status' => 'sent',
+                ]);
+            }
         }
     }
 }

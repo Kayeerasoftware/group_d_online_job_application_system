@@ -24,6 +24,9 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
+        $activeJobs = Job::where('employer_id', $userId)->where('status', 'open')->count();
+        $closedJobs = Job::where('employer_id', $userId)->where('status', 'closed')->count();
+
         $applicationCount = Application::query()
             ->whereHas('job', fn ($builder) => $builder->where('employer_id', $userId))
             ->count();
@@ -65,8 +68,8 @@ class DashboardController extends Controller
             ->get();
 
         $stats = [
-            'active_jobs' => Job::where('employer_id', $userId)->where('status', 'open')->count(),
-            'closed_jobs' => Job::where('employer_id', $userId)->where('status', 'closed')->count(),
+            'active_jobs' => $activeJobs,
+            'closed_jobs' => $closedJobs,
             'jobs_this_month' => Job::where('employer_id', $userId)->whereMonth('created_at', now()->month)->count(),
             'total_applications' => $applicationCount,
             'pending_applications' => $pendingCount,
@@ -107,10 +110,14 @@ class DashboardController extends Controller
         return view('employer.dashboard', [
             'jobs' => $jobs,
             'jobCount' => $jobs->count(),
+            'activeJobs' => $activeJobs,
+            'closedJobs' => $closedJobs,
             'applicationCount' => $applicationCount,
             'totalViews' => $totalViews,
             'conversionRate' => $conversionRate,
             'shortlistedCount' => $shortlistedCount,
+            'rejectedCount' => $rejectedCount,
+            'pendingCount' => $pendingCount,
             'recentJobs' => $jobs,
             'recentApplications' => $recentApplications,
             'recentNotifications' => $recentNotifications,
@@ -145,12 +152,10 @@ class DashboardController extends Controller
         $profileFields = [
             'company_name',
             'company_description',
-            'location',
-            'website',
-            'phone',
+            'company_website',
             'industry',
-            'company_size',
-            'logo_path',
+            'company_logo',
+            'tax_id',
         ];
 
         $totalFields += count($profileFields);

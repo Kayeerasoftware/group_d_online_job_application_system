@@ -21,7 +21,18 @@ class User extends Authenticatable
         'role',
         'phone',
         'profile_picture',
-        'is_active',
+        'two_factor_enabled',
+        'two_factor_secret',
+        'notifications_enabled',
+        'job_recommendations',
+        'application_updates',
+        'message_notifications',
+        'interview_reminders',
+        'profile_visible',
+        'show_email',
+        'show_phone',
+        'theme',
+        'last_login_at',
     ];
 
     protected $appends = ['profile_picture_url'];
@@ -35,9 +46,18 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'is_active' => 'boolean',
             'password' => 'hashed',
             'role' => UserRole::class,
+            'two_factor_enabled' => 'boolean',
+            'notifications_enabled' => 'boolean',
+            'job_recommendations' => 'boolean',
+            'application_updates' => 'boolean',
+            'message_notifications' => 'boolean',
+            'interview_reminders' => 'boolean',
+            'profile_visible' => 'boolean',
+            'show_email' => 'boolean',
+            'show_phone' => 'boolean',
+            'last_login_at' => 'datetime',
         ];
     }
 

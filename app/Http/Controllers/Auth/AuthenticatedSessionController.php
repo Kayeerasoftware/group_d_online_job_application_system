@@ -23,9 +23,9 @@ class AuthenticatedSessionController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (! Auth::attempt(array_merge($credentials, ['is_active' => true]), $request->boolean('remember'))) {
+        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
             throw ValidationException::withMessages([
-                'email' => __('The provided credentials are incorrect or the account is inactive.'),
+                'email' => __('The provided credentials are incorrect.'),
             ]);
         }
 
@@ -39,6 +39,7 @@ class AuthenticatedSessionController extends Controller
         Auth::logout();
 
         $request->session()->invalidate();
+
         $request->session()->regenerateToken();
 
         return redirect()->route('home')->with('status', 'You have been logged out.');

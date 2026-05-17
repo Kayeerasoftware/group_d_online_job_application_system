@@ -89,17 +89,12 @@ class JobController extends Controller
             $employer = null;
         }
 
-        // Use employer profile view only if viewing another employer's jobs
-        if ($isEmployerProfileView && $employer) {
-            return view('jobs.employer-jobs', compact('jobs', 'employer'));
-        }
-
         // For employers viewing their own jobs, use employer layout
         if ($isEmployerViewingOwnJobs) {
             return view('employer.jobs-list', compact('jobs'));
         }
 
-        // All other users (seekers, guests, admins) use browse-jobs
+        // All other users (seekers, guests, admins, employers viewing other employers) use browse-jobs
         return view('seeker.browse-jobs', [
             'jobs' => $jobs,
             'savedJobIds' => auth()->check() ? auth()->user()->savedJobs()->pluck('job_id')->toArray() : [],

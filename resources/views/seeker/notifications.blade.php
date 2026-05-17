@@ -3,201 +3,204 @@
 @section('title', 'Notifications')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-3 md:p-6">
+<div class="bg-gradient-to-br from-gray-50 to-gray-100 p-3 md:p-6 min-h-screen">
     <!-- Header Section -->
-    <div class="mb-4 md:mb-6">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4">
-            <div class="flex items-center gap-2 md:gap-4">
-                <div class="relative">
-                    <div class="absolute inset-0 bg-gradient-to-r from-orange-600 to-red-600 rounded-xl md:rounded-2xl blur-xl opacity-50"></div>
-                    <div class="relative bg-gradient-to-br from-orange-600 to-red-600 p-2 md:p-4 rounded-xl md:rounded-2xl shadow-xl">
-                        <i class="fas fa-bell text-white text-xl md:text-3xl"></i>
-                    </div>
+    <div class="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-lg shadow-lg p-3 md:p-4 mb-4 md:mb-6">
+        <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-3 flex-1 min-w-0">
+                <div class="w-12 h-12 md:w-14 md:h-14 rounded-xl overflow-hidden bg-white shadow-lg flex-shrink-0 flex items-center justify-center">
+                    <i class="fas fa-bell text-emerald-600 text-2xl"></i>
                 </div>
-                <div>
-                    <h1 class="text-xl md:text-3xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 bg-clip-text text-transparent mb-1 md:mb-2">Notifications</h1>
-                    <p class="text-gray-600 text-xs md:text-sm font-medium">Stay updated on your applications and opportunities</p>
+                <div class="min-w-0">
+                    <h1 class="text-sm sm:text-lg md:text-2xl font-bold text-white truncate">Notifications</h1>
+                    <p class="text-emerald-100 text-xs sm:text-sm mt-0.5 md:mt-1">Stay updated with important events</p>
                 </div>
             </div>
-            <div class="flex gap-1.5 md:gap-2 w-full md:w-auto">
-                <button onclick="markAllAsRead()" class="flex-1 md:flex-none px-3 md:px-5 py-2 md:py-2.5 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-lg md:rounded-xl hover:shadow-lg transition-all duration-300 text-xs md:text-sm font-bold flex items-center justify-center gap-1 md:gap-2 transform hover:scale-105">
-                    <i class="fas fa-check-double"></i><span class="hidden sm:inline">Mark All Read</span>
-                </button>
+            <div class="flex gap-2 flex-shrink-0">
+                <form action="{{ route('seeker.notifications.mark-all-read') }}" method="POST" class="inline">
+                    @csrf
+                    <button type="submit" class="px-4 py-2 bg-white text-emerald-600 rounded-lg hover:bg-gray-100 transition font-semibold text-sm">
+                        <i class="fas fa-check-double mr-2"></i>Mark All Read
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 
     <!-- Animated Separator Line -->
     <div class="relative h-2 bg-gray-200 rounded-full overflow-visible mb-4 md:mb-6">
-        <div class="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full animate-slide-right"></div>
-        <span class="absolute -top-6 text-2xl md:text-3xl text-green-600 font-bold animate-slide-text whitespace-nowrap z-10">Loading Notifications...</span>
+        <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full animate-slide-right"></div>
+        <span class="absolute -top-6 text-2xl md:text-3xl text-emerald-600 font-bold animate-slide-text whitespace-nowrap z-10">Loading Notifications...</span>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-3 md:mb-4">
-        <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg p-2 md:p-3 text-white shadow-lg transform hover:scale-105 transition-all duration-300">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-orange-100 text-[8px] md:text-[10px] font-medium mb-0.5">Total</p>
-                    <h3 class="text-base md:text-xl font-bold">{{ $notifications->count() }}</h3>
+    <!-- Key Metrics -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-3 mb-4 md:mb-6">
+        <!-- Total -->
+        <div class="bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-emerald-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-bell text-white text-base md:text-lg"></i>
                 </div>
-                <div class="bg-white/20 p-1.5 md:p-2 rounded-lg backdrop-blur-sm">
-                    <i class="fas fa-bell text-sm md:text-lg"></i>
-                </div>
-            </div>
-        </div>
-        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-2 md:p-3 text-white shadow-lg transform hover:scale-105 transition-all duration-300">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-blue-100 text-[8px] md:text-[10px] font-medium mb-0.5">Unread</p>
-                    <h3 class="text-base md:text-xl font-bold">{{ $unreadCount }}</h3>
-                </div>
-                <div class="bg-white/20 p-1.5 md:p-2 rounded-lg backdrop-blur-sm">
-                    <i class="fas fa-envelope text-sm md:text-lg"></i>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-emerald-600 font-bold leading-tight">Total</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">{{ $totalNotifications ?? 0 }}</h3>
                 </div>
             </div>
         </div>
-        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-2 md:p-3 text-white shadow-lg transform hover:scale-105 transition-all duration-300">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-green-100 text-[8px] md:text-[10px] font-medium mb-0.5">Application</p>
-                    <h3 class="text-base md:text-xl font-bold">{{ $applicationNotifications }}</h3>
+
+        <!-- Unread -->
+        <div class="bg-gradient-to-r from-red-50 to-red-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-red-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-red-500 to-red-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-exclamation-circle text-white text-base md:text-lg"></i>
                 </div>
-                <div class="bg-white/20 p-1.5 md:p-2 rounded-lg backdrop-blur-sm">
-                    <i class="fas fa-file-alt text-sm md:text-lg"></i>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-red-600 font-bold leading-tight">Unread</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">{{ $unreadNotifications ?? 0 }}</h3>
                 </div>
             </div>
         </div>
-        <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-2 md:p-3 text-white shadow-lg transform hover:scale-105 transition-all duration-300">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-purple-100 text-[8px] md:text-[10px] font-medium mb-0.5">Job Alerts</p>
-                    <h3 class="text-base md:text-xl font-bold">{{ $jobAlerts }}</h3>
+
+        <!-- Applications -->
+        <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-blue-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-file-alt text-white text-base md:text-lg"></i>
                 </div>
-                <div class="bg-white/20 p-1.5 md:p-2 rounded-lg backdrop-blur-sm">
-                    <i class="fas fa-briefcase text-sm md:text-lg"></i>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-blue-600 font-bold leading-tight">Applications</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">{{ $applicationNotifications ?? 0 }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interviews -->
+        <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-purple-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-calendar-check text-white text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-purple-600 font-bold leading-tight">Interviews</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">{{ $interviewNotifications ?? 0 }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Alerts -->
+        <div class="bg-gradient-to-r from-teal-50 to-teal-100 rounded-lg shadow-md p-2 md:p-3 hover:shadow-lg hover:scale-105 transition-all duration-300 border border-teal-200">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="bg-gradient-to-br from-teal-500 to-teal-600 p-2 md:p-2.5 rounded-lg shadow">
+                    <i class="fas fa-briefcase text-white text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs md:text-sm text-teal-600 font-bold leading-tight">Job Alerts</p>
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 leading-tight">{{ $jobMatchNotifications ?? 0 }}</h3>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Filter Tabs -->
-    <div class="bg-white rounded-xl shadow-lg p-3 mb-4 border border-gray-100">
-        <div class="flex flex-wrap gap-2">
-            <a href="{{ route('seeker.notifications') }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {{ !request('type') ? 'bg-gradient-to-r from-orange-600 to-red-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                <i class="fas fa-inbox mr-2"></i>All
-            </a>
-            <a href="{{ route('seeker.notifications', ['type' => 'application']) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {{ request('type') == 'application' ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                <i class="fas fa-file-alt mr-2"></i>Applications
-            </a>
-            <a href="{{ route('seeker.notifications', ['type' => 'job']) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {{ request('type') == 'job' ? 'bg-gradient-to-r from-green-600 to-green-700 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                <i class="fas fa-briefcase mr-2"></i>Job Alerts
-            </a>
-            <a href="{{ route('seeker.notifications', ['type' => 'system']) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {{ request('type') == 'system' ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                <i class="fas fa-cog mr-2"></i>System
-            </a>
-        </div>
+    <div class="bg-white rounded-xl shadow-md p-4 mb-6 flex gap-2 overflow-x-auto">
+        <a href="{{ route('seeker.notifications') }}" class="px-4 py-2 {{ !request('type') ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }} rounded-lg font-semibold text-sm whitespace-nowrap transition">
+            All
+        </a>
+        <a href="{{ route('seeker.notifications', ['type' => 'application_status']) }}" class="px-4 py-2 {{ request('type') === 'application_status' ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }} rounded-lg font-semibold text-sm whitespace-nowrap transition">
+            <span class="{{ request('type') === 'application_status' ? 'text-white' : 'text-blue-600' }} font-bold">Applications</span>
+        </a>
+        <a href="{{ route('seeker.notifications', ['type' => 'interview']) }}" class="px-4 py-2 {{ request('type') === 'interview' ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }} rounded-lg font-semibold text-sm whitespace-nowrap transition">
+            <span class="{{ request('type') === 'interview' ? 'text-white' : 'text-purple-600' }} font-bold">Interviews</span>
+        </a>
+        <a href="{{ route('seeker.notifications', ['type' => 'job_match']) }}" class="px-4 py-2 {{ request('type') === 'job_match' ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }} rounded-lg font-semibold text-sm whitespace-nowrap transition">
+            <span class="{{ request('type') === 'job_match' ? 'text-white' : 'text-teal-600' }} font-bold">Job Alerts</span>
+        </a>
+        <a href="{{ route('seeker.notifications', ['type' => 'system']) }}" class="px-4 py-2 {{ request('type') === 'system' ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }} rounded-lg font-semibold text-sm whitespace-nowrap transition">
+            <span class="{{ request('type') === 'system' ? 'text-white' : 'text-gray-600' }} font-bold">System</span>
+        </a>
     </div>
+
+    <!-- Success Message -->
+    @if(session('success'))
+        <div class="mb-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-700 text-sm">
+            <i class="fas fa-check-circle mr-2"></i>{{ session('success') }}
+        </div>
+    @endif
 
     <!-- Notifications List -->
-    <div class="space-y-3">
-        @forelse($notifications as $notification)
-        <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border {{ $notification->read_at ? 'border-gray-100' : 'border-blue-200 bg-blue-50' }} p-4">
-            <div class="flex items-start gap-4">
-                <!-- Icon -->
-                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full
-                    @if($notification->type === 'application_status') bg-blue-100
-                    @elseif($notification->type === 'job_closing') bg-orange-100
-                    @elseif($notification->type === 'job_match') bg-green-100
-                    @else bg-purple-100
-                    @endif">
-                    @if($notification->type === 'application_status')
-                        <i class="fas fa-file-alt text-blue-600 text-lg"></i>
-                    @elseif($notification->type === 'job_closing')
-                        <i class="fas fa-clock text-orange-600 text-lg"></i>
-                    @elseif($notification->type === 'job_match')
-                        <i class="fas fa-star text-green-600 text-lg"></i>
-                    @else
-                        <i class="fas fa-bell text-purple-600 text-lg"></i>
-                    @endif
-                </div>
-
-                <!-- Content -->
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-start justify-between gap-2">
-                        <div class="flex-1">
-                            <h3 class="font-semibold text-gray-900">{{ $notification->title }}</h3>
-                            <p class="text-sm text-gray-600 mt-1">{{ $notification->message }}</p>
-                            <p class="text-xs text-gray-500 mt-2">{{ $notification->created_at->diffForHumans() }}</p>
+    <div class="space-y-4">
+        @if($notifications->count() > 0)
+            @foreach($notifications as $notification)
+                <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition overflow-hidden border-l-4 {{ !$notification->read_at ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200' }}">
+                    <div class="p-4 md:p-6 flex gap-4">
+                        <!-- Icon -->
+                        <div class="flex-shrink-0">
+                            @php
+                                $notificationType = $notification->type ?? 'system';
+                                $iconClass = $notificationType === 'application_status' ? 'bg-blue-100' : 
+                                            ($notificationType === 'interview' ? 'bg-purple-100' : 
+                                            ($notificationType === 'job_match' ? 'bg-teal-100' : 'bg-gray-100'));
+                                $iconColor = $notificationType === 'application_status' ? 'text-blue-600' : 
+                                            ($notificationType === 'interview' ? 'text-purple-600' : 
+                                            ($notificationType === 'job_match' ? 'text-teal-600' : 'text-gray-600'));
+                                $icon = $notificationType === 'application_status' ? 'fa-file-alt' : 
+                                       ($notificationType === 'interview' ? 'fa-calendar-check' : 
+                                       ($notificationType === 'job_match' ? 'fa-briefcase' : 'fa-info-circle'));
+                            @endphp
+                            <div class="w-12 h-12 rounded-full flex items-center justify-center {{ $iconClass }}">
+                                <i class="fas {{ $icon }} {{ $iconColor }} text-lg"></i>
+                            </div>
                         </div>
-                        @if(!$notification->read_at)
-                        <span class="h-3 w-3 shrink-0 rounded-full bg-blue-600 mt-1"></span>
-                        @endif
-                    </div>
 
-                    <!-- Actions -->
-                    <div class="flex gap-2 mt-3">
-                        @if(!$notification->read_at)
-                        <form action="{{ route('seeker.notifications.read', $notification) }}" method="POST" class="inline">
-                            @csrf
-                            @method('PATCH')
-                            <button type="submit" class="text-xs font-semibold text-blue-600 hover:text-blue-800 transition">
-                                <i class="fas fa-check mr-1"></i>Mark as Read
-                            </button>
-                        </form>
-                        @endif
-                        @if($notification->action_url)
-                        <a href="{{ $notification->action_url }}" class="text-xs font-semibold text-purple-600 hover:text-purple-800 transition">
-                            <i class="fas fa-arrow-right mr-1"></i>View Details
-                        </a>
-                        @endif
+                        <!-- Content -->
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between gap-2 mb-2">
+                                <h3 class="text-sm md:text-base font-bold text-gray-900">{{ $notification->title ?? 'Notification' }}</h3>
+                                @if(!$notification->read_at)
+                                    <span class="w-2 h-2 rounded-full bg-emerald-600 flex-shrink-0 mt-2"></span>
+                                @endif
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">{{ $notification->message ?? 'No message' }}</p>
+                            <div class="flex items-center justify-between flex-wrap gap-2">
+                                <p class="text-xs text-gray-500">{{ $notification->created_at->diffForHumans() }}</p>
+                                <div class="flex gap-2">
+                                    @if(!$notification->read_at)
+                                        <form action="{{ route('seeker.notifications.read', $notification) }}" method="POST" class="inline">
+                                            @csrf
+                                            <button type="submit" class="text-xs text-emerald-600 hover:text-emerald-700 font-semibold">
+                                                Mark as Read
+                                            </button>
+                                        </form>
+                                    @endif
+                                    <form action="{{ route('seeker.notifications.destroy', $notification) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-xs text-red-600 hover:text-red-700 font-semibold">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            @endforeach
 
-                <!-- Delete -->
-                <form action="{{ route('seeker.notifications.destroy', $notification) }}" method="POST" class="inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="text-gray-400 hover:text-red-600 transition" title="Delete notification">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </form>
+            <!-- Pagination -->
+            @if($notifications->hasPages())
+                <div class="flex justify-center mt-8">
+                    {{ $notifications->links() }}
+                </div>
+            @endif
+        @else
+            <div class="bg-white rounded-xl shadow-md p-12 text-center">
+                <i class="fas fa-bell text-gray-400 text-5xl mb-4 block"></i>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">No Notifications</h3>
+                <p class="text-gray-600">You're all caught up! Check back later for updates.</p>
             </div>
-        </div>
-        @empty
-        <div class="bg-white rounded-2xl shadow-lg p-12 text-center border border-gray-100">
-            <i class="fas fa-bell text-6xl text-gray-300 mb-4"></i>
-            <h3 class="text-xl font-bold text-gray-900 mb-2">No Notifications</h3>
-            <p class="text-gray-600">You're all caught up! Check back later for updates on your applications.</p>
-        </div>
-        @endforelse
+        @endif
     </div>
-
-    <!-- Pagination -->
-    @if($notifications->hasPages())
-    <div class="mt-6 flex justify-center">
-        {{ $notifications->links() }}
-    </div>
-    @endif
 </div>
-
-<script>
-function markAllAsRead() {
-    if (confirm('Mark all notifications as read?')) {
-        fetch('{{ route('seeker.notifications.mark-all-read') }}', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Content-Type': 'application/json'
-            }
-        }).then(response => {
-            if (response.ok) {
-                location.reload();
-            }
-        });
-    }
-}
-</script>
 
 <style>
 @keyframes slide-right {

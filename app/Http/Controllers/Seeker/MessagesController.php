@@ -3,108 +3,128 @@
 namespace App\Http\Controllers\Seeker;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SendMessageRequest;
 use App\Models\InterviewCommunication;
 use App\Models\User;
+use App\Services\MessageService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Log;
 
 class MessagesController extends Controller
 {
+    private MessageService $messageService;
+
+    public function __construct(MessageService $messageService)
+    {
+        $this->messageService = $messageService;
+    }
+
     public function index(Request $request): View
     {
         $userId = auth()->id();
+        $data = $this->messageService->formatConversationData($userId);
 
-        // Get all conversations for the seeker
-        $conversations = InterviewCommunication::where('receiver_id', $userId)
-            ->orWhere('sender_id', $userId)
-            ->with(['sender', 'receiver', 'application.job'])
-            ->latest('created_at')
-            ->get()
-            ->groupBy(function ($message) use ($userId) {
-                return $message->sender_id === $userId ? $message->receiver_id : $message->sender_id;
-            })
-            ->map(function ($messages) use ($userId) {
-                $lastMessage = $messages->first();
-                $otherUser = $lastMessage->sender_id === $userId ? $lastMessage->receiver : $lastMessage->sender;
-                $unreadCount = $messages->where('receiver_id', $userId)->whereNull('read_at')->count();
-
-                return [
-                    'user' => $otherUser,
-                    'lastMessage' => $lastMessage,
-                    'unreadCount' => $unreadCount,
-                    'messages' => $messages->sortBy('created_at'),
-                ];
-            });
-
-        $totalMessages = InterviewCommunication::where('receiver_id', $userId)
-            ->orWhere('sender_id', $userId)
-            ->count();
-
-        $unreadMessages = InterviewCommunication::where('receiver_id', $userId)
-            ->whereNull('read_at')
-            ->count();
-
-        $activeChats = $conversations->count();
-
-        return view('seeker.messages', [
-            'conversations' => $conversations,
-            'totalMessages' => $totalMessages,
-            'unreadMessages' => $unreadMessages,
-            'activeChats' => $activeChats,
-        ]);
+        return view('seeker.messages', $data);
     }
 
     public function getConversation(User $user): JsonResponse
     {
-        $userId = auth()->id();
+        try {
+            $userId = auth()->id();
+            $messages = $this->messageService->getConversationMessages($userId, $user->id);
 
-        $messages = InterviewCommunication::where(function ($query) use ($userId, $user) {
-            $query->where('sender_id', $userId)->where('receiver_id', $user->id);
-        })->orWhere(function ($query) use ($userId, $user) {
-            $query->where('sender_id', $user->id)->where('receiver_id', $userId);
-        })
-            ->with(['sender', 'receiver'])
-            ->orderBy('created_at', 'asc')
-            ->get();
+            // Mark messages as read
+            $this->messageService->markMessagesAsRead($userId, $user->id);
 
-        // Mark messages as read
-        InterviewCommunication::where('receiver_id', $userId)
-            ->where('sender_id', $user->id)
-            ->whereNull('read_at')
-            ->update(['read_at' => now()]);
-
-        return response()->json([
-            'user' => $user,
-            'messages' => $messages,
-        ]);
+            return response()->json([
+                'user' => $user,
+                'messages' => $messages->map(fn($msg) => $this->messageService->formatMessageResponse($msg)),
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in getConversation', ['exception' => $e]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error loading conversation',
+            ], 500);
+        }
     }
 
-    public function sendMessage(Request $request, User $user): JsonResponse
+    public function sendMessage(SendMessageRequest $request, User $user): JsonResponse
     {
-        $validated = $request->validate([
-            'message' => 'required|string|max:1000',
-        ]);
+        try {
+            $validated = $request->validated();
+            $userId = auth()->id();
 
-        $message = InterviewCommunication::create([
-            'sender_id' => auth()->id(),
-            'receiver_id' => $user->id,
-            'message' => $validated['message'],
-            'message_type' => 'text',
-        ]);
+            $message = $this->messageService->sendMessage(
+                $userId,
+                $user->id,
+                $validated['message']
+            );
 
-        return response()->json([
-            'success' => true,
-            'message' => $message->load(['sender', 'receiver']),
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => $this->messageService->formatMessageResponse($message),
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Error in sendMessage', ['exception' => $e]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to send message',
+            ], 500);
+        }
     }
 
     public function markAsRead(InterviewCommunication $message): JsonResponse
     {
-        if ($message->receiver_id === auth()->id() && !$message->read_at) {
-            $message->update(['read_at' => now()]);
-        }
+        try {
+            $userId = auth()->id();
 
-        return response()->json(['success' => true]);
+            if ($message->receiver_id === $userId && !$message->read_at) {
+                $message->update(['read_at' => now()]);
+            }
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            Log::error('Error in markAsRead', ['exception' => $e]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error marking message as read',
+            ], 500);
+        }
+    }
+
+    public function search(Request $request): JsonResponse
+    {
+        try {
+            $query = $request->query('q', '');
+            $userId = auth()->id();
+
+            if (strlen($query) < 2) {
+                return response()->json(['users' => []]);
+            }
+
+            $users = User::where('id', '!=', $userId)
+                ->where(function ($q) use ($query) {
+                    $q->where('name', 'like', '%' . $query . '%')
+                      ->orWhere('email', 'like', '%' . $query . '%');
+                })
+                ->select('id', 'name', 'role')
+                ->limit(10)
+                ->get()
+                ->map(function ($user) {
+                    return [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'role' => $user->role instanceof \App\Enums\UserRole ? $user->role->name : (string) $user->role,
+                    ];
+                });
+
+            return response()->json(['users' => $users]);
+        } catch (\Exception $e) {
+            Log::error('Error in search', ['exception' => $e]);
+            return response()->json(['users' => []], 500);
+        }
     }
 }

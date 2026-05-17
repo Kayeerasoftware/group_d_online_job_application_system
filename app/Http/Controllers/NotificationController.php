@@ -13,16 +13,53 @@ class NotificationController extends Controller
 {
     public function index(Request $request): View
     {
-        $notifications = $request->user()
-            ->notifications()
+        $user = $request->user();
+        
+        $notifications = Notification::where('user_id', $user->id)
+            ->when($request->type, fn($q) => $q->where('type', $request->type))
             ->latest()
-            ->paginate(15);
+            ->paginate(20);
 
-        $unreadCount = $request->user()->notifications()->whereNull('read_at')->count();
-        $applicationNotifications = $request->user()->notifications()->where('type', 'application_status')->count();
-        $jobAlerts = $request->user()->notifications()->where('type', 'job_match')->count();
+        $totalNotifications = Notification::where('user_id', $user->id)->count();
+        
+        $unreadNotifications = Notification::where('user_id', $user->id)
+            ->whereNull('read_at')
+            ->count();
 
-        return view('seeker.notifications', compact('notifications', 'unreadCount', 'applicationNotifications', 'jobAlerts'));
+        $applicationNotifications = Notification::where('user_id', $user->id)
+            ->where('type', 'application_status')
+            ->count();
+
+        $jobMatchNotifications = Notification::where('user_id', $user->id)
+            ->where('type', 'job_match')
+            ->count();
+
+        $interviewNotifications = Notification::where('user_id', $user->id)
+            ->where('type', 'interview')
+            ->count();
+
+        $messageNotifications = Notification::where('user_id', $user->id)
+            ->where('type', 'message')
+            ->count();
+
+        // Notification type distribution for chart
+        $notificationTypeData = Notification::query()
+            ->where('user_id', $user->id)
+            ->selectRaw('type, COUNT(*) as count')
+            ->groupBy('type')
+            ->pluck('count', 'type')
+            ->toArray();
+
+        return view('seeker.notifications', [
+            'notifications' => $notifications,
+            'totalNotifications' => $totalNotifications,
+            'unreadNotifications' => $unreadNotifications,
+            'applicationNotifications' => $applicationNotifications,
+            'jobMatchNotifications' => $jobMatchNotifications,
+            'interviewNotifications' => $interviewNotifications,
+            'messageNotifications' => $messageNotifications,
+            'notificationTypeData' => $notificationTypeData,
+        ]);
     }
 
     public function create()
@@ -56,7 +93,7 @@ class NotificationController extends Controller
 
         $notification->delete();
 
-        return back()->with('status', 'Notification deleted.');
+        return back()->with('success', 'Notification deleted.');
     }
 
     public function markRead(Request $request, Notification $notification): RedirectResponse
@@ -65,13 +102,15 @@ class NotificationController extends Controller
 
         $notification->update(['read_at' => now()]);
 
-        return back()->with('status', 'Notification marked as read.');
+        return back()->with('success', 'Notification marked as read.');
     }
 
-    public function markAllRead(Request $request)
+    public function markAllRead(Request $request): RedirectResponse
     {
-        $request->user()->notifications()->whereNull('read_at')->update(['read_at' => now()]);
+        $request->user()->notifications()
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
 
-        return response()->json(['success' => true]);
+        return back()->with('success', 'All notifications marked as read.');
     }
 }

@@ -37,6 +37,8 @@
 </head>
 @php
     $currentUser = auth()->user();
+    $employerProfile = $currentUser->employerProfile;
+    $companyLogo = $employerProfile && $employerProfile->company_logo ? asset($employerProfile->company_logo) : null;
 @endphp
 <body class="bg-gray-50" style="overflow-y: auto; overflow-x: hidden; scrollbar-width: none;" x-data="{ 
     sidebarOpen: false,
@@ -58,7 +60,7 @@
         email: {{ Js::from($currentUser->email ?? 'employer@example.com') }},
         phone: {{ Js::from($currentUser->employerProfile?->phone ?? '+256 700 000 000') }}
     },
-    profilePicture: {{ Js::from($currentUser->profile_picture_url ?? null) }}
+    profilePicture: {{ Js::from($companyLogo) }}
 }">
     @include('partials.employer-topnav')
     @include('partials.employer-sidenav')
